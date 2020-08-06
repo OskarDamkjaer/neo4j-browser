@@ -112,6 +112,10 @@ module.exports = [
     use: ['style-loader', 'css-loader']
   },
   {
+    test: /\.ttf$/,
+    use: ['file-loader']
+  },
+  {
     test: /\.svg$/,
     use:
       'file-loader?limit=65000&mimetype=image/svg+xml&name=assets/fonts/[name].[ext]',

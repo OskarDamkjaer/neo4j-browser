@@ -2264,14 +2264,6 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.x":
-  version "16.9.44"
-  resolved "https://neo.jfrog.io/neo/api/npm/npm/@types/react/-/react-16.9.44.tgz#da84b179c031aef67dc92c33bd3401f1da2fa3bc"
-  integrity sha1-2oSxecAxrvZ9ySwzvTQB8dovo7w=
-  dependencies:
-    "@types/prop-types" "*"
-    csstype "^3.0.2"
-
 "@types/shallowequal@^1.1.1":
   version "1.1.1"
   resolved "https://neo.jfrog.io/neo/api/npm/npm/@types/shallowequal/-/shallowequal-1.1.1.tgz#aad262bb3f2b1257d94c71d545268d592575c9b1"
@@ -4507,11 +4499,6 @@ csstype@^2.5.7:
   version "2.6.9"
   resolved "https://neo.jfrog.io/neo/api/npm/npm/csstype/-/csstype-2.6.9.tgz#05141d0cd557a56b8891394c1911c40c8a98d098"
   integrity sha1-BRQdDNVXpWuIkTlMGRHEDIqY0Jg=
-
-csstype@^3.0.2:
-  version "3.0.2"
-  resolved "https://neo.jfrog.io/neo/api/npm/npm/csstype/-/csstype-3.0.2.tgz#ee5ff8f208c8cd613b389f7b222c9801ca62b3f7"
-  integrity sha1-7l/48gjIzWE7OJ97IiyYAcpis/c=
 
 cyclist@^1.0.1:
   version "1.0.1"
@@ -8731,7 +8718,7 @@ monaco-editor-webpack-plugin@^1.9.0:
   dependencies:
     loader-utils "^1.2.3"
 
-monaco-editor@*:
+monaco-editor@^0.20.0:
   version "0.20.0"
   resolved "https://neo.jfrog.io/neo/api/npm/npm/monaco-editor/-/monaco-editor-0.20.0.tgz#5d5009343a550124426cb4d965a4d27a348b4dea"
   integrity sha1-XVAJNDpVASRCbLTZZaTSejSLTeo=
@@ -10536,15 +10523,6 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://neo.jfrog.io/neo/api/npm/npm/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
-
-react-monaco-editor@^0.39.1:
-  version "0.39.1"
-  resolved "https://neo.jfrog.io/neo/api/npm/npm/react-monaco-editor/-/react-monaco-editor-0.39.1.tgz#2be0edf38f62eab127214c4d930f3d3ae369bfee"
-  integrity sha1-K+Dt849i6rEnIUxNkw89OuNpv+4=
-  dependencies:
-    "@types/react" "^16.x"
-    monaco-editor "*"
-    prop-types "^15.7.2"
 
 react-placeholder@^3.0.2:
   version "3.0.2"

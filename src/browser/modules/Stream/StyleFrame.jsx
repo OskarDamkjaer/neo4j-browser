@@ -18,8 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useRef } from 'react'
-import MonacoEditor from 'react-monaco-editor'
+import React, { useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import FrameTemplate from '../Frame/FrameTemplate'
 import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
@@ -33,6 +32,7 @@ import {
 import { getCmdChar } from 'shared/modules/settings/settingsDuck'
 import { FireExtinguisherIcon } from 'browser-components/icons/Icons'
 import { InfoView } from './InfoView'
+import * as monaco from 'monaco-editor'
 
 const StyleFrame = ({ frame }) => {
   let grass = ''
@@ -66,16 +66,79 @@ const StyleFrame = ({ frame }) => {
     editor = editor
   }
   const onChange = console.log
+  contents = <div id="mon-editor" style={{ height: '100%', width: '100%' }} />
+  // TODO use refs and so on
 
-  contents = (
-    <MonacoEditor
-      language="css"
-      defaultValue={grass}
-      options={options}
-      onChange={onChange}
-      editorDidMount={onMount}
-    />
-  )
+  useEffect(() => {
+    // Register a new language
+    monaco.languages.register({ id: 'grass' })
+
+    // Register a tokens provider for the language
+    monaco.languages.setMonarchTokensProvider('grass', {
+      tokenizer: {
+        root: [
+          [/\[error.*/, 'custom-error'],
+          [/\[notice.*/, 'custom-notice'],
+          [/\[info.*/, 'custom-info'],
+          [/\[[a-zA-Z 0-9:]+\]/, 'custom-date']
+        ]
+      }
+    })
+
+    // Define a new theme that contains only rules that match this language
+    monaco.editor.defineTheme('grassTheme', {
+      base: 'vs',
+      inherit: false,
+      rules: [
+        { token: 'custom-info', foreground: '808080' },
+        { token: 'custom-error', foreground: 'ff0000', fontStyle: 'bold' },
+        { token: 'custom-notice', foreground: 'FFA500' },
+        { token: 'custom-date', foreground: '008800' }
+      ]
+    })
+
+    // Register a completion item provider for the new language
+    monaco.languages.registerCompletionItemProvider('grass', {
+      provideCompletionItems: () => {
+        var suggestions = [
+          {
+            label: 'simpleText',
+            kind: monaco.languages.CompletionItemKind.Text,
+            insertText: 'simpleText'
+          },
+          {
+            label: 'testing',
+            kind: monaco.languages.CompletionItemKind.Keyword,
+            insertText: 'testing(${1:condition})',
+            insertTextRules:
+              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+          },
+          {
+            label: 'ifelse',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: [
+              'if (${1:condition}) {',
+              '\t$0',
+              '} else {',
+              '\t',
+              '}'
+            ].join('\n'),
+            insertTextRules:
+              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'If-Else Statement'
+          }
+        ]
+        return { suggestions: suggestions }
+      }
+    })
+
+    monaco.editor.create(document.getElementById('mon-editor'), {
+      theme: 'grassTheme',
+      value: grass,
+      language: 'grass'
+    })
+    // todo dispose of editor
+  }, [])
 
   return (
     <FrameTemplate

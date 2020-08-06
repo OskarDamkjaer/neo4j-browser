@@ -57,41 +57,6 @@ module.exports = {
   module: {
     rules
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/](react|react-dom|@firebase|d3|codemirror)[\\/]/,
-          name: 'vendor',
-          chunks: 'all'
-        },
-        'cypher-codemirror': {
-          test: /[\\/]node_modules[\\/](cypher-codemirror|cypher-editor-support)[\\/]/,
-          name: 'cypher-codemirror',
-          chunks: 'all',
-          enforce: true
-        },
-        ui: {
-          test: /[\\/]node_modules[\\/](@relate-by-ui|semantic-ui-react)[\\/]/,
-          name: 'ui',
-          chunks: 'all',
-          enforce: true
-        },
-        'neo4j-driver': {
-          test: /[\\/]node_modules[\\/](text-encoding|neo4j-driver)[\\/]/,
-          name: 'neo4j-driver',
-          chunks: 'all',
-          enforce: true
-        },
-        worker: {
-          test: /boltWorker/,
-          name: 'worker',
-          chunks: 'all',
-          enforce: true
-        }
-      }
-    }
-  },
   devtool: helpers.isProduction ? false : 'inline-source-map',
   devServer: {
     host: '0.0.0.0',
