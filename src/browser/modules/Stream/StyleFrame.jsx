@@ -70,6 +70,11 @@ const StyleFrame = ({ frame }) => {
   const defaultStyle = graphStyle.toSheet()
   const rebasedStyle = deepmerge(defaultStyle, parseGrass(grass))
   graphStyle.loadRules(rebasedStyle)
+  /*
+  if (editorRef.current) {
+    graphStyle.loadRules(parseGrass(editorRef.current.getValue()))
+  }
+  */
 
   contents = (
     <div style={{ display: 'flex', width: '100%' }}>
@@ -77,67 +82,12 @@ const StyleFrame = ({ frame }) => {
       <div style={{ flexGrow: 1 }}>
         <GraphComponent
           graphStyle={graphStyle}
-          relationships={[]}
-          nodes={[
-            {
-              id: '168',
-              labels: ['Movie'],
-              properties: {
-                tagline: 'Welcome to the Real World',
-                title: 'The Matrix',
-                released: '1999'
-              }
-            },
-            {
-              id: '169',
-              labels: ['Person'],
-              properties: { name: 'Keanu Reeves', born: '1964' }
-            },
-            {
-              id: '170',
-              labels: ['Person'],
-              properties: { name: 'Carrie-Anne Moss', born: '1967' }
-            },
-            {
-              id: '172',
-              labels: ['Person'],
-              properties: { name: 'Laurence Fishburne', born: '1961' }
-            },
-            {
-              id: '173',
-              labels: ['Person'],
-              properties: { name: 'Hugo Weaving', born: '1960' }
-            },
-            {
-              id: '174',
-              labels: ['Person'],
-              properties: { name: 'Lilly Wachowski', born: '1967' }
-            },
-            {
-              id: '175',
-              labels: ['Person'],
-              properties: { name: 'Lana Wachowski', born: '1965' }
-            },
-            {
-              id: '176',
-              labels: ['Person'],
-              properties: { name: 'Joel Silver', born: '1952' }
-            },
-            {
-              id: '177',
-              labels: ['Person'],
-              properties: { name: 'Emil Eifrem', born: '1978' }
-            },
-            {
-              id: '178',
-              labels: ['Movie'],
-              properties: {
-                tagline: 'Free your mind',
-                title: 'The Matrix Reloaded',
-                released: '2003'
-              }
-            }
-          ]}
+          relationships={JSON.parse(
+            '[{"id":"202","startNodeId":"71","endNodeId":"144","type":"ACTED_IN","properties":{"roles":["Jim Lovell"]}},{"id":"84","startNodeId":"71","endNodeId":"67","type":"ACTED_IN","properties":{"roles":["Joe Fox"]}},{"id":"234","startNodeId":"71","endNodeId":"162","type":"ACTED_IN","properties":{"roles":["Jimmy Dugan"]}},{"id":"98","startNodeId":"71","endNodeId":"78","type":"ACTED_IN","properties":{"roles":["Joe Banks"]}},{"id":"110","startNodeId":"71","endNodeId":"85","type":"ACTED_IN","properties":{"roles":["Mr. White"]}},{"id":"146","startNodeId":"71","endNodeId":"111","type":"ACTED_IN","properties":{"roles":["Dr. Robert Langdon"]}},{"id":"137","startNodeId":"71","endNodeId":"105","type":"ACTED_IN","properties":{"roles":["Zachry","Dr. Henry Goose","Isaac Sachs","Dermot Hoggins"]}},{"id":"213","startNodeId":"71","endNodeId":"150","type":"ACTED_IN","properties":{"roles":["Chuck Noland"]}},{"id":"182","startNodeId":"71","endNodeId":"130","type":"ACTED_IN","properties":{"roles":["Paul Edgecomb"]}},{"id":"91","startNodeId":"71","endNodeId":"73","type":"ACTED_IN","properties":{"roles":["Sam Baldwin"]}},{"id":"232","startNodeId":"71","endNodeId":"161","type":"ACTED_IN","properties":{"roles":["Hero Boy","Father","Conductor","Hobo","Scrooge","Santa Claus"]}},{"id":"228","startNodeId":"71","endNodeId":"159","type":"ACTED_IN","properties":{"roles":["Rep. Charlie Wilson"]}}]'
+          )}
+          nodes={JSON.parse(
+            '[{"id":"71","labels":["Person"],"properties":{"name":"Tom Hanks","born":"1956"}},{"id":"144","labels":["Movie"],"properties":{"tagline":"Houston, we have a problem.","title":"Apollo 13","released":"1995"}},{"id":"67","labels":["Movie"],"properties":{"tagline":"At odds in life... in love on-line.","title":"You\'ve Got Mail","released":"1998"}},{"id":"162","labels":["Movie"],"properties":{"tagline":"Once in a lifetime you get a chance to do something different.","title":"A League of Their Own","released":"1992"}},{"id":"78","labels":["Movie"],"properties":{"tagline":"A story of love, lava and burning desire.","title":"Joe Versus the Volcano","released":"1990"}},{"id":"85","labels":["Movie"],"properties":{"tagline":"In every life there comes a time when that thing you dream becomes that thing you do","title":"That Thing You Do","released":"1996"}},{"id":"111","labels":["Movie"],"properties":{"tagline":"Break The Codes","title":"The Da Vinci Code","released":"2006"}},{"id":"105","labels":["Movie"],"properties":{"tagline":"Everything is connected","title":"Cloud Atlas","released":"2012"}},{"id":"150","labels":["Movie"],"properties":{"tagline":"At the edge of the world, his journey begins.","title":"Cast Away","released":"2000"}},{"id":"130","labels":["Movie"],"properties":{"tagline":"Walk a mile you\'ll never forget.","title":"The Green Mile","released":"1999"}},{"id":"73","labels":["Movie"],"properties":{"tagline":"What if someone you never met, someone you never saw, someone you never knew was the only someone for you?","title":"Sleepless in Seattle","released":"1993"}},{"id":"161","labels":["Movie"],"properties":{"tagline":"This Holiday Season... Believe","title":"The Polar Express","released":"2004"}},{"id":"159","labels":["Movie"],"properties":{"tagline":"A stiff drink. A little mascara. A lot of nerve. Who said they couldn\'t bring down the Soviet empire.","title":"Charlie Wilson\'s War","released":"2007"}}]'
+          )}
         />
       </div>
     </div>
@@ -216,13 +166,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(rerunAction)
   },
   updateGrass: text => {
-    console.log(text)
     const parsedGrass = parseGrass(text)
-    console.log(parsedGrass)
     if (parsedGrass) {
       dispatch(updateGraphStyleData(parsedGrass))
     } else {
-      dispatch(showErrorMessage('Could not parse grass data'))
+      //dispatch(showErrorMessage('Could not parse grass data'))
     }
   }
 })
