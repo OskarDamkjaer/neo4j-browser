@@ -24,13 +24,19 @@ import FrameTemplate from '../Frame/FrameTemplate'
 import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
 import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
 import { FrameButton } from 'browser-components/buttons'
+import { parseGrass } from 'shared/services/grassUtils'
+import { showErrorMessage } from 'shared/modules/commands/commandsDuck'
 import { objToCss } from 'services/grassUtils'
+import {
+  updateGraphStyleData,
+  getGraphStyleData
+} from 'shared/modules/grass/grassDuck'
 import {
   executeSystemCommand,
   executeCommand
 } from 'shared/modules/commands/commandsDuck'
 import { getCmdChar } from 'shared/modules/settings/settingsDuck'
-import { FireExtinguisherIcon } from 'browser-components/icons/Icons'
+import { FireExtinguisherIcon, PlayIcon } from 'browser-components/icons/Icons'
 import { InfoView } from './InfoView'
 import * as monaco from 'monaco-editor'
 
@@ -56,87 +62,23 @@ const StyleFrame = ({ frame }) => {
     )
   }
 
-  const editor = useRef(null)
-  const options = {
-    selectOnLineNumbers: true
-  }
+  const editorRef = useRef(null)
 
-  const onMount = (editor, monaco) => {
-    console.log(editor, monaco)
-    editor = editor
-  }
-  const onChange = console.log
   contents = <div id="mon-editor" style={{ height: '100%', width: '100%' }} />
   // TODO use refs and so on
 
   useEffect(() => {
-    // Register a new language
-    monaco.languages.register({ id: 'grass' })
+    monaco.languages.css.cssDefaults.setDiagnosticsOptions({
+      lint: { unknownProperties: 'ignore' }
+    })
 
-    // Register a tokens provider for the language
-    monaco.languages.setMonarchTokensProvider('grass', {
-      tokenizer: {
-        root: [
-          [/\[error.*/, 'custom-error'],
-          [/\[notice.*/, 'custom-notice'],
-          [/\[info.*/, 'custom-info'],
-          [/\[[a-zA-Z 0-9:]+\]/, 'custom-date']
-        ]
+    editorRef.current = monaco.editor.create(
+      document.getElementById('mon-editor'),
+      {
+        value: grass,
+        language: 'css'
       }
-    })
-
-    // Define a new theme that contains only rules that match this language
-    monaco.editor.defineTheme('grassTheme', {
-      base: 'vs',
-      inherit: false,
-      rules: [
-        { token: 'custom-info', foreground: '808080' },
-        { token: 'custom-error', foreground: 'ff0000', fontStyle: 'bold' },
-        { token: 'custom-notice', foreground: 'FFA500' },
-        { token: 'custom-date', foreground: '008800' }
-      ]
-    })
-
-    // Register a completion item provider for the new language
-    monaco.languages.registerCompletionItemProvider('grass', {
-      provideCompletionItems: () => {
-        var suggestions = [
-          {
-            label: 'simpleText',
-            kind: monaco.languages.CompletionItemKind.Text,
-            insertText: 'simpleText'
-          },
-          {
-            label: 'testing',
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: 'testing(${1:condition})',
-            insertTextRules:
-              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
-          },
-          {
-            label: 'ifelse',
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: [
-              'if (${1:condition}) {',
-              '\t$0',
-              '} else {',
-              '\t',
-              '}'
-            ].join('\n'),
-            insertTextRules:
-              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'If-Else Statement'
-          }
-        ]
-        return { suggestions: suggestions }
-      }
-    })
-
-    monaco.editor.create(document.getElementById('mon-editor'), {
-      theme: 'grassTheme',
-      value: grass,
-      language: 'grass'
-    })
+    )
     // todo dispose of editor
   }, [])
 
@@ -146,12 +88,23 @@ const StyleFrame = ({ frame }) => {
       numRecords={1}
       getRecords={() => grass}
       contents={contents}
-      statusbar={<Statusbar frame={frame} />}
+      statusbar={
+        <Statusbar
+          currGrass={editorRef.current && editorRef.current.getValue()}
+          frame={frame}
+        />
+      }
     />
   )
 }
 
-const StyleStatusbar = ({ resetStyleAction, rerunAction, onResetClick }) => {
+const StyleStatusbar = ({
+  resetStyleAction,
+  rerunAction,
+  onResetClick,
+  updateGrass,
+  currGrass
+}) => {
   return (
     <StyledOneRowStatsBar>
       <StyledRightPartial>
@@ -161,6 +114,9 @@ const StyleStatusbar = ({ resetStyleAction, rerunAction, onResetClick }) => {
             onClick={() => onResetClick(resetStyleAction, rerunAction)}
           >
             <FireExtinguisherIcon title="Reset style" />
+          </FrameButton>
+          <FrameButton onClick={() => updateGrass(currGrass)}>
+            <PlayIcon title="Update style" />
           </FrameButton>
         </StyledFrameTitlebarButtonSection>
       </StyledRightPartial>
@@ -176,10 +132,21 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 }
+
 const mapDispatchToProps = dispatch => ({
   onResetClick: (resetStyleAction, rerunAction) => {
     dispatch(resetStyleAction)
     dispatch(rerunAction)
+  },
+  updateGrass: text => {
+    console.log(text)
+    const parsedGrass = parseGrass(text)
+    console.log(parsedGrass)
+    if (parsedGrass) {
+      dispatch(updateGraphStyleData(parsedGrass))
+    } else {
+      dispatch(showErrorMessage('Could not parse grass data'))
+    }
   }
 })
 

@@ -54,8 +54,8 @@ export const StyledFrame = styled.article`
 
 export const StyledFrameBody = styled.div`
   min-height: ${dim.frameBodyHeight / 2}px;
-  height: 1000px;
-  max-height: 1000px;
+  height: 500px;
+  max-height: 500px;
   display: ${props => (props.collapsed ? 'none' : 'flex')};
   flex-direction: row;
   width: 100%;
