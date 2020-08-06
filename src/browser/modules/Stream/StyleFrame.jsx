@@ -17,7 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
+
+import React, { useRef } from 'react'
+import MonacoEditor from 'react-monaco-editor'
 import { connect } from 'react-redux'
 import FrameTemplate from '../Frame/FrameTemplate'
 import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
@@ -41,6 +43,7 @@ const StyleFrame = ({ frame }) => {
     relationships to generate some styling."
     />
   )
+
   if (frame.result) {
     grass = objToCss(frame.result)
     contents = (
@@ -52,6 +55,28 @@ const StyleFrame = ({ frame }) => {
       </PaddedDiv>
     )
   }
+
+  const editor = useRef(null)
+  const options = {
+    selectOnLineNumbers: true
+  }
+
+  const onMount = (editor, monaco) => {
+    console.log(editor, monaco)
+    editor = editor
+  }
+  const onChange = console.log
+
+  contents = (
+    <MonacoEditor
+      language="css"
+      defaultValue={grass}
+      options={options}
+      onChange={onChange}
+      editorDidMount={onMount}
+    />
+  )
+
   return (
     <FrameTemplate
       header={frame}
@@ -95,9 +120,6 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-const Statusbar = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StyleStatusbar)
+const Statusbar = connect(mapStateToProps, mapDispatchToProps)(StyleStatusbar)
 
 export default StyleFrame

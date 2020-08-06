@@ -22,6 +22,8 @@ const helpers = require('./webpack-helpers')
 const webpack = require('webpack')
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -77,6 +79,9 @@ module.exports = () => {
       analyzerMode: 'static',
       openAnalyzer: false,
       reportFilename: './../bundle-report.html'
+    }),
+    new MonacoWebpackPlugin({
+      languages: ['css']
     })
   ]
 

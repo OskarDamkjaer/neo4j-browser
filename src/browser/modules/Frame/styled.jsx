@@ -54,19 +54,12 @@ export const StyledFrame = styled.article`
 
 export const StyledFrameBody = styled.div`
   min-height: ${dim.frameBodyHeight / 2}px;
-  max-height: ${props => {
-    if (props.collapsed) {
-      return 0
-    }
-    if (props.fullscreen) {
-      return '100%'
-    }
-    return dim.frameBodyHeight - dim.frameStatusbarHeight + 1 + 'px'
-  }};
+  height: 1000px;
+  max-height: 1000px;
   display: ${props => (props.collapsed ? 'none' : 'flex')};
   flex-direction: row;
   width: 100%;
-  padding: 30px;
+  padding: 0px;
 
   .has-carousel &,
   .has-stack & {
@@ -105,10 +98,6 @@ export const StyledFrameContents = styled.div`
   font-size: 14px;
   overflow: auto;
   min-height: ${dim.frameBodyHeight / 2}px;
-  max-height: ${props =>
-    props.fullscreen
-      ? '100vh'
-      : dim.frameBodyHeight - dim.frameStatusbarHeight * 2 + 'px'};
   ${props => (props.fullscreen ? 'height: 100vh' : null)};
   flex: auto;
   display: flex;
