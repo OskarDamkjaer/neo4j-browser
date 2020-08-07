@@ -25,6 +25,7 @@ import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
 import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
 import deepmerge from 'deepmerge'
 import { FrameButton } from 'browser-components/buttons'
+import * as grassActions from 'shared/modules/grass/grassDuck'
 import { parseGrass } from 'shared/services/grassUtils'
 import { showErrorMessage } from 'shared/modules/commands/commandsDuck'
 import { objToCss } from 'services/grassUtils'
@@ -43,7 +44,7 @@ import { FireExtinguisherIcon, PlayIcon } from 'browser-components/icons/Icons'
 import { InfoView } from './InfoView'
 import * as monaco from 'monaco-editor'
 
-const StyleFrame = ({ frame }) => {
+const StyleFrame = ({ frame, graphStyleData }) => {
   let grass = ''
   let contents = (
     <InfoView
@@ -66,15 +67,26 @@ const StyleFrame = ({ frame }) => {
   }
   const editorRef = useRef(null)
 
+  /*
   const graphStyle = neoGraphStyle()
   const defaultStyle = graphStyle.toSheet()
   const rebasedStyle = deepmerge(defaultStyle, parseGrass(grass))
   graphStyle.loadRules(rebasedStyle)
+  */
   /*
   if (editorRef.current) {
     graphStyle.loadRules(parseGrass(editorRef.current.getValue()))
   }
   */
+  const graphStyle = neoGraphStyle()
+  const defaultStyle = graphStyle.toSheet()
+
+  if (graphStyleData) {
+    const rebasedStyle = deepmerge(defaultStyle, graphStyleData)
+    graphStyle.loadRules(graphStyleData)
+  }
+
+  console.log(graphStyle, graphStyleData)
 
   contents = (
     <div style={{ display: 'flex', width: '100%' }}>
@@ -167,6 +179,7 @@ const mapDispatchToProps = dispatch => ({
   },
   updateGrass: text => {
     const parsedGrass = parseGrass(text)
+    console.log(text)
     if (parsedGrass) {
       dispatch(updateGraphStyleData(parsedGrass))
     } else {
@@ -175,6 +188,12 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
+const mapStateToProps2 = state => {
+  return {
+    graphStyleData: grassActions.getGraphStyleData(state)
+  }
+}
+
 const Statusbar = connect(mapStateToProps, mapDispatchToProps)(StyleStatusbar)
 
-export default StyleFrame
+export default connect(mapStateToProps2)(StyleFrame)
