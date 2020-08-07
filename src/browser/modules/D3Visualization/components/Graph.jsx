@@ -57,6 +57,27 @@ export class GraphComponent extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    /*
+    console.log('update', this.props.graphStyle)
+    this.graphView.grass(this.props.graphStyle)
+    this.graphView.update()
+    */
+    const NeoConstructor = graphView
+    const measureSize = () => {
+      return {
+        width: 400,
+        height: 400
+      }
+    }
+    //this.graph = createGraph(this.props.nodes, this.props.relationships)
+    this.graphView = new NeoConstructor(
+      this.svgElement,
+      measureSize,
+      this.graph,
+      this.props.graphStyle
+    )
+
+    this.graphView.resize()
     this.graphView.update()
   }
 

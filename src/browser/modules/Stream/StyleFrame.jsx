@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import FrameTemplate from '../Frame/FrameTemplate'
 import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
@@ -44,7 +44,7 @@ import { FireExtinguisherIcon, PlayIcon } from 'browser-components/icons/Icons'
 import { InfoView } from './InfoView'
 import * as monaco from 'monaco-editor'
 
-const StyleFrame = ({ frame, graphStyleData }) => {
+const StyleFrame = ({ frame, graphStyleData, updateGrass }) => {
   let grass = ''
   let contents = (
     <InfoView
@@ -81,12 +81,17 @@ const StyleFrame = ({ frame, graphStyleData }) => {
   const graphStyle = neoGraphStyle()
   const defaultStyle = graphStyle.toSheet()
 
+  const [text, setText] = useState(grass)
+  const lastText = useRef(text)
+
+  //console.log(text, editorRef.current && editorRef.current.getValue())
+
   if (graphStyleData) {
     const rebasedStyle = deepmerge(defaultStyle, graphStyleData)
-    graphStyle.loadRules(graphStyleData)
+    graphStyle.loadRules(rebasedStyle)
   }
 
-  console.log(graphStyle, graphStyleData)
+  //console.log(graphStyle)
 
   contents = (
     <div style={{ display: 'flex', width: '100%' }}>
@@ -105,6 +110,11 @@ const StyleFrame = ({ frame, graphStyleData }) => {
     </div>
   )
   // TODO use refs and so on
+  console.log(monaco.editor.getModelMarkers())
+  monaco.editor.getModelMarkers().length === 0 &&
+    lastText.current !== text &&
+    updateGrass(text)
+  lastText.current = text
 
   useEffect(() => {
     monaco.languages.css.cssDefaults.setDiagnosticsOptions({
@@ -118,6 +128,12 @@ const StyleFrame = ({ frame, graphStyleData }) => {
         language: 'css'
       }
     )
+
+    editorRef.current.onDidChangeModelContent(event => {
+      setText(editorRef.current.getValue())
+    })
+    setText(editorRef.current.getValue())
+
     // todo dispose of editor
   }, [])
 
@@ -196,4 +212,4 @@ const mapStateToProps2 = state => {
 
 const Statusbar = connect(mapStateToProps, mapDispatchToProps)(StyleStatusbar)
 
-export default connect(mapStateToProps2)(StyleFrame)
+export default connect(mapStateToProps2, mapDispatchToProps)(StyleFrame)

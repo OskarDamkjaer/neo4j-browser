@@ -28,6 +28,7 @@ const vizFn = function(el, measureSize, graph, layout, style) {
   const viz = { style }
 
   const root = d3.select(el)
+  root.selectAll('*').remove()
   const baseGroup = root.append('g').attr('transform', 'translate(0,0)')
   const rect = baseGroup
     .append('rect')
