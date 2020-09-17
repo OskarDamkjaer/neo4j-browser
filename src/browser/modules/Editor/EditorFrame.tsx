@@ -22,30 +22,30 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSpring, animated } from 'react-spring'
 import { withBus } from 'react-suber'
 import { Bus } from 'suber'
-import Editor from './Editor'
 import {
+  isMac,
   printShortcut,
-  FULLSCREEN_SHORTCUT,
-  CARDSIZE_SHORTCUT
+  FULLSCREEN_SHORTCUT
 } from 'browser/modules/App/keyboardShortcuts'
+import { EXPAND, SET_CONTENT } from 'shared/modules/editor/editorDuck'
 import {
   Frame,
-  FrameHeader,
-  FrameHeaderText,
+  EditorWrapper,
   UIControls,
-  AnimationContainer
+  AnimationContainer,
+  Bar,
+  Header
 } from './styled'
-import { EXPAND, SET_CONTENT, CARDSIZE } from 'shared/modules/editor/editorDuck'
-import { FrameButton } from 'browser-components/buttons'
+import { EditorButton, FrameButton } from 'browser-components/buttons'
 import {
   ExpandIcon,
   ContractIcon,
   CloseIcon,
-  UpIcon,
-  DownIcon
+  AddFavoriteButton
 } from 'browser-components/icons/Icons'
+import controlsPlay from 'icons/controls-play.svg'
+import Editor from './Editor'
 
-type EditorSize = 'CARD' | 'LINE' | 'FULLSCREEN'
 type EditorFrameProps = { bus: Bus }
 type CodeEditor = {
   getValue: () => string | null
@@ -53,50 +53,17 @@ type CodeEditor = {
 }
 
 export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
-  const [sizeState, setSize] = useState<EditorSize>('LINE')
-  const isFullscreen = sizeState === 'FULLSCREEN'
-  const isCardSize = sizeState === 'CARD'
+  const [isFullscreen, setFullscreen] = useState(false)
   const editorRef = useRef<CodeEditor>(null)
 
   function toggleFullscreen() {
-    const editorVal = (editorRef.current && editorRef.current.getValue()) || ''
-    const lineCount = editorVal.split('\n').length
-    if (isFullscreen) {
-      if (lineCount > 1) {
-        setSize('CARD')
-      } else {
-        setSize('LINE')
-      }
-    } else {
-      setSize('FULLSCREEN')
-    }
-  }
-
-  function toggleCardView() {
-    const editorVal = (editorRef.current && editorRef.current.getValue()) || ''
-    const lineCount = editorVal.split('\n').length
-
-    if (isCardSize) {
-      if (lineCount > 1) {
-        editorRef.current &&
-          editorRef.current.setValue(
-            editorVal
-              .split('\n')
-              .filter((nonEmpty: string) => nonEmpty)
-              .join(' ')
-          )
-      }
-      setSize('LINE')
-    } else {
-      setSize('CARD')
-    }
+    setFullscreen(!isFullscreen)
   }
 
   useEffect(() => bus && bus.take(EXPAND, toggleFullscreen))
-  useEffect(() => bus && bus.take(CARDSIZE, toggleCardView))
 
   function discardEditor() {
-    sizeState !== 'LINE' && setSize('LINE')
+    isFullscreen && setFullscreen(false)
     bus && bus.send(SET_CONTENT, { message: '' })
 
     setAnimation({
@@ -107,7 +74,18 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
     })
   }
 
+  const execCurrent = () => {
+    console.log('hej')
+  }
+  const editorIsEmpty = false
+
   const buttons = [
+    {
+      onClick: execCurrent,
+      icon: <AddFavoriteButton />,
+      title: 'Favorite',
+      testId: 'editor-Favorite'
+    },
     {
       onClick: toggleFullscreen,
       title: `${
@@ -115,14 +93,6 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
       } (${printShortcut(FULLSCREEN_SHORTCUT)})`,
       icon: isFullscreen ? <ContractIcon /> : <ExpandIcon />,
       testId: 'fullscreen'
-    },
-    {
-      onClick: toggleCardView,
-      title: `${isCardSize ? 'Collapse' : 'Expand'} (${printShortcut(
-        CARDSIZE_SHORTCUT
-      )})`,
-      icon: isCardSize ? <UpIcon /> : <DownIcon />,
-      testId: 'cardSize'
     },
     {
       onClick: discardEditor,
@@ -134,23 +104,23 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
 
   const start = {
     width: '100%',
-    position: 'absolute',
+    position: 'unset',
     opacity: 0,
     top: -100,
-    left: '0vw'
+    marginLeft: '0vw'
   }
   const stable = {
     width: '100%',
-    position: 'absolute',
+    position: 'unset',
     opacity: 1,
     top: 10,
-    left: '0vw'
+    marginLeft: '0vw'
   }
   const end = {
     width: '100%',
-    position: 'absolute',
+    position: 'unset',
     opacity: 0,
-    left: '-100vw',
+    marginLeft: '-100vw',
     top: 10
   }
 
@@ -163,15 +133,28 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
   }))
 
   return (
-    <AnimationContainer cardSize={isCardSize}>
+    <AnimationContainer>
       <animated.div
         className="springContainer"
         style={props}
         data-testid="activeEditor"
       >
         <Frame fullscreen={isFullscreen}>
-          <FrameHeader>
-            <FrameHeaderText />
+          <EditorWrapper fullscreen={isFullscreen}>
+            <Bar>
+              <Header>
+                <EditorButton
+                  data-testid="editor-Run"
+                  onClick={execCurrent}
+                  disabled={editorIsEmpty}
+                  title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+                  icon={controlsPlay}
+                  key={`editor-Run`}
+                  width={16}
+                />
+              </Header>
+              <TypedEditor editorRef={editorRef} />
+            </Bar>
             <UIControls>
               {buttons.map(({ onClick, icon, title, testId }) => (
                 <FrameButton
@@ -184,12 +167,7 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
                 </FrameButton>
               ))}
             </UIControls>
-          </FrameHeader>
-          <TypedEditor
-            editorSize={sizeState}
-            setSize={setSize}
-            editorRef={editorRef}
-          />
+          </EditorWrapper>
         </Frame>
       </animated.div>
     </AnimationContainer>

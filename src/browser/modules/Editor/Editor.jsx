@@ -43,7 +43,7 @@ import {
   shouldEnableMultiStatementMode
 } from 'shared/modules/settings/settingsDuck'
 import { add } from 'shared/modules/stream/streamDuck'
-import { Bar, ActionButtonSection, EditorWrapper, Header } from './styled'
+import { Bar, ActionButtonSection, Header } from './styled'
 import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
 import { deepEquals, shallowEquals } from 'services/utils'
 import * as viewTypes from 'shared/modules/stream/frameViewTypes'
@@ -101,7 +101,6 @@ export class Editor extends Component {
       nextState.contentId === this.state.contentId &&
       shallowEquals(nextState.notifications, this.state.notifications) &&
       deepEquals(nextProps.schema, this.props.schema) &&
-      nextProps.editorSize === this.props.editorSize &&
       nextProps.useDb === this.props.useDb &&
       nextProps.enableMultiStatementMode === this.props.enableMultiStatementMode
     )
@@ -118,7 +117,7 @@ export class Editor extends Component {
   }
 
   handleEnter(cm) {
-    const multiline = this.props.editorSize !== 'LINE'
+    const multiline = cm.lineCount() > 1
     if (multiline) {
       this.newlineAndIndent(cm)
     } else {
@@ -146,7 +145,6 @@ export class Editor extends Component {
         historyIndex: -1,
         buffer: null
       })
-      this.props.setSize('LINE')
     }
   }
 
@@ -261,9 +259,6 @@ export class Editor extends Component {
   }
 
   setEditorValue(cmd) {
-    if (!cmd.includes('\n') && this.props.editorSize === 'CARD') {
-      this.props.setSize('LINE')
-    }
     this.codeMirror.setValue(cmd)
     this.updateCode(undefined, undefined, () => {
       this.focusEditor()
@@ -402,29 +397,14 @@ export class Editor extends Component {
   }
 
   lineNumberFormatter = line => {
-    const multiline = this.props.editorSize !== 'LINE'
-    if (multiline) {
+    if (this.codeMirror && this.codeMirror.lineCount() > 1) {
       return line
     } else {
       return `${this.props.useDb || ''}$`
     }
   }
 
-  updateSize = () => {
-    const isLineSize = this.props.editorSize === 'LINE'
-    const hasOverflow =
-      this.codeMirror && this.codeMirror.getValue().includes('\n')
-    if (isLineSize && hasOverflow) {
-      this.props.setSize('CARD')
-    }
-  }
-
-  goToCard(cm) {
-    this.newlineAndIndent(cm)
-    if (this.props.editorSize === 'LINE') {
-      this.props.setSize('CARD')
-    }
-  }
+  updateSize = () => {}
 
   render(cm) {
     const options = {
@@ -440,7 +420,7 @@ export class Editor extends Component {
       extraKeys: {
         'Ctrl-Space': 'autocomplete',
         Enter: this.handleEnter.bind(this),
-        'Shift-Enter': this.goToCard.bind(this),
+        'Shift-Enter': this.newlineAndIndent.bind(this),
         'Cmd-Enter': this.execCurrent.bind(this),
         'Ctrl-Enter': this.execCurrent.bind(this),
         'Cmd-Up': this.historyPrev.bind(this),
@@ -469,51 +449,18 @@ export class Editor extends Component {
     this.setGutterMarkers()
 
     const editorIsEmpty = this.getEditorValue().length > 0
-    const buttons = [
-      {
-        onClick: this.state.contentId
-          ? () =>
-              this.props.onFavoriteUpdateClick(
-                this.state.contentId,
-                this.getEditorValue()
-              )
-          : () => {
-              this.props.onFavoriteClick(this.getEditorValue())
-            },
-        icon: this.state.contentId ? pencil : ratingStar,
-        title: this.state.contentId ? 'Update favorite' : 'Favorite',
-        disabled: editorIsEmpty
-      },
-      {
-        onClick: this.execCurrent,
-        icon: controlsPlay,
-        title: isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)',
-        disabled: editorIsEmpty,
-        iconColor: this.props.theme.linkHover
-      }
-    ]
-
-    const isFullscreen = this.props.editorSize === 'FULLSCREEN'
-    const isCardSize = this.props.editorSize === 'CARD'
 
     return (
-      <Bar>
-        <Header>
-          <ActionButtons width={16} buttons={buttons} />
-        </Header>
-        <EditorWrapper fullscreen={isFullscreen} cardSize={isCardSize}>
-          <Codemirror
-            ref={ref => {
-              this.editor = ref
-            }}
-            onParsed={this.updateCode}
-            onChanges={this.updateSize}
-            options={options}
-            schema={this.props.schema}
-            initialPosition={this.state.lastPosition}
-          />
-        </EditorWrapper>
-      </Bar>
+      <Codemirror
+        ref={ref => {
+          this.editor = ref
+        }}
+        onParsed={this.updateCode}
+        onChanges={this.updateSize}
+        options={options}
+        schema={this.props.schema}
+        initialPosition={this.state.lastPosition}
+      />
     )
   }
 }

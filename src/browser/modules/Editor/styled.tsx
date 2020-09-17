@@ -23,10 +23,6 @@ import styled from 'styled-components'
 interface FullscreenProps {
   fullscreen: boolean
 }
-interface CardSizeProps {
-  cardSize: boolean
-}
-type ResizeableProps = CardSizeProps & FullscreenProps
 
 const editorPadding = 10
 
@@ -54,17 +50,13 @@ export const ActionButtonSection = styled.div`
   justify-content: space-between;
 `
 
-const BaseEditorWrapper = styled.div<ResizeableProps>`
+const BaseEditorWrapper = styled.div<FullscreenProps>`
   font-family: 'Fira Code', Monaco, 'Courier New', Terminal, monospace;
   grid-area: editor;
 
   min-height: ${(props): string => {
     if (props.fullscreen) {
       return '100vh'
-    }
-    if (props.cardSize) {
-      // 230 is 10 lines + 2*12px padding
-      return '254px'
     }
     return '0'
   }};
@@ -80,14 +72,15 @@ const BaseEditorWrapper = styled.div<ResizeableProps>`
     font-variant-ligatures: none !important;
   }
 `
-export const AnimationContainer = styled.div<CardSizeProps>`
+export const AnimationContainer = styled.div`
   padding-top: ${editorPadding}px;
   padding-bottom: ${editorPadding}px;
   position: relative;
-  min-height: ${props => (props.cardSize ? '317px' : '112px')};
+  //min-height: 70px;
 `
 
 export const Frame = styled.div<FullscreenProps>`
+  display: flex;
   background-color: ${props => props.theme.secondaryBackground};
   border-radius: 2px;
   padding-bottom: 1px;
@@ -109,15 +102,8 @@ export const Frame = styled.div<FullscreenProps>`
   }};
 `
 
-export const FrameHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 7px;
-  height: 33px;
-`
-
 export const UIControls = styled.div`
-  align-self: flex-end;
+  //align-self: flex-end;
 `
 
 export const FrameHeaderText = styled.div`
@@ -127,11 +113,12 @@ export const FrameHeaderText = styled.div`
   line-height: 2.2em;
 `
 
-export const EditorWrapper = styled(BaseEditorWrapper)<ResizeableProps>`
+export const EditorWrapper = styled(BaseEditorWrapper)<FullscreenProps>`
+  flex-grow: 1;
   ${(props): string => {
     if (props.fullscreen) {
       return `height: 100%;
-        z-index: 2;
+        z-index: 1030;
         .CodeMirror {
           position: absolute;
           left: 12px;
