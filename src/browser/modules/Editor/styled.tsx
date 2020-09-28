@@ -24,59 +24,17 @@ interface FullscreenProps {
   fullscreen: boolean
 }
 
-const editorPadding = 10
-
-export const Bar = styled.div`
-  background-color: ${(props): string => props.theme.frameSidebarBackground};
-  display: grid;
-  margin: 5px;
-  border-radius: 2px;
-  // minmax(0, 1fr) prevents the editor from growing the text field
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: 'editor header';
-`
-
 export const Header = styled.div`
-  grid-area: header;
-  border-radius: 4px 4px 0 0;
+  background-color: ${(props): string => props.theme.frameSidebarBackground};
+  flex-grow: 1;
+  margin: 5px;
+
   display: flex;
-  justify-content: flex-end;
-  padding-top: 7px;
-  margin-right: -5px;
 `
 
 export const ActionButtonSection = styled.div`
   display: flex;
   justify-content: space-between;
-`
-
-const BaseEditorWrapper = styled.div<FullscreenProps>`
-  font-family: 'Fira Code', Monaco, 'Courier New', Terminal, monospace;
-  grid-area: editor;
-
-  min-height: ${(props): string => {
-    if (props.fullscreen) {
-      return '100vh'
-    }
-    return '0'
-  }};
-
-  transition-duration: 0.1s;
-
-  .CodeMirror {
-    color: ${(props): string => props.theme.editorCommandColor};
-    font-size: 17px;
-  }
-
-  .disable-font-ligatures & {
-    font-variant-ligatures: none !important;
-  }
-`
-export const AnimationContainer = styled.div`
-  padding-top: ${editorPadding}px;
-  padding-bottom: ${editorPadding}px;
-  position: relative;
-  //min-height: 70px;
 `
 
 export const Frame = styled.div<FullscreenProps>`
@@ -102,22 +60,22 @@ export const Frame = styled.div<FullscreenProps>`
   }};
 `
 
-export const UIControls = styled.div`
-  //align-self: flex-end;
-`
+export const EditorWrapper = styled.div<FullscreenProps>`
+  font-family: 'Fira Code', Monaco, 'Courier New', Terminal, monospace;
 
-export const FrameHeaderText = styled.div`
-  color: white;
-  font-family: 'Fira Code', 'Monaco', 'Lucida Console', Courier, monospace;
-  font-size: 1.2em;
-  line-height: 2.2em;
-`
+  .CodeMirror {
+    color: ${(props): string => props.theme.editorCommandColor};
+    font-size: 17px;
+  }
 
-export const EditorWrapper = styled(BaseEditorWrapper)<FullscreenProps>`
-  flex-grow: 1;
+  .disable-font-ligatures & {
+    font-variant-ligatures: none !important;
+  }
+
   ${(props): string => {
     if (props.fullscreen) {
       return `height: 100%;
+        min-height: 100vh;
         z-index: 1030;
         .CodeMirror {
           position: absolute;

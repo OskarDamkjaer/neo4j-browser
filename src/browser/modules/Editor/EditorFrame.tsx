@@ -19,7 +19,6 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { useSpring, animated } from 'react-spring'
 import { withBus } from 'react-suber'
 import { Bus } from 'suber'
 import {
@@ -28,22 +27,15 @@ import {
   FULLSCREEN_SHORTCUT
 } from 'browser/modules/App/keyboardShortcuts'
 import { EXPAND, SET_CONTENT } from 'shared/modules/editor/editorDuck'
-import {
-  Frame,
-  EditorWrapper,
-  UIControls,
-  AnimationContainer,
-  Bar,
-  Header
-} from './styled'
+import { Frame, Header } from './styled'
 import { EditorButton, FrameButton } from 'browser-components/buttons'
 import {
   ExpandIcon,
   ContractIcon,
-  CloseIcon,
-  AddFavoriteButton
+  CloseIcon
 } from 'browser-components/icons/Icons'
 import controlsPlay from 'icons/controls-play.svg'
+import ratingStar from 'icons/rating-star.svg'
 import Editor from './Editor'
 
 type EditorFrameProps = { bus: Bus }
@@ -63,29 +55,14 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
   useEffect(() => bus && bus.take(EXPAND, toggleFullscreen))
 
   function discardEditor() {
-    isFullscreen && setFullscreen(false)
     bus && bus.send(SET_CONTENT, { message: '' })
-
-    setAnimation({
-      from: stable,
-      //  @ts-expect-error, library typings are wrong....
-      to: [end, start, stable],
-      config
-    })
   }
 
   const execCurrent = () => {
     console.log('hej')
   }
-  const editorIsEmpty = false
 
   const buttons = [
-    {
-      onClick: execCurrent,
-      icon: <AddFavoriteButton />,
-      title: 'Favorite',
-      testId: 'editor-Favorite'
-    },
     {
       onClick: toggleFullscreen,
       title: `${
@@ -102,75 +79,52 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
     }
   ]
 
-  const start = {
-    width: '100%',
-    position: 'unset',
-    opacity: 0,
-    top: -100,
-    marginLeft: '0vw'
-  }
-  const stable = {
-    width: '100%',
-    position: 'unset',
-    opacity: 1,
-    top: 10,
-    marginLeft: '0vw'
-  }
-  const end = {
-    width: '100%',
-    position: 'unset',
-    opacity: 0,
-    marginLeft: '-100vw',
-    top: 10
-  }
-
-  const config = { mass: 1, tension: 180, friction: 24, clamp: true }
-
   const TypedEditor: any = Editor // delete this when editor is ts
-  const [props, setAnimation] = useSpring(() => ({
-    to: stable,
-    config
-  }))
 
   return (
-    <AnimationContainer>
-      <animated.div
-        className="springContainer"
-        style={props}
-        data-testid="activeEditor"
-      >
-        <Frame fullscreen={isFullscreen}>
-          <EditorWrapper fullscreen={isFullscreen}>
-            <Bar>
-              <Header>
-                <EditorButton
-                  data-testid="editor-Run"
-                  onClick={execCurrent}
-                  disabled={editorIsEmpty}
-                  title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
-                  icon={controlsPlay}
-                  key={`editor-Run`}
-                  width={16}
-                />
-              </Header>
-              <TypedEditor editorRef={editorRef} />
-            </Bar>
-            <UIControls>
-              {buttons.map(({ onClick, icon, title, testId }) => (
-                <FrameButton
-                  key={`frame-${title}`}
-                  title={title}
-                  onClick={onClick}
-                  data-testid={`editor-${testId}`}
-                >
-                  {icon}
-                </FrameButton>
-              ))}
-            </UIControls>
-          </EditorWrapper>
-        </Frame>
-      </animated.div>
-    </AnimationContainer>
+    <Frame fullscreen={isFullscreen}>
+      <Header>
+        <TypedEditor editorRef={editorRef} />
+        <div style={{ justifySelf: 'flex-end' }}>
+          {/* 
+          todo note for self: 
+          make sure can't grow outside of max. 
+            make sure it wraps again
+            make sure it looks fantastic
+            look at older code
+            remove as much styling as possible
+            how big do we allow it to grow. setting perhaps?
+            experiment with context menu?
+             */}
+          <EditorButton
+            data-testid="editor-Favorite"
+            onClick={execCurrent}
+            title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+            icon={ratingStar}
+            key={`editor-Favorite`}
+            width={16}
+          />
+          <EditorButton
+            data-testid="editor-Run"
+            onClick={execCurrent}
+            title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+            icon={controlsPlay}
+            key={`editor-Run`}
+            width={16}
+          />
+        </div>
+      </Header>
+      {buttons.map(({ onClick, icon, title, testId }) => (
+        <FrameButton
+          key={`frame-${title}`}
+          title={title}
+          onClick={onClick}
+          data-testid={`editor-${testId}`}
+        >
+          {icon}
+        </FrameButton>
+      ))}
+    </Frame>
   )
 }
 
