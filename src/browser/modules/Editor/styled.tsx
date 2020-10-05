@@ -27,7 +27,6 @@ interface FullscreenProps {
 export const Header = styled.div`
   background-color: ${(props): string => props.theme.frameSidebarBackground};
   flex-grow: 1;
-  margin: 5px;
 
   display: flex;
 `
@@ -38,12 +37,13 @@ export const ActionButtonSection = styled.div`
 `
 
 export const Frame = styled.div<FullscreenProps>`
+  padding: 3px;
   display: flex;
   background-color: ${props => props.theme.secondaryBackground};
   border-radius: 2px;
-  padding-bottom: 1px;
   box-shadow: 0px 0px 2px rgba(52, 58, 67, 0.1),
     0px 1px 2px rgba(52, 58, 67, 0.08), 0px 1px 4px rgba(52, 58, 67, 0.08);
+  margin: 10px 0 10px 0;
   ${(props): string => {
     if (props.fullscreen) {
       return `
@@ -54,10 +54,17 @@ export const Frame = styled.div<FullscreenProps>`
   right: 0;
   height: 100vh;
   border-radius: 0;
-  z-index: 1030;`
+  z-index: 1030;
+  margin: 0;
+  `
     }
     return ''
   }};
+`
+
+export const EditorContainer = styled.div`
+  flex-grow: 1;
+  width: 0; // needed to prevent the editor from growing the text field
 `
 
 export const EditorWrapper = styled.div<FullscreenProps>`

@@ -20,6 +20,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { withBus } from 'react-suber'
+import { withTheme } from 'styled-components'
 import { Bus } from 'suber'
 import {
   isMac,
@@ -27,7 +28,7 @@ import {
   FULLSCREEN_SHORTCUT
 } from 'browser/modules/App/keyboardShortcuts'
 import { EXPAND, SET_CONTENT } from 'shared/modules/editor/editorDuck'
-import { Frame, Header } from './styled'
+import { Frame, Header, EditorContainer } from './styled'
 import { EditorButton, FrameButton } from 'browser-components/buttons'
 import {
   ExpandIcon,
@@ -38,13 +39,13 @@ import controlsPlay from 'icons/controls-play.svg'
 import ratingStar from 'icons/rating-star.svg'
 import Editor from './Editor'
 
-type EditorFrameProps = { bus: Bus }
+type EditorFrameProps = { bus: Bus; theme: { linkHover: string } }
 type CodeEditor = {
   getValue: () => string | null
   setValue: (newText: string) => void
 }
 
-export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
+export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
   const [isFullscreen, setFullscreen] = useState(false)
   const editorRef = useRef<CodeEditor>(null)
 
@@ -84,35 +85,29 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
   return (
     <Frame fullscreen={isFullscreen}>
       <Header>
-        <TypedEditor editorRef={editorRef} />
-        <div style={{ justifySelf: 'flex-end' }}>
-          {/* 
-          todo note for self: 
-          make sure can't grow outside of max. 
-            make sure it wraps again
-            make sure it looks fantastic
-            look at older code
-            remove as much styling as possible
-            how big do we allow it to grow. setting perhaps?
-            experiment with context menu?
-             */}
-          <EditorButton
-            data-testid="editor-Favorite"
-            onClick={execCurrent}
-            title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
-            icon={ratingStar}
-            key={`editor-Favorite`}
-            width={16}
-          />
-          <EditorButton
-            data-testid="editor-Run"
-            onClick={execCurrent}
-            title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
-            icon={controlsPlay}
-            key={`editor-Run`}
-            width={16}
-          />
-        </div>
+        <EditorContainer>
+          <TypedEditor editorRef={editorRef} />
+        </EditorContainer>
+        {/* TODO:
+           buttons don't work
+         */}
+        <EditorButton
+          data-testid="editor-Favorite"
+          onClick={execCurrent}
+          title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+          icon={ratingStar}
+          key={`editor-Favorite`}
+          width={16}
+        />
+        <EditorButton
+          data-testid="editor-Run"
+          onClick={execCurrent}
+          title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+          icon={controlsPlay}
+          color={theme.linkHover}
+          key={`editor-Run`}
+          width={16}
+        />
       </Header>
       {buttons.map(({ onClick, icon, title, testId }) => (
         <FrameButton
@@ -128,4 +123,4 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
   )
 }
 
-export default withBus(EditorFrame)
+export default withBus(withTheme(EditorFrame))
