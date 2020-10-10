@@ -396,8 +396,6 @@ export class Editor extends Component {
     }
   }
 
-  updateSize = () => {}
-
   render(cm) {
     const options = {
       lineNumbers: true,
@@ -443,35 +441,12 @@ export class Editor extends Component {
     const editorIsEmpty = this.getEditorValue().length > 0
 
     return (
-      /* <Bar>
-        <Header>
-          <ActionButtons
-            width={16}
-            buttons={buttons}
-            editorValue={() => this.getEditorValue()}
-            isRelateAvailable={this.props.isRelateAvailable}
-          />
-        </Header>
-        <EditorWrapper fullscreen={isFullscreen} cardSize={isCardSize}>
-          <Codemirror
-            ref={ref => {
-              this.editor = ref
-            }}
-            onParsed={this.updateCode}
-            onChanges={this.updateSize}
-            options={options}
-            schema={this.props.schema}
-            initialPosition={this.state.lastPosition}
-          />
-        </EditorWrapper>
-      </Bar>
-      */
       <Codemirror
         ref={ref => {
           this.editor = ref
         }}
         onParsed={this.updateCode}
-        onChanges={this.updateSize}
+        onChanges={this.props.onChange}
         options={options}
         schema={this.props.schema}
         initialPosition={this.state.lastPosition}

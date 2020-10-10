@@ -38,7 +38,6 @@ export const ActionButtonSection = styled.div`
 
 export const Frame = styled.div<FullscreenProps>`
   padding: 3px;
-  display: flex;
   background-color: ${props => props.theme.secondaryBackground};
   border-radius: 2px;
   box-shadow: 0px 0px 2px rgba(52, 58, 67, 0.1),
@@ -65,6 +64,17 @@ export const Frame = styled.div<FullscreenProps>`
 export const EditorContainer = styled.div`
   flex-grow: 1;
   width: 0; // needed to prevent the editor from growing the text field
+`
+export const FlexContainer = styled.div`
+  display: flex;
+`
+export const ScriptTitle = styled.div<{ unsaved: boolean }>`
+  font-style: ${props => (props.unsaved ? 'italic' : 'normal')};
+  padding: 1px;
+  padding-left: 5px;
+  font-family: 'Fira Code', Monaco, 'Courier New', Terminal, monospace;
+  font-size: 14px;
+  line-height: 23px;
 `
 
 export const EditorWrapper = styled.div<FullscreenProps>`

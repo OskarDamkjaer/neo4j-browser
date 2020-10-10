@@ -35,13 +35,20 @@ import {
   EXPAND,
   SET_CONTENT
 } from 'shared/modules/editor/editorDuck'
-import { Frame, Header, EditorContainer } from './styled'
+import {
+  Frame,
+  Header,
+  EditorContainer,
+  FlexContainer,
+  ScriptTitle
+} from './styled'
 import { EditorButton, FrameButton } from 'browser-components/buttons'
 import {
   ExpandIcon,
   ContractIcon,
   CloseIcon
 } from 'browser-components/icons/Icons'
+import pencil from 'icons/pencil.svg'
 import controlsPlay from 'icons/controls-play.svg'
 import Editor from './Editor'
 
@@ -57,6 +64,7 @@ type EditorFrameProps = {
   bus: Bus
   theme: { linkHover: string }
   executeCommand: (cmd: string) => void
+  updateFavorite: (id: string, value: string) => void
 }
 type CodeEditor = {
   getValue: () => string | null
@@ -69,7 +77,13 @@ type SavedScript = {
   isProjectFile: boolean
 }
 
-export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
+export function EditorFrame({
+  bus,
+  theme,
+  executeCommand,
+  updateFavorite
+}: EditorFrameProps): JSX.Element {
+  const [unsaved, setUnsaved] = useState(false)
   const [isFullscreen, setFullscreen] = useState(false)
   const [currentlyEditing, setCurrentlyEditing] = useState<SavedScript | null>(
     null
@@ -85,7 +99,7 @@ export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
     () =>
       bus &&
       bus.take(EDIT_CONTENT, ({ message, id, isProjectFile }) => {
-        console.log(message, id)
+        setUnsaved(false)
         setCurrentlyEditing({ content: message, id, isProjectFile })
         editorRef.current?.setValue(message)
       })
@@ -95,7 +109,7 @@ export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
     () =>
       bus &&
       bus.take(SET_CONTENT, msg => {
-        console.log(SET_CONTENT, msg)
+        setUnsaved(false)
         setCurrentlyEditing(null)
         editorRef.current?.setValue(msg)
       })
@@ -124,56 +138,65 @@ export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
   ]
 
   const TypedEditor: any = Editor // delete this when editor is ts
+  // DET ÄR NÅGOT MÄRKLIGT MED UPDATE FAVORITE
 
   return (
     <Frame fullscreen={isFullscreen}>
       {currentlyEditing && (
-        <div> {stripComment(currentlyEditing.content.split('\n')[0])} </div>
+        <ScriptTitle unsaved={unsaved}>
+          Editing{' '}
+          {currentlyEditing.isProjectFile ? 'project file: ' : 'favorite: '}
+          {stripComment(currentlyEditing.content.split('\n')[0])}
+          {unsaved ? '*' : ''}
+        </ScriptTitle>
       )}
-      <Header>
-        <EditorContainer>
-          <TypedEditor editorRef={editorRef} />
-        </EditorContainer>
-        {currentlyEditing && (
-          <button
-            data-testid="editor-Favorite"
-            onClick={() =>
-              updateFavorite(currentlyEditing.id, editorRef.current?.getValue())
-            }
-            key={'editor-Favorite'}
-            style={{
-              maxHeight: 'max-content',
-              backgroundColor: theme.linkHover,
-              border: 'none',
-              borderRadius: '5px',
-              padding: '3px',
-              whiteSpace: 'pre'
-            }}
+      <FlexContainer>
+        <Header>
+          <EditorContainer>
+            <TypedEditor
+              editorRef={editorRef}
+              onChange={() => setUnsaved(true)}
+            />
+          </EditorContainer>
+          {currentlyEditing && (
+            <EditorButton
+              data-testid="editor-Favorite"
+              onClick={() => {
+                setUnsaved(false)
+                updateFavorite(
+                  currentlyEditing.id,
+                  editorRef.current?.getValue() || ''
+                )
+              }}
+              key={'editor-Favorite'}
+              title={`Update ${
+                currentlyEditing.isProjectFile ? 'project file' : 'favorite'
+              }`}
+              icon={pencil}
+              width={16}
+            />
+          )}
+          <EditorButton
+            data-testid="editor-Run"
+            onClick={() => executeCommand(editorRef.current?.getValue() || '')}
+            title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+            icon={controlsPlay}
+            color={theme.linkHover}
+            key="editor-Run"
+            width={16}
+          />
+        </Header>
+        {buttons.map(({ onClick, icon, title, testId }) => (
+          <FrameButton
+            key={`frame-${title}`}
+            title={title}
+            onClick={onClick}
+            data-testid={`editor-${testId}`}
           >
-            UPDATE{'\n'}
-            {currentlyEditing.isProjectFile ? 'PROJECT FILE' : 'FAVORITE'}
-          </button>
-        )}
-        <EditorButton
-          data-testid="editor-Run"
-          onClick={() => executeCommand(editorRef.current?.getValue())}
-          title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
-          icon={controlsPlay}
-          color={theme.linkHover}
-          key={`editor-Run`}
-          width={16}
-        />
-      </Header>
-      {buttons.map(({ onClick, icon, title, testId }) => (
-        <FrameButton
-          key={`frame-${title}`}
-          title={title}
-          onClick={onClick}
-          data-testid={`editor-${testId}`}
-        >
-          {icon}
-        </FrameButton>
-      ))}
+            {icon}
+          </FrameButton>
+        ))}
+      </FlexContainer>
     </Frame>
   )
 }
