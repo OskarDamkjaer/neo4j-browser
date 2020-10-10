@@ -51,6 +51,10 @@ export const getAllowedBoltSchemes = (state, encryptionFlag) => {
     ? SECURE_SCHEMES
     : INSECURE_SCHEMES
 }
+export const isRelateAvailable = state =>
+  state[NAME].relateUrl &&
+  state[NAME].relateApiToken &&
+  state[NAME].neo4jDesktopProjectId
 
 // Reducer
 export default function reducer(state = { hostedUrl: null }, action) {

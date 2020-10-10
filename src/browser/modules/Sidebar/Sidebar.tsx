@@ -44,6 +44,7 @@ import {
   DocumentsIcon,
   CloudSyncIcon,
   SettingsIcon,
+  ProjectFilesIcon,
   AboutIcon
 } from 'browser-components/icons/Icons'
 
@@ -111,8 +112,8 @@ const Sidebar = ({
     topNavItemsList.push({
       name: 'Project Files',
       title: 'Project Files',
-      icon: function favIcon(isOpen: boolean): ReactElement {
-        return <FavoritesIcon isOpen={isOpen} title="Project Files" />
+      icon: function projectFilesIcon(isOpen: boolean): ReactElement {
+        return <ProjectFilesIcon isOpen={isOpen} title="Project Files" />
       },
       content: ProjectFilesDrawer
     })

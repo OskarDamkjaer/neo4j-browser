@@ -43,10 +43,7 @@ export const removeFavoritesById = (state, ids) =>
 const versionSize = 20
 
 // reducer
-const initialState = staticScriptsList.map(script => ({
-  ...script,
-  isStatic: true
-}))
+const initialState = []
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
