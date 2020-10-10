@@ -19,6 +19,7 @@
  */
 
 import React, { ReactFragment, ReactElement } from 'react'
+import uuid from 'uuid'
 import { connect } from 'react-redux'
 import DatabaseDrawer from '../DBMSInfo/DBMSInfo'
 import DocumentsDrawer from './Documents'
@@ -26,17 +27,19 @@ import AboutDrawer from './About'
 import SettingsDrawer from './Settings'
 import Favorites from './favorites'
 import ProjectFilesDrawer from './ProjectFiles'
-import StaticScripts from './static-scripts'
 import TabNavigation from 'browser-components/TabNavigation/Navigation'
 import { DrawerHeader } from 'browser-components/drawer'
+import NewSavedScript from './NewSavedScript'
 import BrowserSync from '../Sync/BrowserSync'
 import { isUserSignedIn } from 'shared/modules/sync/syncDuck'
+import { addFavorite } from 'shared/modules/favorites/favoritesDuck'
 import { useBrowserSync } from 'shared/modules/features/featuresDuck'
 import {
   PENDING_STATE,
   CONNECTED_STATE,
   DISCONNECTED_STATE
 } from 'shared/modules/connections/connectionsDuck'
+import { getCurrentDraft } from 'shared/modules/sidebar/sidebarDuck'
 
 import {
   DatabaseIcon,
@@ -47,25 +50,35 @@ import {
   ProjectFilesIcon,
   AboutIcon
 } from 'browser-components/icons/Icons'
+import { isRelateAvailable } from 'src-root/shared/modules/app/appDuck'
+function stripComment(str: string): string {
+  if (str.startsWith('//')) {
+    return str.slice(2)
+  } else {
+    return str
+  }
+}
 
 interface SidebarProps {
   openDrawer: string
   onNavClick: () => void
-  showStaticScripts: boolean
   neo4jConnectionState: string
   syncConnected: boolean
   loadSync: boolean
   isRelateAvailable: boolean
+  addFavorite: (cmd: string) => void
+  scriptDraft: string | null
 }
 
 const Sidebar = ({
   openDrawer,
   onNavClick,
-  showStaticScripts,
   neo4jConnectionState,
   syncConnected,
   loadSync,
-  isRelateAvailable
+  isRelateAvailable,
+  addFavorite,
+  scriptDraft
 }: SidebarProps) => {
   const topNavItemsList = [
     {
@@ -92,8 +105,18 @@ const Sidebar = ({
         return (
           <>
             <DrawerHeader>Favorites</DrawerHeader>
+            <NewSavedScript
+              onSubmit={input => {
+                if (input === scriptDraft) {
+                  addFavorite(scriptDraft)
+                } else {
+                  addFavorite(`//${input}\n${scriptDraft}`)
+                }
+              }}
+              defaultName={stripComment(scriptDraft || '')}
+              headerText={'New Script Name'}
+            />
             <Favorites />
-            {showStaticScripts && <StaticScripts />}
           </>
         )
       }
@@ -181,13 +204,18 @@ const mapStateToProps = (state: any) => {
     syncConnected: isUserSignedIn(state) || false,
     neo4jConnectionState: connectionState,
     loadSync: useBrowserSync(state),
-    showStaticScripts: state.settings.showSampleScripts,
     // currently only Desktop specific
-    isRelateAvailable:
-      state.app.relateUrl &&
-      state.app.relateApiToken &&
-      state.app.neo4jDesktopProjectId
+    isRelateAvailable: isRelateAvailable(state),
+    scriptDraft: getCurrentDraft(state)
   }
 }
 
-export default connect(mapStateToProps, null)(Sidebar)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    addFavorite: (cmd: string) => {
+      dispatch(addFavorite(cmd, uuid.v4()))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

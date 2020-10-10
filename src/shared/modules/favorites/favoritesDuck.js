@@ -21,7 +21,6 @@
 import uuid from 'uuid'
 import { USER_CLEAR, APP_START } from 'shared/modules/app/appDuck'
 import { getBrowserName } from 'services/utils'
-import { scripts as staticScriptsList } from './staticScripts'
 
 export const NAME = 'documents'
 

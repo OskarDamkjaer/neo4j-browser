@@ -30,6 +30,10 @@ export function getOpenDrawer(state: GlobalState): string | null {
   return state[NAME].drawer
 }
 
+export function getCurrentDraft(state: GlobalState): string | null {
+  return state[NAME].draftScript
+}
+
 // SIDEBAR
 interface SidebarState {
   drawer: string | null
@@ -41,10 +45,6 @@ const initialState: SidebarState = {
 }
 
 function toggleDrawer(state: SidebarState, drawer: string): SidebarState {
-  // toggla av 17:20
-  // toggla på 12:20
-  // toggla av 12:45
-
   // When toggling the drawer we clear the script draft
   if (drawer === state.drawer) {
     return { draftScript: null, drawer: null }
