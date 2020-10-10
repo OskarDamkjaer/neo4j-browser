@@ -47,7 +47,7 @@ export const setContent = newContent => ({
   type: SET_CONTENT,
   message: newContent
 })
-export const editContent = (id, message, isProjectFile) => ({
+export const editContent = (id, message, isProjectFile = false) => ({
   type: EDIT_CONTENT,
   message,
   id,

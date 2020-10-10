@@ -19,188 +19,91 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { useSpring, animated } from 'react-spring'
+import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
+import { withTheme } from 'styled-components'
+import { executeCommand } from 'shared/modules/commands/commandsDuck'
+import { updateFavorite } from 'shared/modules/favorites/favoritesDuck'
 import { Bus } from 'suber'
-import Editor from './Editor'
 import {
+  isMac,
   printShortcut,
-  FULLSCREEN_SHORTCUT,
-  CARDSIZE_SHORTCUT
+  FULLSCREEN_SHORTCUT
 } from 'browser/modules/App/keyboardShortcuts'
 import {
-  Frame,
-  FrameHeader,
-  FrameHeaderText,
-  UIControls,
-  AnimationContainer
-} from './styled'
-import {
+  EDIT_CONTENT,
   EXPAND,
-  SET_CONTENT,
-  CARDSIZE,
-  EDIT_CONTENT
+  SET_CONTENT
 } from 'shared/modules/editor/editorDuck'
-import { FrameButton } from 'browser-components/buttons'
+import { Frame, Header, EditorContainer } from './styled'
+import { EditorButton, FrameButton } from 'browser-components/buttons'
 import {
   ExpandIcon,
   ContractIcon,
-  CloseIcon,
-  UpIcon,
-  DownIcon
+  CloseIcon
 } from 'browser-components/icons/Icons'
-import {
-  SELECT_PROJECT_FILE,
-  ProjectFile,
-  PROJECT_FILE_ERROR,
-  EDIT_PROJECT_FILE_START,
-  EDIT_PROJECT_FILE_END,
-  REMOVE_PROJECT_FILE
-} from 'browser/modules/Sidebar/project-files.constants'
+import controlsPlay from 'icons/controls-play.svg'
+import Editor from './Editor'
 
-type EditorSize = 'CARD' | 'LINE' | 'FULLSCREEN'
-type EditorFrameProps = { bus: Bus }
+function stripComment(str: string): string {
+  if (str.startsWith('//')) {
+    return str.slice(2)
+  } else {
+    return str
+  }
+}
+
+type EditorFrameProps = {
+  bus: Bus
+  theme: { linkHover: string }
+  executeCommand: (cmd: string) => void
+}
 type CodeEditor = {
   getValue: () => string | null
   setValue: (newText: string) => void
 }
 
-type ActiveRelateFile = Omit<ProjectFile, 'downloadToken'>
+type SavedScript = {
+  id: string
+  content: string
+  isProjectFile: boolean
+}
 
-export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
-  const [sizeState, setSize] = useState<EditorSize>('LINE')
-  const [
-    activeProjectFile,
-    setActiveProjectFile
-  ] = useState<ActiveRelateFile | null>(null)
-  const [activeProjectFileStatus, setActiveProjectFileStatus] = useState<
-    string | null
-  >(null)
-  const isFullscreen = sizeState === 'FULLSCREEN'
-  const isCardSize = sizeState === 'CARD'
+export function EditorFrame({ bus, theme }: EditorFrameProps): JSX.Element {
+  const [isFullscreen, setFullscreen] = useState(false)
+  const [currentlyEditing, setCurrentlyEditing] = useState<SavedScript | null>(
+    null
+  )
   const editorRef = useRef<CodeEditor>(null)
 
   function toggleFullscreen() {
-    const editorVal = (editorRef.current && editorRef.current.getValue()) || ''
-    const lineCount = editorVal.split('\n').length
-    if (isFullscreen) {
-      if (lineCount > 1) {
-        setSize('CARD')
-      } else {
-        setSize('LINE')
-      }
-    } else {
-      setSize('FULLSCREEN')
-    }
-  }
-
-  function toggleCardView() {
-    const editorVal = (editorRef.current && editorRef.current.getValue()) || ''
-    const lineCount = editorVal.split('\n').length
-
-    if (isCardSize) {
-      if (lineCount > 1) {
-        editorRef.current &&
-          editorRef.current.setValue(
-            editorVal
-              .split('\n')
-              .filter((nonEmpty: string) => nonEmpty)
-              .join(' ')
-          )
-      }
-      setSize('LINE')
-    } else {
-      setSize('CARD')
-    }
+    setFullscreen(!isFullscreen)
   }
 
   useEffect(() => bus && bus.take(EXPAND, toggleFullscreen))
-  useEffect(() => bus && bus.take(CARDSIZE, toggleCardView))
-  useEffect(() => {
-    let isStillMounted = true
-    // when a saved Project Script or Local Cache Script is clicked
-    // not sure at this point which it could be
-    bus &&
-      bus.take(EDIT_CONTENT, () => {
-        if (isStillMounted) {
-          setActiveProjectFile(null)
-          setActiveProjectFileStatus(null)
-        }
+  useEffect(
+    () =>
+      bus &&
+      bus.take(EDIT_CONTENT, ({ message, id, isProjectFile }) => {
+        console.log(message, id)
+        setCurrentlyEditing({ content: message, id, isProjectFile })
+        editorRef.current?.setValue(message)
       })
-    // only when a Project Script is clicked
-    bus &&
-      bus.take(SELECT_PROJECT_FILE, projectFile => {
-        if (isStillMounted) {
-          setActiveProjectFile(projectFile)
-          setActiveProjectFileStatus(null)
-        }
-      })
-    // when a non-Project File action sets content in the editor
-    bus &&
-      bus.take(SET_CONTENT, () => {
-        if (isStillMounted) {
-          setActiveProjectFile(null)
-          setActiveProjectFileStatus(null)
-        }
-      })
-    // start of Project File edit (ProjectFileButton)
-    bus &&
-      bus.take(EDIT_PROJECT_FILE_START, () => {
-        if (isStillMounted) {
-          setActiveProjectFileStatus('saving edit...')
-        }
-      })
-    // successful completion of Project File edit (ProjectFilesButton)
-    bus &&
-      bus.take(EDIT_PROJECT_FILE_END, () => {
-        if (isStillMounted) {
-          setActiveProjectFileStatus(null)
-        }
-      })
-    // Edit error (ProjectFilesButton)
-    bus &&
-      bus.take(PROJECT_FILE_ERROR, () => {
-        if (isStillMounted) {
-          setActiveProjectFileStatus('error saving...')
-        }
-      })
+  )
 
-    return () => {
-      isStillMounted = false
-    }
-  }, [bus])
-
-  useEffect(() => {
-    let isStillMounted = true
-    // clear editor if active Relate file is deleted from sidebar
-    bus &&
-      bus.take(REMOVE_PROJECT_FILE, (removedProjectFile: ActiveRelateFile) => {
-        if (isStillMounted) {
-          if (
-            activeProjectFile &&
-            removedProjectFile.directory === activeProjectFile.directory &&
-            removedProjectFile.name === activeProjectFile.name
-          ) {
-            bus.send(SET_CONTENT, { message: '' })
-          }
-        }
+  useEffect(
+    () =>
+      bus &&
+      bus.take(SET_CONTENT, msg => {
+        console.log(SET_CONTENT, msg)
+        setCurrentlyEditing(null)
+        editorRef.current?.setValue(msg)
       })
-
-    return () => {
-      isStillMounted = false
-    }
-  }, [bus, activeProjectFile])
+  )
 
   function discardEditor() {
-    sizeState !== 'LINE' && setSize('LINE')
-    bus && bus.send(SET_CONTENT, { message: '' })
-
-    setAnimation({
-      from: stable,
-      //  @ts-expect-error, library typings are wrong....
-      to: [end, start, stable],
-      config
-    })
+    editorRef.current?.setValue('')
+    setCurrentlyEditing(null)
   }
 
   const buttons = [
@@ -213,14 +116,6 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
       testId: 'fullscreen'
     },
     {
-      onClick: toggleCardView,
-      title: `${isCardSize ? 'Collapse' : 'Expand'} (${printShortcut(
-        CARDSIZE_SHORTCUT
-      )})`,
-      icon: isCardSize ? <UpIcon /> : <DownIcon />,
-      testId: 'cardSize'
-    },
-    {
       onClick: discardEditor,
       title: 'Close',
       icon: <CloseIcon />,
@@ -228,75 +123,72 @@ export function EditorFrame({ bus }: EditorFrameProps): JSX.Element {
     }
   ]
 
-  const start = {
-    width: '100%',
-    position: 'absolute',
-    opacity: 0,
-    top: -100,
-    left: '0vw'
-  }
-  const stable = {
-    width: '100%',
-    position: 'absolute',
-    opacity: 1,
-    top: 10,
-    left: '0vw'
-  }
-  const end = {
-    width: '100%',
-    position: 'absolute',
-    opacity: 0,
-    left: '-100vw',
-    top: 10
-  }
-
-  const config = { mass: 1, tension: 180, friction: 24, clamp: true }
-
   const TypedEditor: any = Editor // delete this when editor is ts
-  const [props, setAnimation] = useSpring(() => ({
-    to: stable,
-    config
-  }))
-
-  const activeProjectFileName = activeProjectFile && activeProjectFile.name
-  const activeProjectFileHeading =
-    activeProjectFileName &&
-    `${activeProjectFileName}${
-      activeProjectFileStatus ? ` - ${activeProjectFileStatus}` : ''
-    }`
 
   return (
-    <AnimationContainer cardSize={isCardSize}>
-      <animated.div
-        className="springContainer"
-        style={props}
-        data-testid="activeEditor"
-      >
-        <Frame fullscreen={isFullscreen}>
-          <FrameHeader>
-            <FrameHeaderText>{activeProjectFileHeading}</FrameHeaderText>
-            <UIControls>
-              {buttons.map(({ onClick, icon, title, testId }) => (
-                <FrameButton
-                  key={`frame-${title}`}
-                  title={title}
-                  onClick={onClick}
-                  data-testid={`editor-${testId}`}
-                >
-                  {icon}
-                </FrameButton>
-              ))}
-            </UIControls>
-          </FrameHeader>
-          <TypedEditor
-            editorSize={sizeState}
-            setSize={setSize}
-            editorRef={editorRef}
-          />
-        </Frame>
-      </animated.div>
-    </AnimationContainer>
+    <Frame fullscreen={isFullscreen}>
+      {currentlyEditing && (
+        <div> {stripComment(currentlyEditing.content.split('\n')[0])} </div>
+      )}
+      <Header>
+        <EditorContainer>
+          <TypedEditor editorRef={editorRef} />
+        </EditorContainer>
+        {currentlyEditing && (
+          <button
+            data-testid="editor-Favorite"
+            onClick={() =>
+              updateFavorite(currentlyEditing.id, editorRef.current?.getValue())
+            }
+            key={'editor-Favorite'}
+            style={{
+              maxHeight: 'max-content',
+              backgroundColor: theme.linkHover,
+              border: 'none',
+              borderRadius: '5px',
+              padding: '3px',
+              whiteSpace: 'pre'
+            }}
+          >
+            UPDATE{'\n'}
+            {currentlyEditing.isProjectFile ? 'PROJECT FILE' : 'FAVORITE'}
+          </button>
+        )}
+        <EditorButton
+          data-testid="editor-Run"
+          onClick={() => executeCommand(editorRef.current?.getValue())}
+          title={isMac ? 'Run (⌘↩)' : 'Run (ctrl+enter)'}
+          icon={controlsPlay}
+          color={theme.linkHover}
+          key={`editor-Run`}
+          width={16}
+        />
+      </Header>
+      {buttons.map(({ onClick, icon, title, testId }) => (
+        <FrameButton
+          key={`frame-${title}`}
+          title={title}
+          onClick={onClick}
+          data-testid={`editor-${testId}`}
+        >
+          {icon}
+        </FrameButton>
+      ))}
+    </Frame>
   )
 }
 
-export default withBus(EditorFrame)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    updateFavorite: (id: string, cmd: string) => {
+      dispatch(updateFavorite(id, cmd))
+    },
+    executeCommand: (cmd: string) => {
+      dispatch(executeCommand(cmd))
+    }
+  }
+}
+
+export default withBus(
+  connect(null, mapDispatchToProps)(withTheme(EditorFrame))
+)

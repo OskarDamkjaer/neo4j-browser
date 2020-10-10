@@ -304,6 +304,14 @@ export const PlayIcon = () => (
     className="fa fa-play-circle-o"
   />
 )
+export const AddFavoriteButton = () => (
+  <IconContainer
+    activeStyle={white}
+    inactiveStyle={inactive}
+    icon={ratingStar}
+    width={16}
+  />
+)
 export const PlainPlayIcon = () => (
   <IconContainer className="fa fa-play-circle" />
 )
