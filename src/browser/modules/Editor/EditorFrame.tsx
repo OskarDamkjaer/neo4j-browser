@@ -138,7 +138,6 @@ export function EditorFrame({
   ]
 
   const TypedEditor: any = Editor // delete this when editor is ts
-  // DET ÄR NÅGOT MÄRKLIGT MED UPDATE FAVORITE
 
   return (
     <Frame fullscreen={isFullscreen}>
@@ -167,6 +166,10 @@ export function EditorFrame({
                   currentlyEditing.id,
                   editorRef.current?.getValue() || ''
                 )
+                setCurrentlyEditing({
+                  ...currentlyEditing,
+                  content: editorRef.current?.getValue() || ''
+                })
               }}
               key={'editor-Favorite'}
               title={`Update ${
@@ -200,7 +203,6 @@ export function EditorFrame({
     </Frame>
   )
 }
-
 const mapDispatchToProps = (dispatch: any) => {
   return {
     updateFavorite: (id: string, cmd: string) => {
