@@ -25,6 +25,7 @@ import { useMutation } from '@apollo/client'
 import { withTheme } from 'styled-components'
 import { executeCommand } from 'shared/modules/commands/commandsDuck'
 import { updateFavorite } from 'shared/modules/favorites/favoritesDuck'
+import { useSpring, animated } from 'react-spring'
 import { Bus } from 'suber'
 import {
   isMac,
@@ -156,17 +157,23 @@ export function EditorFrame({
   ]
 
   const TypedEditor: any = Editor // delete this when editor is ts
+  const props = useSpring({
+    opacity: currentlyEditing ? 1 : 0,
+    height: currentlyEditing ? 'auto' : 0
+  })
 
   return (
     <Frame fullscreen={isFullscreen}>
       {currentlyEditing && (
-        <ScriptTitle unsaved={unsaved}>
-          Editing{' '}
-          {currentlyEditing.isProjectFile ? 'project file: ' : 'favorite: '}
-          {currentlyEditing.name ||
-            stripComment(currentlyEditing.content.split('\n')[0])}
-          {unsaved ? '*' : ''}
-        </ScriptTitle>
+        <animated.div style={props}>
+          <ScriptTitle unsaved={unsaved}>
+            Editing{' '}
+            {currentlyEditing.isProjectFile ? 'project file: ' : 'favorite: '}
+            {currentlyEditing.name ||
+              stripComment(currentlyEditing.content.split('\n')[0])}
+            {unsaved ? '*' : ''}
+          </ScriptTitle>
+        </animated.div>
       )}
       <FlexContainer>
         <Header>
