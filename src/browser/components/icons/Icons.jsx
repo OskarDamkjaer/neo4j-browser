@@ -40,6 +40,8 @@ import appWindowCode from 'icons/app-window-code.svg'
 import arrowLeft1 from 'icons/arrow-left-1.svg'
 import arrowRight1 from 'icons/arrow-right-1.svg'
 import skipPrev from 'icons/skip-prev.svg'
+import floppyDisk from 'icons/floppy-disk.svg'
+import files from 'icons/files.svg'
 
 const inactive = `
   color: #797979;
@@ -123,6 +125,16 @@ export const FavoritesIcon = props => (
     {...props}
   />
 )
+export const ProjectFilesIcon = props => (
+  <IconContainer
+    activeStyle={white}
+    inactiveStyle={inactive}
+    icon={files}
+    width={28}
+    {...props}
+  />
+)
+
 export const DocumentsIcon = props => (
   <IconContainer
     activeStyle={white}
@@ -291,6 +303,14 @@ export const PlayIcon = () => (
     activeStyle={lightBlue}
     inactiveStyle={blue}
     className="fa fa-play-circle-o"
+  />
+)
+export const AddFavoriteButton = () => (
+  <IconContainer
+    activeStyle={white}
+    inactiveStyle={inactive}
+    icon={ratingStar}
+    width={16}
   />
 )
 export const PlainPlayIcon = () => (

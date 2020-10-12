@@ -23,9 +23,13 @@ import React, { Component } from 'react'
 import { withBus } from 'react-suber'
 import { saveAs } from 'file-saver'
 import { map } from 'lodash-es'
+import uuid from 'uuid'
 
+import * as app from 'shared/modules/app/appDuck'
 import * as editor from 'shared/modules/editor/editorDuck'
 import * as commands from 'shared/modules/commands/commandsDuck'
+import * as sidebar from 'shared/modules/sidebar/sidebarDuck'
+import * as favorites from 'shared/modules/favorites/favoritesDuck'
 import {
   cancel as cancelRequest,
   getRequest,
@@ -44,6 +48,8 @@ import {
   UpIcon,
   DownIcon,
   PinIcon,
+  FavoritesIcon,
+  ProjectFilesIcon,
   DownloadIcon
 } from 'browser-components/icons/Icons'
 import {
@@ -216,6 +222,24 @@ class FrameTitlebar extends Component {
             </DropdownButton>
           </Render>
           <FrameButton
+            title="Save as Favorite"
+            onClick={() => {
+              props.newFavorite(frame.cmd)
+            }}
+          >
+            <FavoritesIcon width={12} />
+          </FrameButton>
+          <Render if={props.isRelateAvailable}>
+            <FrameButton
+              title="Save as project file"
+              onClick={() => {
+                props.newProjectFile(frame.cmd)
+              }}
+            >
+              <ProjectFilesIcon width={12} />
+            </FrameButton>
+          </Render>
+          <FrameButton
             title="Pin at top"
             onClick={() => {
               props.togglePin()
@@ -271,12 +295,19 @@ const mapStateToProps = (state, ownProps) => {
     : null
 
   return {
-    request
+    request,
+    isRelateAvailable: app.isRelateAvailable(state)
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    newFavorite: cmd => {
+      dispatch(sidebar.setDraftScript(cmd, 'favorites'))
+    },
+    newProjectFile: cmd => {
+      dispatch(sidebar.setDraftScript(cmd, 'project files'))
+    },
     onTitlebarClick: cmd => {
       ownProps.bus.send(editor.SET_CONTENT, editor.setContent(cmd))
     },
