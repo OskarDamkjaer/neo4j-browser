@@ -24,7 +24,7 @@ import { filter, size, omit } from 'lodash-es'
 
 import * as editor from 'shared/modules/editor/editorDuck'
 import { executeCommand } from 'shared/modules/commands/commandsDuck'
-import { CYPHER_FILE_EXTENSION, DOT } from 'shared/services/export-favorites'
+import { DOT } from 'shared/services/export-favorites'
 import {
   ProjectFilesQueryVars,
   ProjectFileMutationVars,
@@ -35,13 +35,13 @@ import {
   Favorite,
   ProjectFilesResult,
   ProjectFilesVariables,
-  SELECT_PROJECT_FILE,
   GET_PROJECT_FILES,
   DELETE_PROJECT_FILE,
   REMOVE_PROJECT_FILE
 } from './project-files.constants'
 import Render from 'browser-components/Render'
 import { Bus } from 'suber'
+import { StyledErrorListContainer } from './styled'
 import { isWindows } from 'browser/modules/App/keyboardShortcuts'
 
 interface ProjectFilesError {
@@ -91,7 +91,7 @@ export const ProjectFilesError = ({
 
   return (
     <Render if={size(definedApolloErrors) || size(definedErrors)}>
-      {ErrorsList()}
+      <StyledErrorListContainer>{ErrorsList()}</StyledErrorListContainer>
     </Render>
   )
 }
@@ -167,7 +167,7 @@ function ProjectFilesScripts(props: ProjectFilesScripts): JSX.Element {
     scripts: projectFiles,
     isProjectFiles: true,
     scriptsNamespace: DOT,
-    title: 'Project Files',
+    title: 'Cypher files',
     onRemoveScript: async (favorite: Favorite) => {
       const directory =
         favorite.path.length == 1 && favorite.path === DOT
@@ -192,15 +192,21 @@ function ProjectFilesScripts(props: ProjectFilesScripts): JSX.Element {
       }
     },
     onSelectScript: (favorite: Favorite) => {
+      const directory =
+        favorite.path.length == 1 && favorite.path === DOT
+          ? DOT
+          : favorite.path.substring(1) // remove DOT from path
+
       props.bus.send(
         editor.EDIT_CONTENT,
-        editor.editContent(favorite.id, favorite.contents, true)
+        editor.editContent(
+          favorite.id,
+          favorite.contents,
+          true,
+          favorite.name,
+          directory
+        )
       )
-      props.bus.send(SELECT_PROJECT_FILE, {
-        name: favorite.name,
-        directory: favorite.directory,
-        extension: CYPHER_FILE_EXTENSION
-      })
     },
     onExportScripts: Function.prototype,
     onUpdateFolder: Function.prototype,

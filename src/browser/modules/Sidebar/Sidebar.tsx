@@ -138,7 +138,9 @@ const Sidebar = ({
       icon: function projectFilesIcon(isOpen: boolean): ReactElement {
         return <ProjectFilesIcon isOpen={isOpen} title="Project Files" />
       },
-      content: ProjectFilesDrawer
+      content: function ProjectDrawer(): JSX.Element {
+        return <ProjectFilesDrawer scriptDraft={scriptDraft || ''} />
+      }
     })
   }
 
@@ -204,7 +206,6 @@ const mapStateToProps = (state: any) => {
     syncConnected: isUserSignedIn(state) || false,
     neo4jConnectionState: connectionState,
     loadSync: useBrowserSync(state),
-    // currently only Desktop specific
     isRelateAvailable: isRelateAvailable(state),
     scriptDraft: getCurrentDraft(state)
   }

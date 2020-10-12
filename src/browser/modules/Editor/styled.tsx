@@ -70,6 +70,7 @@ export const FlexContainer = styled.div`
 `
 export const ScriptTitle = styled.div<{ unsaved: boolean }>`
   font-style: ${props => (props.unsaved ? 'italic' : 'normal')};
+  border-bottom: 1px solid rgb(77, 74, 87, 0.3);
   padding: 1px;
   padding-left: 5px;
   font-family: 'Fira Code', Monaco, 'Courier New', Terminal, monospace;

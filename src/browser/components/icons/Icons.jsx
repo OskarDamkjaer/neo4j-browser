@@ -41,6 +41,7 @@ import arrowLeft1 from 'icons/arrow-left-1.svg'
 import arrowRight1 from 'icons/arrow-right-1.svg'
 import skipPrev from 'icons/skip-prev.svg'
 import floppyDisk from 'icons/floppy-disk.svg'
+import files from 'icons/files.svg'
 
 const inactive = `
   color: #797979;
@@ -128,7 +129,7 @@ export const ProjectFilesIcon = props => (
   <IconContainer
     activeStyle={white}
     inactiveStyle={inactive}
-    icon={floppyDisk}
+    icon={files}
     width={28}
     {...props}
   />

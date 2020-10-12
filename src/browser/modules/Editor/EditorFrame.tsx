@@ -21,6 +21,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
+import { useMutation } from '@apollo/client'
 import { withTheme } from 'styled-components'
 import { executeCommand } from 'shared/modules/commands/commandsDuck'
 import { updateFavorite } from 'shared/modules/favorites/favoritesDuck'
@@ -30,6 +31,7 @@ import {
   printShortcut,
   FULLSCREEN_SHORTCUT
 } from 'browser/modules/App/keyboardShortcuts'
+import { getProjectId } from 'shared/modules/app/appDuck'
 import {
   EDIT_CONTENT,
   EXPAND,
@@ -51,6 +53,8 @@ import {
 import pencil from 'icons/pencil.svg'
 import controlsPlay from 'icons/controls-play.svg'
 import Editor from './Editor'
+import { ADD_PROJECT_FILE } from 'browser/modules/Sidebar/project-files.constants'
+import { isWindows } from '../App/keyboardShortcuts'
 
 function stripComment(str: string): string {
   if (str.startsWith('//')) {
@@ -65,6 +69,7 @@ type EditorFrameProps = {
   theme: { linkHover: string }
   executeCommand: (cmd: string) => void
   updateFavorite: (id: string, value: string) => void
+  projectId: string
 }
 type CodeEditor = {
   getValue: () => string | null
@@ -75,14 +80,18 @@ type SavedScript = {
   id: string
   content: string
   isProjectFile: boolean
+  name?: string
+  directory?: string
 }
 
 export function EditorFrame({
   bus,
   theme,
   executeCommand,
-  updateFavorite
+  updateFavorite,
+  projectId
 }: EditorFrameProps): JSX.Element {
+  const [addFile] = useMutation(ADD_PROJECT_FILE)
   const [unsaved, setUnsaved] = useState(false)
   const [isFullscreen, setFullscreen] = useState(false)
   const [currentlyEditing, setCurrentlyEditing] = useState<SavedScript | null>(
@@ -98,11 +107,20 @@ export function EditorFrame({
   useEffect(
     () =>
       bus &&
-      bus.take(EDIT_CONTENT, ({ message, id, isProjectFile }) => {
-        setUnsaved(false)
-        setCurrentlyEditing({ content: message, id, isProjectFile })
-        editorRef.current?.setValue(message)
-      })
+      bus.take(
+        EDIT_CONTENT,
+        ({ message, id, isProjectFile, name, directory }) => {
+          setUnsaved(false)
+          setCurrentlyEditing({
+            content: message,
+            id,
+            isProjectFile,
+            name,
+            directory
+          })
+          editorRef.current?.setValue(message)
+        }
+      )
   )
 
   useEffect(
@@ -145,7 +163,8 @@ export function EditorFrame({
         <ScriptTitle unsaved={unsaved}>
           Editing{' '}
           {currentlyEditing.isProjectFile ? 'project file: ' : 'favorite: '}
-          {stripComment(currentlyEditing.content.split('\n')[0])}
+          {currentlyEditing.name ||
+            stripComment(currentlyEditing.content.split('\n')[0])}
           {unsaved ? '*' : ''}
         </ScriptTitle>
       )}
@@ -162,13 +181,27 @@ export function EditorFrame({
               data-testid="editor-Favorite"
               onClick={() => {
                 setUnsaved(false)
-                updateFavorite(
-                  currentlyEditing.id,
-                  editorRef.current?.getValue() || ''
-                )
+                const editorValue = editorRef.current?.getValue() || ''
+
+                console.log(currentlyEditing)
+                const { isProjectFile, name, directory } = currentlyEditing
+                if (isProjectFile && name && directory) {
+                  addFile({
+                    variables: {
+                      projectId,
+                      fileUpload: new File([editorValue], name),
+                      destination: isWindows
+                        ? `${directory}\\${name}`
+                        : `${directory}/${name}`,
+                      overwrite: true
+                    }
+                  })
+                } else {
+                  updateFavorite(currentlyEditing.id, editorValue)
+                }
                 setCurrentlyEditing({
                   ...currentlyEditing,
-                  content: editorRef.current?.getValue() || ''
+                  content: editorValue
                 })
               }}
               key={'editor-Favorite'}
@@ -203,6 +236,10 @@ export function EditorFrame({
     </Frame>
   )
 }
+
+const mapStateToProps = (state: any) => {
+  return { projectId: getProjectId(state) }
+}
 const mapDispatchToProps = (dispatch: any) => {
   return {
     updateFavorite: (id: string, cmd: string) => {
@@ -215,5 +252,5 @@ const mapDispatchToProps = (dispatch: any) => {
 }
 
 export default withBus(
-  connect(null, mapDispatchToProps)(withTheme(EditorFrame))
+  connect(mapStateToProps, mapDispatchToProps)(withTheme(EditorFrame))
 )
