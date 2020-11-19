@@ -97,8 +97,9 @@ interface MonacoProps {
   onChange?: (value: string) => void
   onDisplayHelpKeys?: () => void
   onExecute?: () => void
-  options?: editor.IGlobalEditorOptions
   schema?: EditorSupportSchema
+  options?: editor.IStandaloneEditorConstructionOptions
+  style?: React.CSSProperties
   theme?: BrowserTheme
   useDb?: null | string
 }
@@ -507,6 +508,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         }
         const statementLineNumber = statement.start.line - 1
 
+<<<<<<< HEAD
         bus.self(
           CYPHER_REQUEST,
           {
@@ -556,5 +558,18 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
     )
   }
 )
+=======
+  return (
+    <div
+      id={monacoId}
+      style={{
+        overflow: 'hidden',
+        width: '100%',
+        ...style
+      }}
+    />
+  )
+}
+>>>>>>> Add monaco
 
 export default Monaco
