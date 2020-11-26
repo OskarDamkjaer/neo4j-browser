@@ -118,7 +118,8 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       onExecute = () => undefined,
       schema,
       theme = LIGHT_THEME,
-      useDb
+      useDb,
+      style
     }: MonacoProps,
     ref
   ): JSX.Element => {
@@ -508,7 +509,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         }
         const statementLineNumber = statement.start.line - 1
 
-<<<<<<< HEAD
         bus.self(
           CYPHER_REQUEST,
           {
@@ -552,24 +552,14 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         id={monacoId}
         style={{
           height: '100%',
-          width: '100%'
+          maxWidth: '100%',
+          minWidth: '100%',
+          width: '100%',
+          ...style
         }}
       />
     )
   }
 )
-=======
-  return (
-    <div
-      id={monacoId}
-      style={{
-        overflow: 'hidden',
-        width: '100%',
-        ...style
-      }}
-    />
-  )
-}
->>>>>>> Add monaco
 
 export default Monaco
