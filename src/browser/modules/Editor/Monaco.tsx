@@ -68,6 +68,7 @@ export interface MonacoHandles {
   focus: () => void
   getValue: () => string
   setValue: (value: string) => void
+  setPosition: (position: { lineNumber: number; column: number }) => void
   resize: (fillContainer?: boolean, fixedHeight?: number) => void
 }
 
@@ -135,6 +136,9 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       },
       setValue(value: string) {
         setValue(value)
+      },
+      setPosition(position: { lineNumber: number; column: number }) {
+        editorRef.current?.setPosition(position)
       },
       resize(fillContainer = false, fixedHeight) {
         resize(fillContainer, fixedHeight)
