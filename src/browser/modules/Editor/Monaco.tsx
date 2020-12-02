@@ -103,6 +103,7 @@ interface MonacoProps {
   customStyle?: React.CSSProperties
   theme?: BrowserTheme
   useDb?: null | string
+  toggleFullscreen?: () => void
 }
 
 const Monaco = forwardRef<MonacoHandles, MonacoProps>(
@@ -120,7 +121,8 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       schema,
       theme = LIGHT_THEME,
       useDb,
-      customStyle = {}
+      customStyle = {},
+      toggleFullscreen
     }: MonacoProps,
     ref
   ): JSX.Element => {
