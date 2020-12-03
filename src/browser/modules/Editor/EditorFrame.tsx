@@ -39,7 +39,6 @@ import {
   REMOVE_FAVORITE,
   updateFavorite
 } from 'shared/modules/favorites/favoritesDuck'
-import { useSpring, animated } from 'react-spring'
 import { Bus } from 'suber'
 import {
   isMac,
@@ -251,11 +250,6 @@ export function EditorFrame({
     }
   ]
 
-  const props = useSpring({
-    opacity: currentlyEditing ? 1 : 0.5,
-    height: currentlyEditing ? 'auto' : 0
-  })
-
   function createRunCommandFunction(source: string) {
     return () => {
       executeCommand(editorRef.current?.getValue() || '', source)
@@ -284,18 +278,16 @@ export function EditorFrame({
   return (
     <Frame fullscreen={isFullscreen} data-testid="activeEditor">
       {currentlyEditing && (
-        <animated.div style={props}>
-          <ScriptTitle unsaved={showUnsaved}>
-            <SVGInline
-              svg={currentlyEditing.isProjectFile ? file : update_favorite}
-              width="12px"
-            />
-            {currentlyEditing.isProjectFile ? ' Project file: ' : ' Favorite: '}
-            {getName(currentlyEditing)}
-            {showUnsaved ? '*' : ''}
-            {currentlyEditing.isStatic ? ' (read-only)' : ''}
-          </ScriptTitle>
-        </animated.div>
+        <ScriptTitle unsaved={showUnsaved}>
+          <SVGInline
+            svg={currentlyEditing.isProjectFile ? file : update_favorite}
+            width="12px"
+          />
+          {currentlyEditing.isProjectFile ? ' Project file: ' : ' Favorite: '}
+          {getName(currentlyEditing)}
+          {showUnsaved ? '*' : ''}
+          {currentlyEditing.isStatic ? ' (read-only)' : ''}
+        </ScriptTitle>
       )}
       <FlexContainer>
         <Header>
