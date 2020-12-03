@@ -18,7 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, Dispatch, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  Dispatch,
+  useEffect,
+  useRef,
+  useCallback
+} from 'react'
 import { Action } from 'redux'
 import SVGInline from 'react-svg-inline'
 import { connect } from 'react-redux'
@@ -139,7 +145,9 @@ export function EditorFrame({
   const editorRef = useRef<MonacoHandles>(null)
   const [lineCount, setLineCount] = useState(1)
 
-  const toggleFullscreen = () => setFullscreen(fullScreen => !fullScreen)
+  const toggleFullscreen = useCallback(() => {
+    setFullscreen(fs => !fs)
+  }, [])
 
   const [derivedTheme] = useDerivedTheme(browserTheme, LIGHT_THEME) as [
     BrowserTheme
