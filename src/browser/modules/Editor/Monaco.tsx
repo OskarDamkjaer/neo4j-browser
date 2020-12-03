@@ -69,7 +69,6 @@ export interface MonacoHandles {
   getValue: () => string
   setValue: (value: string) => void
   setPosition: (position: { lineNumber: number; column: number }) => void
-  resize: (fillContainer?: boolean, fixedHeight?: number) => void
 }
 
 interface ConsoleCommand {
@@ -314,7 +313,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       )
 
       const container = document.getElementById(monacoId) as HTMLElement
-      // @ts-ignore needs polyfill on safari. works in firefox/chrome
+      // @ts-ignore - needs polyfill on safari. works in firefox/chrome
       const resizeObserver = new ResizeObserver(() => {
         // Wrapped in requestAnimationFrame to avoid the error "ResizeObserver loop limit exceeded"
         window.requestAnimationFrame(() => {

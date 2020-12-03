@@ -154,9 +154,8 @@ export function EditorFrame({
   const editorRef = useRef<MonacoHandles>(null)
 
   const toggleFullscreen = useCallback(() => {
-    setFullscreen(!isFullscreen)
-    editorRef.current?.resize(!isFullscreen)
-  }, [isFullscreen])
+    setFullscreen(fs => !fs)
+  }, [])
 
   const [derivedTheme] = useDerivedTheme(browserTheme, LIGHT_THEME) as [
     BrowserTheme
@@ -275,6 +274,7 @@ export function EditorFrame({
     currentlyEditing &&
     !currentlyEditing?.isStatic
   )
+
   return (
     <Frame fullscreen={isFullscreen} data-testid="activeEditor">
       {currentlyEditing && (
