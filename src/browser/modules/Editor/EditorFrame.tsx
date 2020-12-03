@@ -18,13 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, {
-  useState,
-  Dispatch,
-  useEffect,
-  useRef,
-  useCallback
-} from 'react'
+import React, { useState, Dispatch, useEffect, useRef } from 'react'
 import { Action } from 'redux'
 import SVGInline from 'react-svg-inline'
 import { connect } from 'react-redux'
@@ -91,7 +85,6 @@ import * as schemaConvert from './editorSchemaConverter'
 import cypherFunctions from './cypher/functions'
 import { getUseDb } from 'shared/modules/connections/connectionsDuck'
 import { getHistory, HistoryState } from 'shared/modules/history/historyDuck'
-import { getOpenDrawer } from 'shared/modules/sidebar/sidebarDuck'
 
 interface EditorSupportSchema {
   labels?: string[]
@@ -106,7 +99,6 @@ interface EditorSupportSchema {
 type EditorFrameProps = {
   browserTheme: BrowserTheme
   bus: Bus
-  drawer: string | null
   enableMultiStatementMode: boolean
   executeCommand: (cmd: string, source: string) => void
   history: HistoryState
@@ -129,7 +121,6 @@ type SavedScript = {
 export function EditorFrame({
   browserTheme,
   bus,
-  drawer,
   enableMultiStatementMode,
   executeCommand,
   history,
@@ -148,10 +139,7 @@ export function EditorFrame({
   const editorRef = useRef<MonacoHandles>(null)
   const [lineCount, setLineCount] = useState(1)
 
-  const toggleFullscreen = useCallback(() => {
-    setFullscreen(!isFullscreen)
-    editorRef.current?.resize(!isFullscreen)
-  }, [isFullscreen])
+  const toggleFullscreen = () => setFullscreen(fullScreen => !fullScreen)
 
   const [derivedTheme] = useDerivedTheme(browserTheme, LIGHT_THEME) as [
     BrowserTheme
@@ -218,16 +206,14 @@ export function EditorFrame({
         setUnsaved(false)
         setCurrentlyEditing(null)
         editorRef.current?.setValue(message)
-        editorRef.current?.resize(isFullscreen)
       }),
     [bus]
   )
-  3
+
   function discardEditor() {
     editorRef.current?.setValue('')
     setCurrentlyEditing(null)
     setFullscreen(false)
-    editorRef.current?.resize(false)
   }
 
   const buttons = [
@@ -258,7 +244,6 @@ export function EditorFrame({
       editorRef.current?.setValue('')
       setCurrentlyEditing(null)
       setFullscreen(false)
-      editorRef.current?.resize(false)
     }
   }
 
@@ -272,11 +257,6 @@ export function EditorFrame({
 
     return defaultFavoriteName(content)
   }
-
-  useEffect(() => {
-    // After the sidebar animation has finished, the editor needs to resize its width
-    setTimeout(() => editorRef.current?.resize(isFullscreen), 200)
-  }, [lineCount, editorRef, drawer])
 
   const showUnsaved = !!(
     unsaved &&
@@ -388,7 +368,6 @@ export function EditorFrame({
 const mapStateToProps = (state: any) => {
   return {
     browserTheme: getTheme(state),
-    drawer: getOpenDrawer(state),
     enableMultiStatementMode: shouldEnableMultiStatementMode(state),
     history: getHistory(state),
     projectId: getProjectId(state),
