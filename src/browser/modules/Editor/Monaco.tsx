@@ -286,6 +286,24 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         KeyMod.CtrlCmd | KeyCode.US_DOT,
         onDisplayHelpKeys
       )
+      editorRef.current.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, execute)
+      editorRef.current.addCommand(KeyMod.WinCtrl | KeyCode.Enter, execute)
+      editorRef.current.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, execute)
+      editorRef.current.addCommand(KeyMod.WinCtrl | KeyCode.Enter, execute)
+      editorRef.current.addCommand(
+        KeyMod.CtrlCmd | KeyCode.UpArrow,
+        viewHistoryPrevious
+      )
+      editorRef.current.addCommand(
+        KeyMod.CtrlCmd | KeyCode.DownArrow,
+        viewHistoryNext
+      )
+      editorRef.current.addCommand(KeyCode.Enter, () =>
+        isMultiLine() ? newLine() : execute()
+      )
+      if (toggleFullscreen) {
+        editorRef.current?.addCommand(KeyCode.Escape, toggleFullscreen)
+      }
 
       onContentUpdate()
 
@@ -550,8 +568,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         id={monacoId}
         style={{
           height: '100%',
-          maxWidth: '100%',
-          minWidth: '100%',
           width: '100%',
           ...customStyle
         }}
