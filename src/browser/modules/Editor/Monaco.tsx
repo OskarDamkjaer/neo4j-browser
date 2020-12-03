@@ -182,7 +182,9 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       languages.registerCompletionItemProvider('cypher', {
         triggerCharacters: ['.', ':', '[', '(', '{', '$'],
         provideCompletionItems: (model, position, { triggerCharacter }) => {
-          var { startColumn, endColumn } = model.getWordUntilPosition(position)
+          const { startColumn, endColumn } = model.getWordUntilPosition(
+            position
+          )
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
