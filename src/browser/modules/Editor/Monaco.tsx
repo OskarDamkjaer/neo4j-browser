@@ -570,6 +570,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         style={{
           height: '100%',
           width: '100%',
+          maxHeight: '345px',
           ...customStyle
         }}
       />
