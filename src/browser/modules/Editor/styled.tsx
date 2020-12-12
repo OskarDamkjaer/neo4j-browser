@@ -27,6 +27,7 @@ interface FullscreenProps {
 export const Header = styled.div`
   background-color: ${(props): string => props.theme.frameSidebarBackground};
   flex-grow: 1;
+  min-width: 200px; // Without the min width, the editor doesn't shrink on resize in safari
 
   display: flex;
 `
@@ -70,6 +71,7 @@ export const EditorContainer = styled.div`
   display: flex;
   align-items: center;
   flex-grow: 1;
+  min-width: 200px;
   width: 0; // needed to prevent the editor from growing the text field
 `
 export const FlexContainer = styled.div`
