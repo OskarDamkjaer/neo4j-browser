@@ -99,7 +99,6 @@ interface MonacoProps {
   schema?: EditorSupportSchema
   onExecute?: (value: string) => void
   options?: editor.IStandaloneEditorConstructionOptions
-  customStyle?: React.CSSProperties
   theme?: BrowserTheme
   useDb?: null | string
   toggleFullscreen?: () => void
@@ -120,7 +119,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       schema,
       theme = LIGHT_THEME,
       useDb,
-      customStyle = {},
       toggleFullscreen
     }: MonacoProps,
     ref
@@ -141,7 +139,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       setPosition(position: { lineNumber: number; column: number }) {
         editorRef.current?.setPosition(position)
       },
-      resize(fillContainer = false, fixedHeight) {
+      resize(fillContainer = false, fixedHeight: number) {
         resize(fillContainer, fixedHeight)
       }
     }))
@@ -277,16 +275,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         '!suggestWidgetVisible'
       )
       editorRef.current.addCommand(KeyMod.Shift | KeyCode.Enter, newLine)
-      editorRef.current.addCommand(
-        KeyMod.CtrlCmd | KeyCode.US_SLASH,
-        onDisplayHelpKeys
-      )
-      editorRef.current.addCommand(
-        KeyMod.CtrlCmd | KeyCode.US_DOT,
-        onDisplayHelpKeys
-      )
-      editorRef.current.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, execute)
-      editorRef.current.addCommand(KeyMod.WinCtrl | KeyCode.Enter, execute)
       editorRef.current.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, execute)
       editorRef.current.addCommand(KeyMod.WinCtrl | KeyCode.Enter, execute)
       editorRef.current.addCommand(
@@ -296,6 +284,14 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       editorRef.current.addCommand(
         KeyMod.CtrlCmd | KeyCode.DownArrow,
         viewHistoryNext
+      )
+      editorRef.current.addCommand(
+        KeyMod.CtrlCmd | KeyCode.US_SLASH,
+        onDisplayHelpKeys
+      )
+      editorRef.current.addCommand(
+        KeyMod.CtrlCmd | KeyCode.US_DOT,
+        onDisplayHelpKeys
       )
       editorRef.current.addCommand(KeyCode.Enter, () =>
         isMultiLine() ? newLine() : execute()
@@ -313,7 +309,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       )
 
       const container = document.getElementById(monacoId) as HTMLElement
-      // @ts-ignore - needs polyfill on safari. works in firefox/chrome
       const resizeObserver = new ResizeObserver(() => {
         // Wrapped in requestAnimationFrame to avoid the error "ResizeObserver loop limit exceeded"
         window.requestAnimationFrame(() => {
@@ -569,8 +564,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         id={monacoId}
         style={{
           height: '100%',
-          width: '100%',
-          ...customStyle
+          width: '100%'
         }}
       />
     )
