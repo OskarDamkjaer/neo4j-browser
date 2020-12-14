@@ -156,6 +156,7 @@ describe('commandsDuck', () => {
             params: { x: 2 }
           } as any),
           updateQueryResult(
+            // @ts-expect-error
             undefined,
             { result: { x: 2 }, type: 'param' },
             'success'
@@ -226,6 +227,7 @@ describe('commandsDuck', () => {
             params: {}
           } as any),
           updateQueryResult(
+            // @ts-expect-error
             undefined,
             { result: { x: 2, y: 3 }, type: 'params' },
             'success'
