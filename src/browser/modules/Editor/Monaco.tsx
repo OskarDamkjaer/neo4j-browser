@@ -68,6 +68,7 @@ export interface MonacoHandles {
   focus: () => void
   getValue: () => string
   setValue: (value: string) => void
+  resize: (fillContainer?: boolean, fixedHeight?: number) => void
   setPosition: (position: { lineNumber: number; column: number }) => void
 }
 
@@ -139,7 +140,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       setPosition(position: { lineNumber: number; column: number }) {
         editorRef.current?.setPosition(position)
       },
-      resize(fillContainer = false, fixedHeight: number) {
+      resize(fillContainer = false, fixedHeight) {
         resize(fillContainer, fixedHeight)
       }
     }))
@@ -176,46 +177,51 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         editorSupportRef.current.setSchema(schema)
       }
 
-      languages.registerCompletionItemProvider('cypher', {
-        triggerCharacters: ['.', ':', '[', '(', '{', '$'],
-        provideCompletionItems: (model, position, { triggerCharacter }) => {
-          const { startColumn, endColumn } = model.getWordUntilPosition(
-            position
-          )
-          const range = {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn,
-            endColumn
-          }
-          editorSupportRef.current?.update(editorRef.current?.getValue() || '')
-          const items =
-            editorSupportRef.current?.getCompletion(
-              position.lineNumber,
-              triggerCharacter === ':' ? position.column - 1 : position.column
-            ).items || []
+      const langSupportDisposable = languages.registerCompletionItemProvider(
+        'cypher',
+        {
+          triggerCharacters: ['.', ':', '[', '(', '{', '$'],
+          provideCompletionItems: (model, position, { triggerCharacter }) => {
+            const { startColumn, endColumn } = model.getWordUntilPosition(
+              position
+            )
+            const range = {
+              startLineNumber: position.lineNumber,
+              endLineNumber: position.lineNumber,
+              startColumn,
+              endColumn
+            }
+            editorSupportRef.current?.update(
+              editorRef.current?.getValue() || ''
+            )
+            const items =
+              editorSupportRef.current?.getCompletion(
+                position.lineNumber,
+                triggerCharacter === ':' ? position.column - 1 : position.column
+              ).items || []
 
-          return {
-            suggestions: items.map(item => ({
-              label: item.view || item.content,
-              kind: languages.CompletionItemKind.Keyword,
-              insertText: item.content,
-              range: ['consoleCommand', 'label', 'relationshipType'].includes(
-                item.type
-              )
-                ? { ...range, startColumn: range.startColumn - 1 }
-                : item.type === 'procedure'
-                ? {
-                    ...range,
-                    startColumn:
-                      range.startColumn - (item.view.indexOf('.') + 1)
-                  }
-                : range,
-              detail: item.postfix || undefined
-            }))
+            return {
+              suggestions: items.map(item => ({
+                label: item.view || item.content,
+                kind: languages.CompletionItemKind.Keyword,
+                insertText: item.content,
+                range: ['consoleCommand', 'label', 'relationshipType'].includes(
+                  item.type
+                )
+                  ? { ...range, startColumn: range.startColumn - 1 }
+                  : item.type === 'procedure'
+                  ? {
+                      ...range,
+                      startColumn:
+                        range.startColumn - (item.view.indexOf('.') + 1)
+                    }
+                  : range,
+                detail: item.postfix || undefined
+              }))
+            }
           }
         }
-      })
+      )
 
       editor.defineTheme(DARK_THEME, monacoDarkTheme)
       editor.defineTheme(LIGHT_THEME, monacoLightTheme)
@@ -293,9 +299,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         KeyMod.CtrlCmd | KeyCode.US_DOT,
         onDisplayHelpKeys
       )
-      editorRef.current.addCommand(KeyCode.Enter, () =>
-        isMultiLine() ? newLine() : execute()
-      )
       if (toggleFullscreen) {
         editorRef.current?.addCommand(KeyCode.Escape, toggleFullscreen)
       }
@@ -319,6 +322,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
 
       return () => {
         editorRef.current?.dispose()
+        langSupportDisposable.dispose()
         debouncedUpdateCode.cancel()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
