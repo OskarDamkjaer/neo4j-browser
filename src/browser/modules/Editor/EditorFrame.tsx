@@ -93,12 +93,7 @@ import cypherFunctions from './cypher/functions'
 import { getUseDb } from 'shared/modules/connections/connectionsDuck'
 import { getHistory, HistoryState } from 'shared/modules/history/historyDuck'
 import consoleCommands from './language/consoleCommands'
-
-interface ConsoleCommand {
-  name: string
-  description?: string
-  commands?: ConsoleCommand[]
-}
+import { ConsoleCommand } from 'cypher-editor-support'
 
 interface EditorSupportSchema {
   labels?: string[]
@@ -232,6 +227,7 @@ export function EditorFrame({
     editorRef.current?.setValue('')
     setCurrentlyEditing(null)
     setFullscreen(false)
+    editorRef.current?.resize(false)
   }
 
   const buttons = [
@@ -262,6 +258,7 @@ export function EditorFrame({
       editorRef.current?.setValue('')
       setCurrentlyEditing(null)
       setFullscreen(false)
+      editorRef.current?.resize(false)
     }
   }
 

@@ -77,7 +77,7 @@ declare module 'cypher-editor-support' {
     postfix: null
   }
 
-  interface ConsoleCommand {
+  export interface ConsoleCommand {
     name: string
     description?: string
     commands?: ConsoleCommand[]

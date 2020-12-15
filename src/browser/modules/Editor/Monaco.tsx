@@ -51,6 +51,7 @@ import {
   monacoLightTheme
 } from './CypherMonacoThemes'
 import { CypherTokensProvider } from './CypherTokensProvider'
+import { ConsoleCommand } from 'cypher-editor-support'
 
 const shouldCheckForHints = (code: any) =>
   code.trim().length > 0 &&
@@ -68,15 +69,8 @@ export interface MonacoHandles {
   focus: () => void
   getValue: () => string
   setValue: (value: string) => void
-  resize: (fillContainer?: boolean, fixedHeight?: number) => void
+  resize: (fillContainer?: boolean) => void
 }
-
-interface ConsoleCommand {
-  name: string
-  description?: string
-  commands?: ConsoleCommand[]
-}
-
 interface EditorSupportSchema {
   labels?: string[]
   relationshipTypes?: string[]
@@ -134,8 +128,8 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
       setValue(value: string) {
         setValue(value)
       },
-      resize(fillContainer = false, fixedHeight) {
-        resize(fillContainer, fixedHeight)
+      resize(fillContainer = false) {
+        resize(fillContainer)
       }
     }))
 
@@ -279,10 +273,6 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
         viewHistoryNext
       )
       editorRef.current.addCommand(
-        KeyMod.CtrlCmd | KeyCode.US_SLASH,
-        onDisplayHelpKeys
-      )
-      editorRef.current.addCommand(
         KeyMod.CtrlCmd | KeyCode.US_DOT,
         onDisplayHelpKeys
       )
@@ -312,15 +302,15 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
 
     const isFullscreenRef = useRef<boolean>(false)
 
-    const resize = (fillContainer: boolean, fixedHeight?: number) => {
+    const resize = (fillContainer: boolean) => {
       const container = document.getElementById(monacoId) as HTMLElement
       const contentHeight = editorRef.current?.getContentHeight() || 0
 
       isFullscreenRef.current = fillContainer
 
-      const height =
-        fixedHeight ||
-        (fillContainer ? container.scrollHeight : Math.min(276, contentHeight)) // Upper bound is 12 lines * 23px line height = 276px
+      const height = fillContainer
+        ? container.scrollHeight
+        : Math.min(276, contentHeight) // Upper bound is 12 lines * 23px line height = 276px
 
       container.style.height = `${height}px`
       editorRef.current?.layout({
