@@ -566,6 +566,7 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
     return (
       <div
         id={monacoId}
+        data-testid="monaco-editors"
         style={{
           height: '100%',
           width: '100%'
