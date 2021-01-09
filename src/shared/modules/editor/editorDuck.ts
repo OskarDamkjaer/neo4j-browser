@@ -162,8 +162,10 @@ export const initializeCypherEditorEpic = (
 
       languages.registerCompletionItemProvider('cypher', {
         triggerCharacters: ['.', ':', '[', '(', '{', '$'],
-        provideCompletionItems: (model, position, { triggerCharacter }) => {
-          var { startColumn, endColumn } = model.getWordUntilPosition(position)
+        provideCompletionItems: (model, position) => {
+          const { startColumn, endColumn } = model.getWordUntilPosition(
+            position
+          )
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
@@ -173,7 +175,7 @@ export const initializeCypherEditorEpic = (
           editorSupport.update(model.getValue())
           const items = editorSupport.getCompletion(
             position.lineNumber,
-            triggerCharacter === ':' ? position.column - 1 : position.column
+            position.column - 1
           ).items
 
           return {
