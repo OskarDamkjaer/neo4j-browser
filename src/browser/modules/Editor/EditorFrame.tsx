@@ -75,7 +75,6 @@ import {
   REMOVE_PROJECT_FILE
 } from 'browser-components/ProjectFiles/projectFilesConstants'
 import { setProjectFileDefaultFileName } from 'browser-components/ProjectFiles/projectFilesUtils'
-import { defaultFavoriteName } from 'browser/modules/Sidebar/favorites.utils'
 import Monaco, { MonacoHandles } from './Monaco'
 import {
   codeFontLigatures,
@@ -84,6 +83,7 @@ import {
 import { getUseDb } from 'shared/modules/connections/connectionsDuck'
 import { getHistory, HistoryState } from 'shared/modules/history/historyDuck'
 import { CYPHER_FILE_EXTENSION } from 'services/export-favorites'
+import { defaultNameFromDisplayContent } from 'browser-components/SavedScripts'
 
 type EditorFrameProps = {
   bus: Bus
@@ -244,7 +244,7 @@ export function EditorFrame({
       return setProjectFileDefaultFileName(content)
     }
 
-    return defaultFavoriteName(content)
+    return defaultNameFromDisplayContent(content)
   }
 
   const showUnsaved = !!(
