@@ -15,8 +15,6 @@
  *
  */
 
-export {
-  exportFavorites,
-  mapOldFavoritesAndFolders
-} from './export-favorites.utils'
-export { SLASH, CYPHER_FILE_EXTENSION, DOT } from './export-favorites.constants'
+export function exportFavorites() {
+  throw new Error('Not yet implemented')
+}
