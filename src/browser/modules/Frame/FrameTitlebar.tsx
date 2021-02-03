@@ -77,6 +77,8 @@ import {
 import { csvFormat, stringModifier } from 'services/bolt/cypherTypesFormatting'
 import arrayHasItems from 'shared/utils/array-has-items'
 import { stringifyMod } from 'services/utils'
+import uuid from 'uuid'
+import { addFavorite } from 'shared/modules/favorites/favoritesDuck'
 
 class FrameTitlebar extends Component<any> {
   hasData() {
@@ -314,7 +316,9 @@ const mapStateToProps = (state: any, ownProps: any) => {
 const mapDispatchToProps = (dispatch: any, ownProps: any) => {
   return {
     newFavorite: (cmd: any) => {
-      dispatch(sidebar.setDraftScript(cmd, 'favorites'))
+      const id = uuid.v4()
+      dispatch(addFavorite(cmd, id))
+      dispatch(sidebar.setDraftScript(cmd, 'favorites', id))
     },
     newProjectFile: (cmd: any) => {
       dispatch(sidebar.setDraftScript(cmd, 'project files'))
