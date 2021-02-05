@@ -74,7 +74,7 @@ import {
   ADD_PROJECT_FILE,
   REMOVE_PROJECT_FILE
 } from 'browser-components/ProjectFiles/projectFilesConstants'
-import { setProjectFileDefaultFileName } from 'browser-components/ProjectFiles/projectFilesUtils'
+import { getProjectFileDefaultFileName } from 'browser-components/ProjectFiles/projectFilesUtils'
 import Monaco, { MonacoHandles } from './Monaco'
 import {
   codeFontLigatures,
@@ -82,7 +82,6 @@ import {
 } from 'shared/modules/settings/settingsDuck'
 import { getUseDb } from 'shared/modules/connections/connectionsDuck'
 import { getHistory, HistoryState } from 'shared/modules/history/historyDuck'
-import { CYPHER_FILE_EXTENSION } from 'services/exportFavorites'
 import { defaultNameFromDisplayContent } from 'browser-components/SavedScripts'
 
 type EditorFrameProps = {
@@ -241,7 +240,7 @@ export function EditorFrame({
       return name
     }
     if (isProjectFile) {
-      return setProjectFileDefaultFileName(content)
+      return getProjectFileDefaultFileName(content)
     }
 
     return defaultNameFromDisplayContent(content)
@@ -301,7 +300,6 @@ export function EditorFrame({
                     variables: {
                       projectId,
                       fileUpload: new File([editorValue], name),
-                      destination: `./${name}`,
                       overwrite: true
                     }
                   })
