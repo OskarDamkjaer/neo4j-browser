@@ -107,6 +107,8 @@ function SavedScriptsListItem({
           <SavedScriptsListItemDisplayName
             data-testid={`scriptTitle-${displayName}`}
             onClick={() => script.isStatic && selectScript()}
+            onDoubleClick={selectScript}
+            title="Double click to edit/preview"
           >
             {displayName}
           </SavedScriptsListItemDisplayName>
@@ -140,6 +142,7 @@ function SavedScriptsListItem({
                   <ContextMenuItem
                     data-testid="contextMenuEdit"
                     onClick={selectScript}
+                    title="Shortcut: double click the name of a favorite to edit it"
                   >
                     Edit content
                   </ContextMenuItem>
