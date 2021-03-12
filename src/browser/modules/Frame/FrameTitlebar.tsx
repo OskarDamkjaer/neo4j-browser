@@ -60,7 +60,8 @@ import {
   RunIcon,
   UpIcon,
   SaveFavorite,
-  StopIcon
+  StopIcon,
+  PenIcon
 } from 'browser-components/icons/Icons'
 import {
   DottedLineHover,
@@ -258,6 +259,10 @@ function FrameTitlebar(props: FrameTitleBarProps) {
     props.reRun(frame, cmd)
   }
 
+  function setMainEditorContent() {
+    props.bus.send(editor.SET_CONTENT, { message: editorValue })
+  }
+
   const { frame = {} } = props
   const fullscreenIcon = props.fullscreen ? <ContractIcon /> : <ExpandIcon />
   const expandCollapseIcon = props.collapse ? <DownIcon /> : <UpIcon />
@@ -282,30 +287,38 @@ function FrameTitlebar(props: FrameTitleBarProps) {
           />
         </FrameTitleEditorContainer>
       ) : (
-        <StyledFrameCommand
-          selectedDb={frame.useDb}
-          onClick={() => setRenderEditor(true)}
-          data-testid="frameCommand"
-        >
-          <DottedLineHover>{editorValue.split('\n').join(' ')}</DottedLineHover>
+        <StyledFrameCommand selectedDb={frame.useDb} data-testid="frameCommand">
+          <DottedLineHover onClick={setMainEditorContent}>
+            {editorValue.split('\n').join(' ')}
+          </DottedLineHover>
         </StyledFrameCommand>
       )}
       <StyledFrameTitlebarButtonSection>
-        <FrameButton
-          data-testid="rerunFrameButton"
-          title="Rerun"
-          onClick={() =>
-            props.request?.status === REQUEST_STATUS_PENDING
-              ? props.cancelQuery(frame.requestId)
-              : run(editorValue)
-          }
-        >
-          {props.request?.status === REQUEST_STATUS_PENDING ? (
-            <StopIcon />
-          ) : (
-            <RunIcon />
-          )}
-        </FrameButton>
+        {renderEditor ? (
+          <FrameButton
+            data-testid="rerunFrameButton"
+            title="Rerun"
+            onClick={() =>
+              props.request?.status === REQUEST_STATUS_PENDING
+                ? props.cancelQuery(frame.requestId)
+                : run(editorValue)
+            }
+          >
+            {props.request?.status === REQUEST_STATUS_PENDING ? (
+              <StopIcon />
+            ) : (
+              <RunIcon />
+            )}
+          </FrameButton>
+        ) : (
+          <FrameButton
+            data-testid="editQueryButton"
+            title="edit"
+            onClick={() => setRenderEditor(true)}
+          >
+            <PenIcon />
+          </FrameButton>
+        )}
         <FrameButton
           title="Save as Favorite"
           data-testid="frame-Favorite"

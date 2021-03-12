@@ -47,6 +47,7 @@ import stop_icon from 'icons/stop_icon.svg'
 import help from 'icons/help.svg'
 import newFolder from 'icons/folder-add.svg'
 import folder from 'icons/folder-empty.svg'
+import pencil from 'icons/pencil.svg'
 import addCircle from 'icons/add-circle.svg'
 import navIcon from 'icons/navigation-menu-vertical.svg'
 import cannyFeedback from 'icons/canny-feedback.svg'
@@ -302,6 +303,9 @@ export const RefreshIcon = (): JSX.Element => (
 )
 export const RunIcon = (): JSX.Element => (
   <IconContainer icon={run_icon} width={12} />
+)
+export const PenIcon = (): JSX.Element => (
+  <IconContainer icon={pencil} width={12} />
 )
 export const StopIcon = (): JSX.Element => (
   <IconContainer icon={stop_icon} width={12} />
