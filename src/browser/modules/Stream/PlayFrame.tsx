@@ -157,14 +157,6 @@ export function PlayFrame({ stack, bus, showPromotion }: any): JSX.Element {
       </CarouselButton>
     )
 
-  const classNames = ['playFrame']
-  if (hasCarousel || stack.length > 1) {
-    classNames.push('has-carousel')
-  }
-  if (isRemote) {
-    classNames.push('is-remote')
-  }
-
   let guideAndNav = guide
   if (stack.length > 1) {
     guideAndNav = (
@@ -175,14 +167,7 @@ export function PlayFrame({ stack, bus, showPromotion }: any): JSX.Element {
       </React.Fragment>
     )
   }
-  return (
-    <FrameTemplate
-      className={classNames.join(' ')}
-      header={stack[stackIndex]}
-      aside={aside}
-      contents={guideAndNav}
-    />
-  )
+  return <FrameTemplate aside={aside} contents={guideAndNav} hasSlides />
 }
 
 function generateContent(

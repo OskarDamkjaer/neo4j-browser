@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import FrameTemplate from '../Frame/FrameTemplate'
 import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
@@ -31,9 +31,11 @@ import {
 } from 'shared/modules/commands/commandsDuck'
 import { FireExtinguisherIcon } from 'browser-components/icons/Icons'
 import { InfoView } from './InfoView'
+import { saveAs } from 'file-saver'
+import { BaseFrameProps } from './Stream'
 
-const StyleFrame = ({ frame }: any) => {
-  let grass: string | false = ''
+const StyleFrame = ({ frame, setExportItems }: BaseFrameProps): JSX.Element => {
+  let grass = ''
   let contents = (
     <InfoView
       title="No styles yet"
@@ -42,7 +44,7 @@ const StyleFrame = ({ frame }: any) => {
     />
   )
   if (frame.result) {
-    grass = objToCss(frame.result)
+    grass = objToCss(frame.result) || ''
     contents = (
       <PaddedDiv>
         <pre>
@@ -52,11 +54,23 @@ const StyleFrame = ({ frame }: any) => {
       </PaddedDiv>
     )
   }
+
+  useEffect(() => {
+    setExportItems([
+      {
+        name: 'GraSS',
+        download: () => {
+          const blob = new Blob([grass], {
+            type: 'text/plain;charset=utf-8'
+          })
+          saveAs(blob, 'style.grass')
+        }
+      }
+    ])
+  }, [setExportItems, grass])
+
   return (
     <FrameTemplate
-      header={frame}
-      numRecords={1}
-      getRecords={() => grass}
       contents={contents}
       statusbar={<Statusbar frame={frame} />}
     />

@@ -46,7 +46,7 @@ import {
 import { AsciiView, AsciiStatusbar } from './AsciiView'
 import { CodeView, CodeStatusbar } from './CodeView'
 import { ErrorsViewBus as ErrorsView, ErrorsStatusbar } from './ErrorsView'
-import { WarningsView, WarningsStatusbar } from './WarningsView'
+import { WarningsView } from './WarningsView'
 import { PlanView, PlanStatusbar } from './PlanView'
 import { VisualizationConnectedBus } from './VisualizationView'
 import Render from 'browser-components/Render'
@@ -58,7 +58,10 @@ import {
   resultHasPlan,
   resultIsError,
   resultHasNodes,
-  initialView
+  initialView,
+  stringifyResultArray,
+  transformResultRecordsToResultArray,
+  recordToJSONMapper
 } from './helpers'
 import { SpinnerContainer, StyledStatsBarContainer } from '../styled'
 import { StyledFrameBody } from 'browser/modules/Frame/styled'
@@ -80,6 +83,13 @@ import RelatableView, {
 } from 'browser/modules/Stream/CypherFrame/relatable-view'
 import { requestExceedsVisLimits } from 'browser/modules/Stream/CypherFrame/helpers'
 import { GlobalState } from 'shared/globalState'
+import { csvFormat, stringModifier } from 'services/bolt/cypherTypesFormatting'
+import { CSVSerializer } from 'services/serializer'
+import { map } from 'lodash'
+import { stringifyMod } from 'services/utils'
+import { downloadPNGFromSVG, downloadSVG } from 'services/exporting/imageUtils'
+import { saveAs } from 'file-saver'
+import { ExportItem } from '../ExportButtons'
 
 type CypherFrameBaseProps = {
   frame: Frame
@@ -92,19 +102,19 @@ type CypherFrameProps = CypherFrameBaseProps & {
   maxRows: number
   request: BrowserRequest
   onRecentViewChanged: (view: viewTypes.FrameView) => void
+  setExportItems: (exportItems: ExportItem[]) => void
+  frameHeight: string
 }
 
 export type CypherFrameState = {
   openView?: viewTypes.FrameView
-  fullscreen: boolean
-  collapse: boolean
-  frameHeight: number
   hasVis: boolean
   errors?: unknown
   _asciiMaxColWidth?: number
   _asciiSetColWidth?: string
-  _planExpand?: 'EXPAND' | 'COLLAPSE'
+  _planExpand: PlanExpand
 }
+export type PlanExpand = 'EXPAND' | 'COLLAPSE'
 
 export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
   visElement: null | {
@@ -114,10 +124,8 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
   } = null
   state: CypherFrameState = {
     openView: undefined,
-    fullscreen: false,
-    collapse: false,
-    frameHeight: 472,
-    hasVis: false
+    hasVis: false,
+    _planExpand: 'EXPAND'
   }
 
   changeView(view: viewTypes.FrameView): void {
@@ -127,28 +135,14 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
     }
   }
 
-  onResize = (
-    fullscreen: boolean,
-    collapse: boolean,
-    frameHeight: number
-  ): void => {
-    if (frameHeight) {
-      this.setState({ fullscreen, collapse, frameHeight })
-    } else {
-      this.setState({ fullscreen, collapse })
-    }
-  }
-
   shouldComponentUpdate(
     props: CypherFrameProps,
     state: CypherFrameState
   ): boolean {
     return (
       this.props.request.updated !== props.request.updated ||
+      this.props.frameHeight !== props.frameHeight ||
       this.state.openView !== state.openView ||
-      this.state.fullscreen !== state.fullscreen ||
-      this.state.frameHeight !== state.frameHeight ||
-      this.state.collapse !== state.collapse ||
       this.state._asciiMaxColWidth !== state._asciiMaxColWidth ||
       this.state._asciiSetColWidth !== state._asciiSetColWidth ||
       this.state._planExpand !== state._planExpand ||
@@ -181,10 +175,24 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
       })
       if (view) this.setState({ openView: view })
     }
+
+    const downloadGraphics = [
+      { name: 'PNG', download: this.exportPNG },
+      { name: 'SVG', download: this.exportSVG }
+    ]
+    this.props.setExportItems([
+      { name: 'CSV', download: this.exportCSV },
+      { name: 'JSON', download: this.exportJSON },
+      ...(this.visElement ? downloadGraphics : [])
+    ])
   }
 
   componentDidMount(): void {
     const view = initialView(this.props, this.state)
+    this.props.setExportItems([
+      { name: 'CSV', download: this.exportCSV },
+      { name: 'JSON', download: this.exportJSON }
+    ])
     if (view) this.setState({ openView: view })
   }
 
@@ -283,6 +291,45 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
     </FrameSidebar>
   )
 
+  exportCSV = (): void => {
+    const records = this.getRecords()
+    const exportData = stringifyResultArray(
+      csvFormat,
+      transformResultRecordsToResultArray(records)
+    )
+    const data = exportData.slice()
+    const csv = CSVSerializer(data.shift())
+    csv.appendRows(data)
+    const blob = new Blob([csv.output()], {
+      type: 'text/plain;charset=utf-8'
+    })
+    saveAs(blob, 'export.csv')
+  }
+
+  exportJSON = (): void => {
+    const records = this.getRecords()
+    const exportData = map(records, recordToJSONMapper)
+    const data = stringifyMod(exportData, stringModifier, true)
+    const blob = new Blob([data], {
+      type: 'text/plain;charset=utf-8'
+    })
+    saveAs(blob, 'records.json')
+  }
+
+  exportPNG = (): void => {
+    if (this.visElement) {
+      const { svgElement, graphElement, type } = this.visElement
+      downloadPNGFromSVG(svgElement, graphElement, type)
+    }
+  }
+
+  exportSVG = (): void => {
+    if (this.visElement) {
+      const { svgElement, graphElement, type } = this.visElement
+      downloadSVG(svgElement, graphElement, type)
+    }
+  }
+
   getSpinner(): JSX.Element {
     return (
       <Centered>
@@ -299,11 +346,7 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
     query: string
   ): JSX.Element {
     return (
-      <StyledFrameBody
-        data-testid="frame-loaded-contents"
-        fullscreen={this.state.fullscreen}
-        collapsed={this.state.collapse}
-      >
+      <StyledFrameBody removePadding data-testid="frame-loaded-contents">
         <Display if={this.state.openView === viewTypes.TEXT} lazy>
           <AsciiView
             _asciiSetColWidth={this.state._asciiSetColWidth}
@@ -319,57 +362,40 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
           <RelatableView updated={this.props.request.updated} result={result} />
         </Display>
         <Display if={this.state.openView === viewTypes.CODE} lazy>
-          <CodeView
-            {...this.state}
-            result={result}
-            request={request}
-            query={query}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
+          <CodeView result={result} request={request} query={query} />
         </Display>
         <Display if={this.state.openView === viewTypes.ERRORS} lazy>
-          <ErrorsView
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
+          <ErrorsView result={result} updated={this.props.request.updated} />
         </Display>
         <Display if={this.state.openView === viewTypes.WARNINGS} lazy>
-          <WarningsView
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
+          <WarningsView result={result} updated={this.props.request.updated} />
         </Display>
         <Display if={this.state.openView === viewTypes.PLAN} lazy>
           <PlanView
-            {...this.state}
+            _planExpand={this.state._planExpand}
             result={result}
             updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
             assignVisElement={(svgElement: any, graphElement: any) => {
               this.visElement = { svgElement, graphElement, type: 'plan' }
               this.setState({ hasVis: true })
             }}
+            setPlanExpand={(_planExpand: PlanExpand) =>
+              this.setState({ _planExpand })
+            }
           />
         </Display>
         <Display if={this.state.openView === viewTypes.VISUALIZATION} lazy>
           <VisualizationConnectedBus
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-            frameHeight={this.state.frameHeight}
+            frameHeight={this.props.frameHeight}
             assignVisElement={(svgElement: any, graphElement: any) => {
               this.visElement = { svgElement, graphElement, type: 'graph' }
               this.setState({ hasVis: true })
             }}
-            initialNodeDisplay={this.props.initialNodeDisplay}
             autoComplete={this.props.autoComplete}
+            initialNodeDisplay={this.props.initialNodeDisplay}
             maxNeighbours={this.props.maxNeighbours}
+            result={result}
+            updated={this.props.request.updated}
           />
         </Display>
       </StyledFrameBody>
@@ -398,35 +424,17 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
           />
         </Display>
         <Display if={this.state.openView === viewTypes.CODE} lazy>
-          <CodeStatusbar
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
+          <CodeStatusbar result={result} />
         </Display>
         <Display if={this.state.openView === viewTypes.ERRORS} lazy>
-          <ErrorsStatusbar
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
-        </Display>
-        <Display if={this.state.openView === viewTypes.WARNINGS} lazy>
-          <WarningsStatusbar
-            {...this.state}
-            result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
-          />
+          <ErrorsStatusbar result={result} />
         </Display>
         <Display if={this.state.openView === viewTypes.PLAN} lazy>
           <PlanStatusbar
-            {...this.state}
             result={result}
-            updated={this.props.request.updated}
-            setParentState={this.setState.bind(this)}
+            setPlanExpand={(_planExpand: PlanExpand) =>
+              this.setState({ _planExpand })
+            }
           />
         </Display>
       </StyledStatsBarContainer>
@@ -458,20 +466,9 @@ export class CypherFrame extends Component<CypherFrameProps, CypherFrameState> {
     return (
       <FrameTemplate
         sidebar={requestStatus !== 'error' ? this.sidebar : undefined}
-        className="no-padding"
-        header={frame}
         contents={frameContents}
         statusbar={statusBar}
-        numRecords={result && 'records' in result ? result.records.length : 0}
-        getRecords={this.getRecords}
-        onResize={this.onResize}
-        visElement={
-          this.state.hasVis &&
-          (this.state.openView === viewTypes.VISUALIZATION ||
-            this.state.openView === viewTypes.PLAN)
-            ? this.visElement
-            : null
-        }
+        removePadding
       />
     )
   }

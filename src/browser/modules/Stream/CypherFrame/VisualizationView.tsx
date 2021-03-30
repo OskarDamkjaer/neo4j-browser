@@ -32,15 +32,41 @@ import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
 import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
 import { getMaxFieldItems } from 'shared/modules/settings/settingsDuck'
 import { resultHasTruncatedFields } from 'browser/modules/Stream/CypherFrame/helpers'
+import { Bus } from 'suber'
 
-type VisualizationState = any
+type VisualizationState = {
+  updated: number
+  nodes: any[]
+  relationships: any[]
+  hasTruncatedFields: boolean
+}
 
-export class Visualization extends Component<any, VisualizationState> {
+type VisualizationProps = {
+  result: any
+  graphStyleData: any
+  frameHeight: string
+  updated: number
+  autoComplete: boolean
+  maxNeighbours: number
+  bus: Bus
+  maxFieldItems: number
+  initialNodeDisplay: number
+  updateStyle: (style: any) => void
+  assignVisElement: (v: any) => void
+}
+
+export class Visualization extends Component<
+  VisualizationProps,
+  VisualizationState
+> {
   autoCompleteCallback: any
   graph: any
-  state: any = {
+
+  state: VisualizationState = {
     nodes: [],
-    relationships: []
+    relationships: [],
+    updated: 0,
+    hasTruncatedFields: false
   }
 
   componentDidMount() {
@@ -186,7 +212,7 @@ export class Visualization extends Component<any, VisualizationState> {
     if (!this.state.nodes.length) return null
 
     return (
-      <StyledVisContainer fullscreen={this.props.fullscreen}>
+      <StyledVisContainer height={this.props.frameHeight}>
         <ExplorerComponent
           maxNeighbours={this.props.maxNeighbours}
           hasTruncatedFields={this.state.hasTruncatedFields}
@@ -196,7 +222,6 @@ export class Visualization extends Component<any, VisualizationState> {
           getNeighbours={this.getNeighbours.bind(this)}
           nodes={this.state.nodes}
           relationships={this.state.relationships}
-          fullscreen={this.props.fullscreen}
           frameHeight={this.props.frameHeight}
           assignVisElement={this.props.assignVisElement}
           getAutoCompleteCallback={(callback: any) => {

@@ -22,7 +22,7 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 
-import { CypherFrame } from './index'
+import { CypherFrame } from './CypherFrame'
 import { Frame } from 'shared/modules/stream/streamDuck'
 import {
   BrowserRequest,
@@ -41,7 +41,10 @@ const createProps = (status: string, result: BrowserRequestResult) => ({
     status,
     updated: Math.random(),
     result
-  } as BrowserRequest
+  } as BrowserRequest,
+  autocomplete: false,
+  setExportItems: () => undefined,
+  frameHeight: '400px'
 })
 const withProvider = (store: any, children: any) => {
   return <Provider store={store}>{children}</Provider>

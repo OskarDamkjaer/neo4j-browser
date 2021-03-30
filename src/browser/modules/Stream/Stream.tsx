@@ -19,9 +19,9 @@
  */
 
 import { connect } from 'react-redux'
-import React, { memo, useRef, useEffect } from 'react'
+import React, { memo, useRef, useEffect, useState } from 'react'
 import { StyledStream, Padding, AnimationContainer } from './styled'
-import CypherFrame from './CypherFrame/index'
+import CypherFrame from './CypherFrame/CypherFrame'
 import HistoryFrame from './HistoryFrame'
 import PlayFrame from './PlayFrame'
 import DefaultFrame from '../Frame/DefaultFrame'
@@ -50,9 +50,13 @@ import {
 } from 'shared/modules/connections/connectionsDuck'
 import { getScrollToTop } from 'shared/modules/settings/settingsDuck'
 import DbsFrame from './Auth/DbsFrame'
-import EditFrame from './EditFrame'
+import { StyledFrame } from '../Frame/styled'
+import FrameTitlebar from '../Frame/FrameTitlebar'
+import { dim } from 'browser-styles/constants'
+import styled from 'styled-components'
+import ExportButton, { ExportItem } from './ExportButtons'
 
-const trans = {
+const nameToFrame: Record<string, React.ComponentType<any>> = {
   error: ErrorFrame,
   cypher: CypherFrame,
   'cypher-script': CypherScriptFrame,
@@ -78,14 +82,21 @@ const trans = {
   'reset-db': UseDbFrame,
   dbs: DbsFrame,
   style: StyleFrame,
-  edit: EditFrame,
   default: DefaultFrame
 }
 
-type FrameType = keyof typeof trans
+const getFrameComponent = (frameData: FrameStack): React.ComponentType<any> => {
+  const { cmd, type } = frameData.stack[0]
+  let MyFrame = nameToFrame[type] || nameToFrame.default
 
-const getFrame = (type: FrameType) => {
-  return trans[type] || trans.default
+  if (type === 'error') {
+    try {
+      const command = cmd.replace(/^:/, '')
+      const Frame = command[0].toUpperCase() + command.slice(1) + 'Frame'
+      MyFrame = require('./Extras/index')[Frame] || nameToFrame['error']
+    } catch (e) {}
+  }
+  return MyFrame
 }
 
 type StreamProps = {
@@ -95,9 +106,10 @@ type StreamProps = {
 }
 
 export interface BaseFrameProps {
-  frame: Frame & { isPinned: boolean }
+  frame: Frame
   activeConnectionData: Connection | null
   stack: Frame[]
+  setExportItems: (exportItems: ExportItem[]) => void
 }
 
 function Stream(props: StreamProps): JSX.Element {
@@ -119,35 +131,117 @@ function Stream(props: StreamProps): JSX.Element {
 
   return (
     <StyledStream ref={base} data-testid="stream">
-      {props.frames.map(frameObject => {
-        const frame = frameObject.stack[0]
-
-        const frameProps: BaseFrameProps = {
-          frame: { ...frame, isPinned: frameObject.isPinned },
-          activeConnectionData: props.activeConnectionData,
-          stack: frameObject.stack
-        }
-
-        let MyFrame = getFrame(frame.type as FrameType)
-        if (frame.type === 'error') {
-          try {
-            const cmd = frame.cmd.replace(/^:/, '')
-            const Frame = cmd[0].toUpperCase() + cmd.slice(1) + 'Frame'
-            MyFrame = require('./Extras/index')[Frame]
-            if (!MyFrame) {
-              MyFrame = getFrame(frame.type)
-            }
-          } catch (e) {}
-        }
-        return (
-          <AnimationContainer key={frame.id}>
-            <MyFrame {...frameProps} />
-          </AnimationContainer>
-        )
-      })}
+      {props.frames.map(frameObject => (
+        <AnimationContainer key={frameObject.stack[0].id}>
+          <FrameContainer
+            frameData={frameObject}
+            activeConnectionData={props.activeConnectionData}
+          />
+        </AnimationContainer>
+      ))}
       <Padding />
     </StyledStream>
   )
+}
+
+type FrameContainerProps = {
+  frameData: FrameStack
+  activeConnectionData: Connection | null
+}
+
+function FrameContainer(props: FrameContainerProps) {
+  const {
+    isFullscreen,
+    toggleFullscreen,
+    isCollapsed,
+    toggleCollapse
+  } = useSizeToggles()
+  const frame = props.frameData.stack[0]
+  const [exportItems, setExportItems] = useState<ExportItem[]>([])
+  const frameProps: BaseFrameProps = {
+    frame,
+    activeConnectionData: props.activeConnectionData,
+    stack: props.frameData.stack,
+    setExportItems: a => {
+      console.log(a)
+      setExportItems(a)
+    }
+  }
+  const FrameComponent = getFrameComponent(props.frameData)
+
+  return (
+    <StyledFrame
+      className={isFullscreen ? 'is-fullscreen' : ''}
+      data-testid="frame"
+      fullscreen={isFullscreen}
+    >
+      <FrameTitlebar
+        frame={frame}
+        isPinned={props.frameData.isPinned}
+        fullscreen={isFullscreen}
+        fullscreenToggle={toggleFullscreen}
+        collapse={isCollapsed}
+        collapseToggle={toggleCollapse}
+        ExportButton={
+          <ExportButton
+            frame={frame}
+            isRelateAvailable={false}
+            newProjectFile={() => undefined}
+            exportItems={exportItems}
+          />
+        }
+      />
+      <ContentContainer isCollapsed={isCollapsed} isFullscreen={isFullscreen}>
+        <FrameComponent
+          {...frameProps}
+          frameHeight={isFullscreen ? 'calc(100vh - 40px)' : '478px'}
+        />
+        {/* side effect of controlling cypher fram height like this. we can 
+          do implement dragable sizing of frames */}
+      </ContentContainer>
+    </StyledFrame>
+  )
+}
+
+const ContentContainer = styled.div<{
+  isCollapsed: boolean
+  isFullscreen: boolean
+}>`
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-height: ${props => {
+    if (props.isCollapsed) {
+      return 0
+    }
+    if (props.isFullscreen) {
+      return '100%'
+    }
+    return dim.frameBodyHeight - dim.frameStatusbarHeight + 1 + 'px'
+  }};
+`
+
+function useSizeToggles() {
+  const [isCollapsed, setCollapsed] = useState(false)
+  const [isFullscreen, setFullscreen] = useState(false)
+
+  function toggleCollapse() {
+    setCollapsed(coll => !coll)
+    setFullscreen(false)
+  }
+
+  function toggleFullscreen() {
+    setFullscreen(full => !full)
+    setCollapsed(false)
+  }
+
+  return {
+    isCollapsed,
+    isFullscreen,
+    toggleCollapse,
+    toggleFullscreen
+  }
 }
 
 const mapStateToProps = (state: GlobalState) => ({

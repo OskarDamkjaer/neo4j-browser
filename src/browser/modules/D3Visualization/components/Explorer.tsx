@@ -205,10 +205,6 @@ export class ExplorerComponent extends Component<any, ExplorerComponentState> {
         />
       )
     }
-    const inspectingItemType =
-      !this.state.inspectorContracted &&
-      ((this.state.hoveredItem && this.state.hoveredItem.type !== 'canvas') ||
-        (this.state.selectedItem && this.state.selectedItem.type !== 'canvas'))
 
     return (
       <StyledFullSizeContainer
@@ -216,13 +212,9 @@ export class ExplorerComponent extends Component<any, ExplorerComponentState> {
         className={
           Object.keys(this.state.stats.relTypes).length ? '' : 'one-legend-row'
         }
-        forcePaddingBottom={
-          inspectingItemType ? this.state.forcePaddingBottom : null
-        }
       >
         {legend}
         <GraphComponent
-          fullscreen={this.props.fullscreen}
           frameHeight={this.props.frameHeight}
           relationships={this.state.relationships}
           nodes={this.state.nodes}
@@ -238,7 +230,6 @@ export class ExplorerComponent extends Component<any, ExplorerComponentState> {
         />
         <InspectorComponent
           hasTruncatedFields={this.props.hasTruncatedFields}
-          fullscreen={this.props.fullscreen}
           hoveredItem={this.state.hoveredItem}
           selectedItem={this.state.selectedItem}
           graphStyle={this.state.graphStyle}

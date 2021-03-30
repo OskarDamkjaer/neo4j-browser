@@ -47,36 +47,28 @@ z-index: 130;`
   border-radius: 2px;
 `
 
-export const StyledFrameBody = styled.div<
-  FullscreenProps & { collapsed: boolean }
->`
+export const StyledFrameBody = styled.div<{
+  removePadding?: boolean
+  hasSlides?: boolean
+}>`
   overflow: auto;
   min-height: ${dim.frameBodyHeight / 2}px;
-  max-height: ${props => {
-    if (props.collapsed) {
-      return 0
-    }
-    if (props.fullscreen) {
-      return '100%'
-    }
-    return dim.frameBodyHeight - dim.frameStatusbarHeight + 1 + 'px'
-  }};
-  display: ${props => (props.collapsed ? 'none' : 'flex')};
+  max-height: 100%;
+  display: flex;
   flex-direction: row;
   width: 100%;
   padding: 30px;
 
-  .has-carousel &,
-  .has-stack & {
+  ${props =>
+    props.hasSlides
+      ? `
     position: relative;
     padding-bottom: 40px;
     padding-left: 40px;
-    padding-right: 40px;
-  }
+    padding-right: 40px;`
+      : ''}
 
-  .no-padding & {
-    padding: 0;
-  }
+  ${props => (props.removePadding ? 'padding: 0;' : '')}
 `
 
 export const StyledFrameMainSection = styled.div`
@@ -99,18 +91,15 @@ export const StyledFrameAside = styled.div`
   min-width: 120px;
 `
 
-export const StyledFrameContents = styled.div<FullscreenProps>`
+export const StyledFrameContents = styled.div`
   font-size: 14px;
   overflow: auto;
   min-height: ${dim.frameBodyHeight / 2}px;
-  max-height: ${props =>
-    props.fullscreen
-      ? '100vh'
-      : dim.frameBodyHeight - dim.frameStatusbarHeight * 2 + 'px'};
-  ${props => (props.fullscreen ? 'height: 100vh' : null)};
-  flex: auto;
+  max-height: 100%;
+  flex: 1 1 auto;
   display: flex;
   width: 100%;
+  height: 100%;
 
   .has-carousel & {
     overflow: visible;
@@ -121,10 +110,9 @@ export const StyledFrameContents = styled.div<FullscreenProps>`
   }
 `
 
-export const StyledFrameStatusbar = styled.div<FullscreenProps>`
+export const StyledFrameStatusbar = styled.div`
   border-top: ${props => props.theme.inFrameBorder};
   height: ${dim.frameStatusbarHeight - 1}px;
-  ${props => (props.fullscreen ? 'margin-top: -78px;' : '')};
   display: flex;
   flex-direction: row;
   flex: none;
@@ -193,7 +181,7 @@ export const FrameTitleEditorContainer = styled.div`
   }
 `
 
-export const StyledFrameCommand = styled.label<{ selectedDb: string }>`
+export const StyledFrameCommand = styled.label<{ selectedDb: string | null }>`
   font-family: ${props => props.theme.editorFont};
   color: ${props => props.theme.secondaryButtonText};
   background-color: ${props => props.theme.frameSidebarBackground};

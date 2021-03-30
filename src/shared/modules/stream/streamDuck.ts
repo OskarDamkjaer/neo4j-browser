@@ -37,6 +37,7 @@ export const FRAME_TYPE_FILTER_UPDATED = 'frames/FRAME_TYPE_FILTER_UPDATED'
 export const PIN = 'frames/PIN'
 export const UNPIN = 'frames/UNPIN'
 export const SET_RECENT_VIEW = 'frames/SET_RECENT_VIEW'
+export const UPDATE_FRAME = 'frames/UPDATE_FRAME'
 export const SET_MAX_FRAMES = 'frames/SET_MAX_FRAMES'
 export const TRACK_SAVE_AS_PROJECT_FILE = 'frames/TRACK_SAVE_AS_PROJECT_FILE'
 export const TRACK_FULLSCREEN_TOGGLE = 'frames/TRACK_FULLSCREEN_TOGGLE'
@@ -239,6 +240,8 @@ export interface FrameStack {
 
 export interface FramesState {
   allIds: string[]
+  // note on ids in this file. All Frame:s in a FrameStack.stack share the same id.
+  // That id is used as a key here in FramesState.byId. Yes this is confusing.
   byId: { [key: string]: FrameStack }
   recentView: null | FrameView
   maxFrames: number
