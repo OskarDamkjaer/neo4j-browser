@@ -125,6 +125,10 @@ export function getUseDb(state: GlobalState): string | null {
   return (state[NAME] || {}).useDb
 }
 
+export function getLastUseDb(state: GlobalState): string | null {
+  return (state[NAME] || {}).lastUseDb
+}
+
 export function getConnections(state: GlobalState): Connection[] {
   return Object.values(state[NAME].connectionsById)
 }
@@ -288,11 +292,10 @@ export default function(state = initialState, action: any) {
     case UPDATE_AUTH_ENABLED:
       return updateAuthEnabledHelper(state, action.authEnabled)
     case USE_DB:
-      const useDb = getActionUseDb(action, state)
-      let lastUseDb = useDb
-      if (useDb === null) {
-        lastUseDb = state.useDb || state.lastUseDb
-      }
+      // last non-null use db
+      const lastUseDb = state.useDb ?? state.lastUseDb
+      const useDb = action.useDb
+
       return { ...state, lastUseDb, useDb }
     case USER_CLEAR:
       return initialState
@@ -365,30 +368,12 @@ export const useDb = (db: any = null) => ({ type: USE_DB, useDb: db })
 
 export const resetUseDb = () => ({ type: USE_DB, useDb: null })
 
-export const useLastUsedOrDefaultDb = (db: any, databases: any) => ({
-  type: USE_DB,
-  useDb: db,
-  databases
-})
-
-const getActionUseDb = (action: any, state: any) => {
-  const { databases } = action
-  let { useDb } = action
-  if (useDb && databases) {
-    const { lastUseDb } = state
-    if (lastUseDb && databases.some((db: any) => db.name === lastUseDb)) {
-      useDb = lastUseDb
-    }
-  }
-  return useDb
-}
-
 // Epics
-export const useDbEpic = (action$: any, store: any) => {
+export const useDbEpic = (action$: any) => {
   return action$
     .ofType(USE_DB)
     .do((action: any) => {
-      bolt.useDb(getActionUseDb(action, store.getState()[NAME]))
+      bolt.useDb(action.useDb)
     })
     .map((action: any) => {
       if (!action.useDb) {

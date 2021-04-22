@@ -35,9 +35,9 @@ import {
   onLostConnection,
   getUseDb,
   useDb,
-  useLastUsedOrDefaultDb,
   getActiveConnectionData,
-  updateConnection
+  updateConnection,
+  getLastUseDb
 } from 'shared/modules/connections/connectionsDuck'
 import {
   commandSources,
@@ -453,10 +453,15 @@ const switchToRequestedDb = (store: any) => {
   const activeConnection = getActiveConnectionData(store.getState())
   const requestedUseDb = activeConnection?.requestedUseDb
 
-  const switchToDefaultDb = () => {
-    const defaultDb = databases.find((db: any) => db.default)
-    if (defaultDb) {
-      store.dispatch(useLastUsedOrDefaultDb(defaultDb.name, databases))
+  const switchToLastUsedOrDefaultDb = () => {
+    const lastUseDb = getLastUseDb(store.getState())
+    if (lastUseDb && databases.some((db: any) => db.name === lastUseDb)) {
+      store.dispatch(useDb(lastUseDb))
+    } else {
+      const defaultDb = databases.find((db: any) => db.default)
+      if (defaultDb) {
+        store.dispatch(useDb(defaultDb.name))
+      }
     }
   }
 
@@ -479,10 +484,10 @@ const switchToRequestedDb = (store: any) => {
       store.dispatch(executeCommand(`:use ${requestedUseDb}`), {
         source: commandSources.auto
       })
-      switchToDefaultDb()
+      switchToLastUsedOrDefaultDb()
     }
   } else {
-    switchToDefaultDb()
+    switchToLastUsedOrDefaultDb()
   }
   return Rx.Observable.of(null)
 }
