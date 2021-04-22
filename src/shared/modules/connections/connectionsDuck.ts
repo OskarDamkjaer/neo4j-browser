@@ -365,7 +365,7 @@ export const useDb = (db: any = null) => ({ type: USE_DB, useDb: db })
 
 export const resetUseDb = () => ({ type: USE_DB, useDb: null })
 
-export const useDefaultDb = (db: any, databases: any) => ({
+export const useLastUsedOrDefaultDb = (db: any, databases: any) => ({
   type: USE_DB,
   useDb: db,
   databases

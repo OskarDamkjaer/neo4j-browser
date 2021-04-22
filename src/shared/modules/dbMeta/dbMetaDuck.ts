@@ -35,7 +35,7 @@ import {
   onLostConnection,
   getUseDb,
   useDb,
-  useDefaultDb,
+  useLastUsedOrDefaultDb,
   getActiveConnectionData,
   updateConnection
 } from 'shared/modules/connections/connectionsDuck'
@@ -456,7 +456,7 @@ const switchToRequestedDb = (store: any) => {
   const switchToDefaultDb = () => {
     const defaultDb = databases.find((db: any) => db.default)
     if (defaultDb) {
-      store.dispatch(useDefaultDb(defaultDb.name, databases))
+      store.dispatch(useLastUsedOrDefaultDb(defaultDb.name, databases))
     }
   }
 
