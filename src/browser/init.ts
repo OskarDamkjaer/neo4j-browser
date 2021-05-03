@@ -35,3 +35,5 @@ if (typeof btoa === 'undefined') {
     return Buffer.from(str, 'binary').toString('base64')
   }
 }
+
+;(window as any).global = window
