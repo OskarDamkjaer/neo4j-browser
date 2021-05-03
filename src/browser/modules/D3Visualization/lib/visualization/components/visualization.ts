@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import d3 from 'd3'
+/* global d3 */
 import NeoD3Geometry from './graphGeometry'
 import * as vizRenderers from '../renders/init'
 import { menu as menuRenderer } from '../renders/menu'

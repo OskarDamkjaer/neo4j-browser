@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import d3 from 'd3'
+/* global d3 */
 import Renderer from '../components/renderer'
 import icons from './d3Icons'
 
