@@ -27,8 +27,9 @@
       "browser-hooks/*": ["browser/hooks/*"],
       "browser-styles/*": ["browser/styles/*"],
       "project-root/*": ["../*"],
-      "icons": ["browser/icons/*"]
-    }
+      "icons/*": ["browser/icons/*"]
+    },
+    "types": ["vite/client"]
   },
   "include": ["./src/**/*"]
 }
