@@ -200,18 +200,8 @@ export function App(props: any) {
                 />
                 <CannyLoader />
               </Render>
-              <Render if={syncConsent && loadExternalScripts && loadSync}>
-                <BrowserSyncInit
-                  authStatus={browserSyncAuthStatus}
-                  authData={browserSyncMetadata}
-                  config={browserSyncConfig}
-                />
-              </Render>
               <StyledApp>
                 <StyledBody>
-                  <ErrorBoundary>
-                    <Sidebar openDrawer={drawer} onNavClick={handleNavClick} />
-                  </ErrorBoundary>
                   <StyledMainWrapper id={MAIN_WRAPPER_DOM_ID}>
                     <Main
                       activeConnection={activeConnection}

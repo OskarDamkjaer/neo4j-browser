@@ -117,7 +117,6 @@ export default combineEpics(
   startupConnectEpic,
   disconnectSuccessEpic,
   verifyConnectionCredentialsEpic,
-  startupConnectionSuccessEpic,
   startupConnectionFailEpic,
   detectActiveConnectionChangeEpic,
   dbMetaEpic,

@@ -60,16 +60,6 @@ const Main = React.memo(function Main(props: any) {
           {props.errorMessage}
         </ErrorBanner>
       </Render>
-      <Render if={props.connectionState === DISCONNECTED_STATE}>
-        <NotAuthedBanner data-testid="disconnectedBanner">
-          Database access not available. Please use&nbsp;
-          <AutoExecButton
-            cmd="server connect"
-            data-testid="disconnectedBannerCode"
-          />
-          &nbsp; to establish connection. There's a graph waiting for you.
-        </NotAuthedBanner>
-      </Render>
       <Render if={props.connectionState === PENDING_STATE && !past10Sec}>
         <WarningBanner data-testid="reconnectBanner">
           Connection to server lost. Reconnecting...
