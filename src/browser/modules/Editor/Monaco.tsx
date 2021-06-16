@@ -281,6 +281,10 @@ const Monaco = forwardRef<MonacoHandles, MonacoProps>(
     }, [enableMultiStatementMode, useDb])
 
     useEffect(() => {
+      editorRef.current?.focus()
+    }, [])
+
+    useEffect(() => {
       editorRef.current?.updateOptions({ fontLigatures })
     }, [fontLigatures])
 
