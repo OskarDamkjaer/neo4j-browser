@@ -123,7 +123,11 @@ export class SysInfoFrame extends Component<
       bus.self(
         CYPHER_REQUEST,
         {
-          query: sysinfoQuery(useDb),
+          query: sysinfoQuery({
+            databaseName: 'neo4j',
+            namespacesEnabled: false,
+            userConfiguredPrefix: 'neo4j'
+          }),
           queryType: NEO4J_BROWSER_USER_ACTION_QUERY
         },
         responseHandler(this.setState.bind(this), useDb)

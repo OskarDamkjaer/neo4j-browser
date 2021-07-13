@@ -89,108 +89,70 @@ const sysInfoMetrics: SysInfoMetrics[] = [
 ]
 
 type MetricType = 'database' | 'dbms'
-type GetFullMetricNameParams = {
+type MetricSettings = {
+  databaseName: string
+  namespacesEnabled: boolean
+  userConfiguredPrefix: string
+}
+type ConstructorParams = MetricSettings & {
   baseMetricName: string
   type: MetricType
   group: string
 }
-class MetricsQueryBuilder {
-  databaseName: string
-  namespacesEnabled: boolean
-  userConfiguredPrefix: string
 
-  constructor(
-    databaseName: string,
-    namespacesEnabled: boolean,
-    userConfiguredPrefix: string
-  ) {
-    this.databaseName = databaseName
-    this.namespacesEnabled = namespacesEnabled
-    this.userConfiguredPrefix = userConfiguredPrefix
+function constructQuery({
+  userConfiguredPrefix,
+  namespacesEnabled,
+  databaseName,
+  baseMetricName,
+  type,
+  group
+}: ConstructorParams) {
+  // Build full metric name of format:
+  // <user-configured-prefix>.[namespace?].[databaseName?].<metric-name>
+  const parts = [userConfiguredPrefix]
+  if (namespacesEnabled) {
+    parts.push(type)
   }
 
-  getFullMetricName = ({
-    baseMetricName,
-    type,
-    group
-  }: GetFullMetricNameParams) => {
-    // Build full metric name of format:
-    // <user-configured-prefix>.[namespace?].[databaseName?].<metric-name>
-    const parts = [this.userConfiguredPrefix]
-    if (this.namespacesEnabled) {
-      parts.push(type)
-    }
-
-    if (type === 'database') {
-      parts.push(this.databaseName)
-    }
-
-    parts.push(baseMetricName)
-    const fullMetricName = parts.join('.')
-
-    return `CALL dbms.queryJmx("neo4j.metrics:name=${fullMetricName}") YIELD name, attributes RETURN "${group}" AS group, name, attributes`
+  if (type === 'database') {
+    parts.push(databaseName)
   }
 
-  getSysInfoQuery = () => {
-    //const sysInfoMetrics.map(({ group, type, baseMetricNames }) => {
-    //})
-  }
+  parts.push(baseMetricName)
+  const fullMetricName = parts.join('.')
+
+  return `CALL dbms.queryJmx("neo4j.metrics:name=${fullMetricName}") YIELD name, attributes RETURN "${group}" AS group, name, attributes`
+}
+
+export function sysinfoQuery({
+  databaseName,
+  namespacesEnabled,
+  userConfiguredPrefix
+}: MetricSettings): string {
+  const queries = sysInfoMetrics
+    .map(({ group, type, baseMetricNames }) =>
+      baseMetricNames.map(baseMetricName =>
+        constructQuery({
+          databaseName,
+          namespacesEnabled,
+          userConfiguredPrefix,
+          baseMetricName,
+          group,
+          type
+        })
+      )
+    )
+    .reduce(flatten, [])
+  const joinedToBigQuery = queries.join(' UNION ALL\n') + ';'
+  return joinedToBigQuery
+}
+
+function flatten<T>(acc: T[], curr: T[]): T[] {
+  return acc.concat(curr)
 }
 
 const jmxPrefix = 'neo4j.metrics:name='
-export const sysinfoQuery = (useDb?: string | null): string => `
-// Store size. Per db
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.store.size.total") YIELD name, attributes
-RETURN "Store Size" AS group, name, attributes
-UNION ALL
-
-// Page cache. Per DBMS.
-CALL dbms.queryJmx("${jmxPrefix}neo4j.page_cache.flushes") YIELD name, attributes
-RETURN "Page Cache" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.page_cache.evictions") YIELD name, attributes
-RETURN "Page Cache" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.page_cache.eviction_exceptions") YIELD name, attributes
-RETURN "Page Cache" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.page_cache.hit_ratio") YIELD name, attributes
-RETURN "Page Cache" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.page_cache.usage_ratio") YIELD name, attributes
-RETURN "Page Cache" AS group, name, attributes
-UNION ALL
-
-// Primitive counts. Per db.
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.ids_in_use.node") YIELD name, attributes
-RETURN "Primitive Count" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.ids_in_use.property") YIELD name, attributes
-RETURN "Primitive Count" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.ids_in_use.relationship") YIELD name, attributes
-RETURN "Primitive Count" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.ids_in_use.relationship_type") YIELD name, attributes
-RETURN "Primitive Count" AS group, name, attributes
-UNION ALL
-
-// Transactions. Per db.
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.transaction.last_committed_tx_id") YIELD name, attributes
-RETURN "Transactions" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.transaction.active") YIELD name, attributes
-RETURN "Transactions" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.transaction.peak_concurrent") YIELD name, attributes
-RETURN "Transactions" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.transaction.started") YIELD name, attributes
-RETURN "Transactions" AS group, name, attributes
-UNION ALL
-CALL dbms.queryJmx("${jmxPrefix}neo4j.${useDb}.transaction.committed") YIELD name, attributes
-RETURN "Transactions" AS group, name, attributes
-`
 
 export const responseHandler = (
   setState: (newState: any) => void,
