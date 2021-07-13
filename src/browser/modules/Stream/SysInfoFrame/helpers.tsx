@@ -55,7 +55,7 @@ const sysInfoMetrics: SysInfoMetrics[] = [
     baseMetricNames: ['store.size.total']
   },
   {
-    group: 'Page cache',
+    group: 'Page Cache',
     type: 'dbms',
     baseMetricNames: [
       'page_cache.flushes',
