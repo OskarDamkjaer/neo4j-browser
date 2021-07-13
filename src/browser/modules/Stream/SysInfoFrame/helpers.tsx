@@ -20,6 +20,7 @@
 
 import { flattenAttributes } from './sysinfo-utils'
 import { toHumanReadableBytes } from 'services/utils'
+import { string } from 'browser/modules/Editor/cypher/functions'
 
 /*
 The database provides a number of ways to monitor it's health, we use JMX MBeans.
@@ -42,54 +43,12 @@ So to debug a jmx query make sure to read the docs on the exact syntax and check
 See docs for reference on what metrics exist & how to correctly query jmx: https://neo4j.com/docs/operations-manual/current/monitoring/metrics/reference/
 See docs for what metrics are filtered out by default and other for relevant settings: https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_metrics.namespaces.enabled
 */
-
-type MetricType = 'database' | 'dbms'
-type CreateQueryBuilderParams = {
-  databaseName: string
-  userConfiguredPrefix: string
-  namespacesEnabled: boolean
-}
-type QueryBuilderParams = {
-  baseMetricName: string
-  type: MetricType
-  group: string
-}
-
-type TableQueryData = {
+type SysInfoMetrics = {
   group: string
   type: MetricType
   baseMetricNames: string[]
 }
-
-function createMetrcisQueryBuilder({
-  databaseName,
-  namespacesEnabled,
-  userConfiguredPrefix
-}: CreateQueryBuilderParams) {
-  return function metricsQueryBuilder({
-    baseMetricName,
-    type,
-    group
-  }: QueryBuilderParams) {
-    // Build full metric name of format:
-    // <user-configured-prefix>.[namespace?].[databaseName?].<metric-name>
-    const parts = [userConfiguredPrefix]
-    if (namespacesEnabled) {
-      parts.push(type)
-    }
-
-    if (type === 'database') {
-      parts.push(databaseName)
-    }
-
-    parts.push(baseMetricName)
-    const fullMetricName = parts.join('.')
-
-    return `CALL dbms.queryJmx("neo4j.metrics:name=${fullMetricName}") YIELD name, attributes RETURN "${group}" AS group, name, attributes`
-  }
-}
-
-const tableData: TableQueryData[] = [
+const sysInfoMetrics: SysInfoMetrics[] = [
   {
     group: 'Store Size',
     type: 'database',
@@ -128,6 +87,55 @@ const tableData: TableQueryData[] = [
     ]
   }
 ]
+
+type MetricType = 'database' | 'dbms'
+type GetFullMetricNameParams = {
+  baseMetricName: string
+  type: MetricType
+  group: string
+}
+class MetricsQueryBuilder {
+  databaseName: string
+  namespacesEnabled: boolean
+  userConfiguredPrefix: string
+
+  constructor(
+    databaseName: string,
+    namespacesEnabled: boolean,
+    userConfiguredPrefix: string
+  ) {
+    this.databaseName = databaseName
+    this.namespacesEnabled = namespacesEnabled
+    this.userConfiguredPrefix = userConfiguredPrefix
+  }
+
+  getFullMetricName = ({
+    baseMetricName,
+    type,
+    group
+  }: GetFullMetricNameParams) => {
+    // Build full metric name of format:
+    // <user-configured-prefix>.[namespace?].[databaseName?].<metric-name>
+    const parts = [this.userConfiguredPrefix]
+    if (this.namespacesEnabled) {
+      parts.push(type)
+    }
+
+    if (type === 'database') {
+      parts.push(this.databaseName)
+    }
+
+    parts.push(baseMetricName)
+    const fullMetricName = parts.join('.')
+
+    return `CALL dbms.queryJmx("neo4j.metrics:name=${fullMetricName}") YIELD name, attributes RETURN "${group}" AS group, name, attributes`
+  }
+
+  getSysInfoQuery = () => {
+    //const sysInfoMetrics.map(({ group, type, baseMetricNames }) => {
+    //})
+  }
+}
 
 const jmxPrefix = 'neo4j.metrics:name='
 export const sysinfoQuery = (useDb?: string | null): string => `
