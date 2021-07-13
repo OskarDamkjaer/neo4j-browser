@@ -152,17 +152,13 @@ function flatten<T>(acc: T[], curr: T[]): T[] {
   return acc.concat(curr)
 }
 
-const jmxPrefix = 'neo4j.metrics:name='
-
-export const responseHandler = (
-  setState: (newState: any) => void,
-  useDb?: string | null
-) =>
+export const responseHandler = (setState: (newState: any) => void) =>
   function(res: any): void {
     if (!res || !res.result || !res.result.records) {
       setState({ success: false })
       return
     }
+
     const intoGroups = res.result.records.reduce(
       (grouped: any, record: any) => {
         if (!grouped.hasOwnProperty(record.get('group'))) {
@@ -172,7 +168,10 @@ export const responseHandler = (
           }
         }
         const mappedRecord = {
-          name: record.get('name').replace(jmxPrefix, ''),
+          name: record
+            .get('name')
+            .split('.')
+            .pop(),
           value: (
             record.get('attributes').Count || record.get('attributes').Value
           ).value
@@ -188,26 +187,27 @@ export const responseHandler = (
     const storeSizes = [
       {
         label: 'Size',
-        value: toHumanReadableBytes(size[`neo4j.${useDb}.store.size.total`])
+        value: toHumanReadableBytes(size.total)
       }
     ]
+
     const cache = flattenAttributes(intoGroups['Page Cache'])
     const pageCache = [
-      { label: 'Flushes', value: cache['neo4j.page_cache.flushes'] },
-      { label: 'Evictions', value: cache['neo4j.page_cache.evictions'] },
+      { label: 'Flushes', value: cache.flushes },
+      { label: 'Evictions', value: cache.evictions },
       {
         label: 'Eviction Exceptions',
-        value: cache['neo4j.page_cache.eviction_exceptions']
+        value: cache.eviction_exceptions
       },
       {
         label: 'Hit Ratio',
-        value: cache['neo4j.page_cache.hit_ratio'],
+        value: cache.hit_ratio,
         mapper: (v: number) => `${(v * 100).toFixed(2)}%`,
         optional: true
       },
       {
         label: 'Usage Ratio',
-        value: cache['neo4j.page_cache.usage_ratio'],
+        value: cache.usage_ratio,
         mapper: (v: number) => `${(v * 100).toFixed(2)}%`,
         optional: true
       }
@@ -216,18 +216,18 @@ export const responseHandler = (
     // Primitive count
     const primitive = flattenAttributes(intoGroups['Primitive Count'])
     const idAllocation = [
-      { label: 'Node ID', value: primitive[`neo4j.${useDb}.ids_in_use.node`] },
+      { label: 'Node ID', value: primitive.node },
       {
         label: 'Property ID',
-        value: primitive[`neo4j.${useDb}.ids_in_use.property`]
+        value: primitive.property
       },
       {
         label: 'Relationship ID',
-        value: primitive[`neo4j.${useDb}.ids_in_use.relationship`]
+        value: primitive.relationship
       },
       {
         label: 'Relationship Type ID',
-        value: primitive[`neo4j.${useDb}.ids_in_use.relationship_type`]
+        value: primitive.relationship_type
       }
     ]
 
@@ -236,15 +236,15 @@ export const responseHandler = (
     const transactions = [
       {
         label: 'Last Tx Id',
-        value: tx[`neo4j.${useDb}.transaction.last_committed_tx_id`]
+        value: tx.last_committed_tx_id
       },
-      { label: 'Current', value: tx[`neo4j.${useDb}.transaction.active`] },
+      { label: 'Current', value: tx.active },
       {
         label: 'Peak',
-        value: tx[`neo4j.${useDb}.transaction.peak_concurrent`]
+        value: tx.peak_concurrent
       },
-      { label: 'Opened', value: tx[`neo4j.${useDb}.transaction.started`] },
-      { label: 'Committed', value: tx[`neo4j.${useDb}.transaction.committed`] }
+      { label: 'Opened', value: tx.started },
+      { label: 'Committed', value: tx.committed }
     ]
 
     setState({
