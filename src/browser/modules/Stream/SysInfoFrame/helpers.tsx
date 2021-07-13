@@ -43,8 +43,91 @@ See docs for reference on what metrics exist & how to correctly query jmx: https
 See docs for what metrics are filtered out by default and other for relevant settings: https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_metrics.namespaces.enabled
 */
 
-const constructJmxQuery = (metricName: string, displayName: string): string =>
-  `CALL dbms.queryJmx("neo4j.metrics:name=${metricName}") YIELD name, attributes RETURN "${displayName}" AS group, name, attributes`
+type MetricType = 'database' | 'dbms'
+type CreateQueryBuilderParams = {
+  databaseName: string
+  userConfiguredPrefix: string
+  namespacesEnabled: boolean
+}
+type QueryBuilderParams = {
+  baseMetricName: string
+  type: MetricType
+  group: string
+}
+
+type TableQueryData = {
+  group: string
+  type: MetricType
+  baseMetricNames: string[]
+}
+
+function createMetrcisQueryBuilder({
+  databaseName,
+  namespacesEnabled,
+  userConfiguredPrefix
+}: CreateQueryBuilderParams) {
+  return function metricsQueryBuilder({
+    baseMetricName,
+    type,
+    group
+  }: QueryBuilderParams) {
+    // Build full metric name of format:
+    // <user-configured-prefix>.[namespace?].[databaseName?].<metric-name>
+    const parts = [userConfiguredPrefix]
+    if (namespacesEnabled) {
+      parts.push(type)
+    }
+
+    if (type === 'database') {
+      parts.push(databaseName)
+    }
+
+    parts.push(baseMetricName)
+    const fullMetricName = parts.join('.')
+
+    return `CALL dbms.queryJmx("neo4j.metrics:name=${fullMetricName}") YIELD name, attributes RETURN "${group}" AS group, name, attributes`
+  }
+}
+
+const tableData: TableQueryData[] = [
+  {
+    group: 'Store Size',
+    type: 'database',
+    baseMetricNames: ['store.size.total']
+  },
+  {
+    group: 'Page cache',
+    type: 'dbms',
+    baseMetricNames: [
+      'page_cache.flushes',
+      'page_cache.evictions',
+      'page_cache.eviction_exceptions',
+      'page_cache.hit_ratio',
+      'page_cache.usage_ratio'
+    ]
+  },
+  {
+    group: 'Primitive Count',
+    type: 'database',
+    baseMetricNames: [
+      'ids_in_use.node',
+      'ids_in_use.property',
+      'ids_in_use.relationship',
+      'ids_in_use.relationship_type'
+    ]
+  },
+  {
+    group: 'Transactions',
+    type: 'database',
+    baseMetricNames: [
+      'transaction.last_committed_tx_id',
+      'transaction.active',
+      'transaction.peak_concurrent',
+      'transaction.started',
+      'transaction.committed'
+    ]
+  }
+]
 
 const jmxPrefix = 'neo4j.metrics:name='
 export const sysinfoQuery = (useDb?: string | null): string => `
