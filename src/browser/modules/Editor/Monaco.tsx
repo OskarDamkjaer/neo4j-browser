@@ -108,7 +108,7 @@ class Monaco extends React.Component<MonacoProps, MonacoState> {
 
     this.props.onChange(text)
     this.addWarnings(parse(text).referencesListener.queriesAndCommands)
-  }, 300)
+  }, 500)
 
   focus = (): void => {
     this.editor?.focus()
