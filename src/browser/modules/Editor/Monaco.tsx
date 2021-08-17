@@ -35,7 +35,7 @@ import { Bus } from 'suber'
 
 import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
 import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
-import { QueryResult } from 'neo4j-driver'
+import { Neo4jError, QueryResult } from 'neo4j-driver'
 
 const shouldCheckForHints = (code: string) =>
   code.trim().length > 0 &&
@@ -109,6 +109,7 @@ class Monaco extends React.Component<MonacoProps, MonacoState> {
     this.props.onChange(text)
     this.addWarnings(parse(text).referencesListener.queriesAndCommands)
   }, 300)
+
   focus = (): void => {
     this.editor?.focus()
   }
@@ -271,7 +272,11 @@ class Monaco extends React.Component<MonacoProps, MonacoState> {
           query: EXPLAIN_QUERY_PREFIX + text,
           queryType: NEO4J_BROWSER_USER_ACTION_QUERY
         },
-        (response: { result: QueryResult; success?: boolean }) => {
+        (response: {
+          result: QueryResult
+          success?: boolean
+          error?: Neo4jError
+        }) => {
           if (
             response.success === true &&
             response.result.summary.notifications.length > 0
@@ -296,6 +301,18 @@ class Monaco extends React.Component<MonacoProps, MonacoState> {
                   }
                 }
               )
+            ])
+          } else if (response.success === false && response.error) {
+            editor.setModelMarkers(model, this.getMonacoId(), [
+              ...editor.getModelMarkers({ owner: this.getMonacoId() }),
+              {
+                startLineNumber: statement.start.line,
+                startColumn: statement.start.column + 1,
+                endLineNumber: statement.stop.line,
+                endColumn: statement.stop.column + 2,
+                message: response.error.code + '\n\n' + response.error.message,
+                severity: MarkerSeverity.Error
+              }
             ])
           }
         }
