@@ -303,14 +303,34 @@ class Monaco extends React.Component<MonacoProps, MonacoState> {
               )
             ])
           } else if (response.success === false && response.error) {
+            const { error } = response
+            const positionBestEffort = /\(line ([0-9]+), column ([0-9]+)/
+            const matches = error.message.match(positionBestEffort)
+            let startLineNumber = statement.start.line
+            let startColumn = statement.start.column
+            let endColumn = statement.stop.column + 2
+
+            if (matches && matches.length >= 3) {
+              startLineNumber = parseInt(matches[1], 10)
+              startColumn = parseInt(matches[2], 10)
+              if (startLineNumber === 1) {
+                startColumn -= EXPLAIN_QUERY_PREFIX_LENGTH + 1
+              }
+              // it can happen that we get an error that's "outside of our statement".
+              // Then highlight rest of line
+              if (endColumn < startColumn) {
+                endColumn = 9999
+              }
+            }
+
             editor.setModelMarkers(model, this.getMonacoId(), [
               ...editor.getModelMarkers({ owner: this.getMonacoId() }),
               {
-                startLineNumber: statement.start.line,
-                startColumn: statement.start.column + 1,
+                startLineNumber,
+                startColumn,
                 endLineNumber: statement.stop.line,
-                endColumn: statement.stop.column + 2,
-                message: response.error.code + '\n\n' + response.error.message,
+                endColumn,
+                message: error.code + '\n\n' + error.message,
                 severity: MarkerSeverity.Error
               }
             ])
