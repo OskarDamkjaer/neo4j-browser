@@ -36,7 +36,6 @@ import {
 import { getDiscoveryEndpoint } from 'services/bolt/boltHelpers'
 import { boltToHttp, generateBoltUrl } from 'services/boltscheme.utils'
 import { getUrlInfo } from 'shared/services/utils'
-import { isConnectedAuraHost } from 'shared/modules/connections/connectionsDuck'
 import { isCloudHost } from 'shared/services/utils'
 import { NEO4J_CLOUD_DOMAINS } from 'shared/modules/settings/settingsDuck'
 import {
@@ -190,10 +189,18 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
         dataFromForceUrl = onlyTruthy
       }
 
-      const boltHost =
+      const rawBoltHost =
         dataFromForceUrl.host ||
         // or some other way to persist
         getConnection(store.getState(), CONNECTION_ID)?.host
+      const boltHost =
+        rawBoltHost &&
+        boltToHttp(
+          generateBoltUrl(
+            getAllowedBoltSchemesForHost(store.getState(), rawBoltHost),
+            rawBoltHost
+          )
+        )
 
       // Only do network call when we can guess a discovery endpoint
       if (
@@ -211,7 +218,7 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
       )
 
       const boltDiscoveryPromise = boltHost
-        ? fetchDataFromDiscoveryUrl(boltToHttp(boltHost))
+        ? fetchDataFromDiscoveryUrl(boltHost)
         : Promise.resolve({ SSOProviders: [] })
 
       const discoveryUrlParamPromise = action.discoveryURL
@@ -291,7 +298,7 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
           }
         else {
           authLog(
-            `No SSO provider with id: "${SSORedirectId}" found in disocvery data`
+            `No SSO provider with id: "${SSORedirectId}" found in discovery data`
           )
         }
       } else if (wasRedirectedBackFromSSOServer()) {
