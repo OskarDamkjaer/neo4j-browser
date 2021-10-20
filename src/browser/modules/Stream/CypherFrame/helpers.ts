@@ -19,7 +19,6 @@
  */
 
 import neo4j from 'neo4j-driver'
-import { Duration } from 'luxon'
 import {
   entries,
   flatten,

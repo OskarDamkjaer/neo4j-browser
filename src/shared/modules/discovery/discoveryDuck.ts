@@ -21,6 +21,7 @@
 import remote from 'services/remote'
 import {
   DiscoverableData,
+  getConnection,
   SSOProvider,
   updateConnection
 } from 'shared/modules/connections/connectionsDuck'
@@ -33,7 +34,7 @@ import {
   CLOUD_SCHEMES
 } from 'shared/modules/app/appDuck'
 import { getDiscoveryEndpoint } from 'services/bolt/boltHelpers'
-import { generateBoltUrl } from 'services/boltscheme.utils'
+import { boltToHttp, generateBoltUrl } from 'services/boltscheme.utils'
 import { getUrlInfo } from 'shared/services/utils'
 import { isConnectedAuraHost } from 'shared/modules/connections/connectionsDuck'
 import { isCloudHost } from 'shared/services/utils'
@@ -168,13 +169,6 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
     })
     .merge(some$.ofType(USER_CLEAR))
     .mergeMap(async (action: any) => {
-      // we can get data about which host different mechanisms, they are ranked in
-      // the following prioritization order
-      // 1. Url param - dbms
-      // 2. Url param - connectURL
-      // 3. database in discovery endpoint
-      // 4. Url param - discoveryURL
-
       let dataFromForceUrl: DiscoverableData = {}
 
       if (action.forceURL) {
@@ -196,54 +190,74 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
         dataFromForceUrl = onlyTruthy
       }
 
-      // Only do network call when we can guess discovery endpoint
-      if (!action.discoveryURL && !hasDiscoveryEndpoint(store.getState())) {
+      const boltHost =
+        dataFromForceUrl.host ||
+        // or some other way to persist
+        getConnection(store.getState(), CONNECTION_ID)?.host
+
+      // Only do network call when we can guess a discovery endpoint
+      if (
+        !action.discoveryURL &&
+        !hasDiscoveryEndpoint(store.getState()) &&
+        !action.forceUrl &&
+        !boltHost
+      ) {
         authLog('No discovery endpoint found or passed')
-        if (action.forceURL) {
-          return Promise.resolve({ type: DONE, discovered: dataFromForceUrl })
-        } else {
-          return Promise.resolve({ type: 'NOOP' })
-        }
+        return Promise.resolve({ type: 'NOOP' })
       }
 
-      const discoveryEndpoint = getDiscoveryEndpoint(
-        getHostedUrl(store.getState())
+      const discoveryEndpointPromise = fetchDataFromDiscoveryUrl(
+        getDiscoveryEndpoint(getHostedUrl(store.getState()))
       )
-      const discoveryEndpointData = await fetchDataFromDiscoveryUrl(
-        discoveryEndpoint
-      )
-      const discoveryURLData = await (action.discoveryURL
+
+      const boltDiscoveryPromise = boltHost
+        ? fetchDataFromDiscoveryUrl(boltToHttp(boltHost))
+        : Promise.resolve({ SSOProviders: [] })
+
+      const discoveryUrlParamPromise = action.discoveryURL
         ? fetchDataFromDiscoveryUrl(action.discoveryURL)
-        : Promise.resolve({ SSOProviders: [] }))
+        : Promise.resolve({ SSOProviders: [] })
 
-      const newProvidersFromDiscoveryURL = discoveryURLData.SSOProviders.filter(
-        providerFromDiscUrl =>
-          !discoveryEndpointData.SSOProviders.find(
-            provider => providerFromDiscUrl.id === provider.id
-          )
-      )
+      // Promise all is safe since fetchDataFromDiscoveryUrl never rejects
+      const [
+        discoveryEndPointData,
+        boltDiscoveryData,
+        discoveryUrlParamData
+      ] = await Promise.all([
+        discoveryEndpointPromise,
+        boltDiscoveryPromise,
+        discoveryUrlParamPromise
+      ])
 
-      const mergedSSOProviders = discoveryEndpointData.SSOProviders.concat(
-        newProvidersFromDiscoveryURL
+      const mergedSSOProviders = [
+        ...discoveryEndPointData.SSOProviders,
+        ...boltDiscoveryData.SSOProviders,
+        ...discoveryUrlParamData.SSOProviders
+      ].reduceRight(
+        // reduce right since the last one is the most important
+        (acc: SSOProvider[], curr: SSOProvider) =>
+          acc.find(s => s.id === curr.id) ? acc : [...acc, curr],
+        []
       )
 
       const mergedDiscoveryData = {
-        ...discoveryURLData,
-        ...discoveryEndpointData,
+        ...discoveryEndPointData,
+        ...boltDiscoveryData,
+        ...discoveryUrlParamData,
         ...dataFromForceUrl,
         SSOProviders: mergedSSOProviders
       }
-
-      const isAura = isConnectedAuraHost(store.getState())
-      mergedDiscoveryData.supportsMultiDb =
-        !!action.requestedUseDb ||
-        (!isAura &&
-          parseInt((mergedDiscoveryData.neo4j_version || '0').charAt(0)) >= 4)
 
       if (!mergedDiscoveryData.host) {
         authLog('No host found in discovery data, aborting.')
         return { type: DONE }
       }
+
+      const isAura = isCloudHost(mergedDiscoveryData.host, NEO4J_CLOUD_DOMAINS)
+      mergedDiscoveryData.supportsMultiDb =
+        !!action.requestedUseDb ||
+        (!isAura &&
+          parseInt((mergedDiscoveryData.neo4j_version || '0').charAt(0)) >= 4)
 
       mergedDiscoveryData.host = generateBoltUrl(
         getAllowedBoltSchemesForHost(
@@ -312,13 +326,14 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
     .map((a: any) => a)
 }
 
-async function fetchDataFromDiscoveryUrl(
-  url: string
-): Promise<{
+type DiscoveryURLResponse = {
   host?: string
   neo4j_version?: string
   SSOProviders: SSOProvider[]
-}> {
+}
+async function fetchDataFromDiscoveryUrl(
+  url: string
+): Promise<DiscoveryURLResponse> {
   try {
     authLog(`Fetching ${url} to discover SSO providers`)
     const result = await remote.getJSON(url)
@@ -332,7 +347,10 @@ async function fetchDataFromDiscoveryUrl(
       result && (result.bolt_routing || result.bolt_direct || result.bolt)
 
     const ssoProviderField =
-      result.sso_providers || result.ssoproviders || result.ssoProviders
+      result?.auth_config?.oidc_providers ||
+      result.sso_providers ||
+      result.ssoproviders ||
+      result.ssoProviders
 
     if (!ssoProviderField) {
       authLog(`No sso provider field found on json at ${url}`)
