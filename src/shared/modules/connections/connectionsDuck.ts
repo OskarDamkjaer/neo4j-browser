@@ -441,7 +441,7 @@ export type DiscoverableData = {
   restApi?: string
   supportsMultiDb?: boolean
   host?: string
-  encrypted?: string
+  encrypted?: boolean
   hasForceUrl?: boolean
   SSOError?: string
   attemptSSOLogin?: boolean

@@ -31,7 +31,8 @@ import {
   hasDiscoveryEndpoint,
   getHostedUrl,
   getAllowedBoltSchemes,
-  CLOUD_SCHEMES
+  CLOUD_SCHEMES,
+  hasDiscoveryEndpoint
 } from 'shared/modules/app/appDuck'
 import { getDiscoveryEndpoint } from 'services/bolt/boltHelpers'
 import { boltToHttp, generateBoltUrl } from 'services/boltscheme.utils'
@@ -168,111 +169,27 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
     })
     .merge(some$.ofType(USER_CLEAR))
     .mergeMap(async (action: any) => {
-      let dataFromForceUrl: DiscoverableData = {}
-
-      if (action.forceURL) {
-        const { username, protocol, host } = getUrlInfo(action.forceURL)
-
-        const discovered = {
-          username,
-          requestedUseDb: action.requestedUseDb,
-          host: `${protocol ? `${protocol}//` : ''}${host}`,
-          supportsMultiDb: !!action.requestedUseDb,
-          encrypted: action.encrypted,
-          restApi: action.restApi,
-          hasForceURL: true
-        }
-        const onlyTruthy = Object.entries(discovered)
-          .filter(item => item[1] /* truthy check on value */)
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-
-        dataFromForceUrl = onlyTruthy
-      }
-
-      const rawBoltHost =
-        dataFromForceUrl.host ||
-        // or some other way to persist
-        getConnection(store.getState(), CONNECTION_ID)?.host
+      const hostedURL = getHostedUrl(store.getState())
+      const hasDiscEndpoint = hasDiscoveryEndpoint(store.getState())
       const boltHost =
-        rawBoltHost &&
-        boltToHttp(
-          generateBoltUrl(
-            getAllowedBoltSchemesForHost(store.getState(), rawBoltHost),
-            rawBoltHost
-          )
+        getConnection(store.getState(), CONNECTION_ID)?.host ?? undefined
+      const generateBoltUrlWithAllowedScheme = (boltUrl: string) =>
+        generateBoltUrl(
+          getAllowedBoltSchemesForHost(store.getState(), boltUrl),
+          boltUrl
         )
 
-      // Only do network call when we can guess a discovery endpoint
-      if (
-        !action.discoveryURL &&
-        !hasDiscoveryEndpoint(store.getState()) &&
-        !action.forceUrl &&
-        !boltHost
-      ) {
-        authLog('No discovery endpoint found or passed')
-        return Promise.resolve({ type: 'NOOP' })
-      }
-
-      const discoveryEndpointPromise = fetchDataFromDiscoveryUrl(
-        getDiscoveryEndpoint(getHostedUrl(store.getState()))
+      const { success, discoveryData } = await getAndMergeDiscoveryData(
+        action,
+        hostedURL,
+        hasDiscEndpoint,
+        generateBoltUrlWithAllowedScheme,
+        boltHost
       )
-
-      const boltDiscoveryPromise = boltHost
-        ? fetchDataFromDiscoveryUrl(boltHost)
-        : Promise.resolve({ SSOProviders: [] })
-
-      const discoveryUrlParamPromise = action.discoveryURL
-        ? fetchDataFromDiscoveryUrl(action.discoveryURL)
-        : Promise.resolve({ SSOProviders: [] })
-
-      // Promise all is safe since fetchDataFromDiscoveryUrl never rejects
-      const [
-        discoveryEndPointData,
-        boltDiscoveryData,
-        discoveryUrlParamData
-      ] = await Promise.all([
-        discoveryEndpointPromise,
-        boltDiscoveryPromise,
-        discoveryUrlParamPromise
-      ])
-
-      const mergedSSOProviders = [
-        ...discoveryEndPointData.SSOProviders,
-        ...boltDiscoveryData.SSOProviders,
-        ...discoveryUrlParamData.SSOProviders
-      ].reduceRight(
-        // reduce right since the last one is the most important
-        (acc: SSOProvider[], curr: SSOProvider) =>
-          acc.find(s => s.id === curr.id) ? acc : [...acc, curr],
-        []
-      )
-
-      const mergedDiscoveryData = {
-        ...discoveryEndPointData,
-        ...boltDiscoveryData,
-        ...discoveryUrlParamData,
-        ...dataFromForceUrl,
-        SSOProviders: mergedSSOProviders
-      }
-
-      if (!mergedDiscoveryData.host) {
-        authLog('No host found in discovery data, aborting.')
+      if (!success) {
         return { type: DONE }
       }
-
-      const isAura = isCloudHost(mergedDiscoveryData.host, NEO4J_CLOUD_DOMAINS)
-      mergedDiscoveryData.supportsMultiDb =
-        !!action.requestedUseDb ||
-        (!isAura &&
-          parseInt((mergedDiscoveryData.neo4j_version || '0').charAt(0)) >= 4)
-
-      mergedDiscoveryData.host = generateBoltUrl(
-        getAllowedBoltSchemesForHost(
-          store.getState(),
-          mergedDiscoveryData.host
-        ),
-        mergedDiscoveryData.host
-      )
+      const SSOProviders = discoveryData.SSOProviders || []
 
       let SSOError
       const SSORedirectId = getSSOServerIdIfShouldRedirect()
@@ -282,7 +199,7 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
         removeSearchParamsInBrowserHistory(
           defaultSearchParamsToRemoveAfterAutoRedirect
         )
-        const selectedSSOProvider = mergedDiscoveryData.SSOProviders.find(
+        const selectedSSOProvider = SSOProviders.find(
           ({ id }) => id === SSORedirectId
         )
         if (selectedSSOProvider)
@@ -305,17 +222,12 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
         authLog('Initializing auth_flow_step redirect')
 
         try {
-          const creds = (await handleAuthFromRedirect(
-            mergedDiscoveryData.SSOProviders
-          )) as {
-            username: string
-            password: string
-          }
+          const creds = await handleAuthFromRedirect(SSOProviders)
 
           return {
             type: DONE,
             discovered: {
-              ...mergedDiscoveryData,
+              ...discoveryData,
               ...creds,
               attemptSSOLogin: true
             }
@@ -328,7 +240,7 @@ export const discoveryOnStartupEpic = (some$: any, store: any) => {
         }
       }
 
-      return { type: DONE, discovered: { ...mergedDiscoveryData, SSOError } }
+      return { type: DONE, discovered: { ...discoveryData, SSOError } }
     })
     .map((a: any) => a)
 }
@@ -395,4 +307,121 @@ async function fetchDataFromDiscoveryUrl(
 
     return { SSOProviders: [] }
   }
+}
+
+type DataFromPreviousAction = {
+  forceURL: string
+  discoveryURL: string
+  requestedUseDb: string
+  encrypted: boolean // used in switch connection epic, but needs another look
+  restApi: string // Injected by desktop, used for :http command? How to they get oin the APP_START
+}
+
+async function getAndMergeDiscoveryData(
+  action: DataFromPreviousAction,
+  hostedURL: string,
+  hasDiscoveryEndpoint: boolean,
+  generateBoltUrlWithAllowedScheme: (boltUrl: string) => string,
+  boltHostFromRedux?: string
+): Promise<{
+  success: boolean
+  discoveryData: DiscoverableData
+}> {
+  let dataFromForceURL: DiscoverableData = {}
+
+  if (action.forceURL) {
+    const { username, protocol, host } = getUrlInfo(action.forceURL)
+
+    const discovered = {
+      username,
+      requestedUseDb: action.requestedUseDb,
+      host: `${protocol ? `${protocol}//` : ''}${host}`,
+      supportsMultiDb: !!action.requestedUseDb,
+      encrypted: action.encrypted,
+      restApi: action.restApi,
+      hasForceURL: true
+    }
+
+    const onlyTruthy = Object.entries(discovered)
+      .filter(item => item[1] /* truthy check on value */)
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+
+    dataFromForceURL = onlyTruthy
+  }
+
+  const rawBoltHost = dataFromForceURL.host || boltHostFromRedux
+  const boltHost =
+    rawBoltHost && boltToHttp(generateBoltUrlWithAllowedScheme(rawBoltHost))
+
+  // Only do network call when we can guess a discovery endpoint
+  if (
+    !action.discoveryURL &&
+    !hasDiscoveryEndpoint &&
+    !action.forceURL &&
+    !boltHost
+  ) {
+    authLog('No discovery endpoint found or passed')
+    return { success: false, discoveryData: {} }
+  }
+
+  const discoveryEndpointPromise = fetchDataFromDiscoveryUrl(
+    getDiscoveryEndpoint(hostedURL)
+  )
+
+  const boltDiscoveryPromise = boltHost
+    ? fetchDataFromDiscoveryUrl(boltHost)
+    : Promise.resolve({ SSOProviders: [] })
+
+  const discoveryUrlParamPromise = action.discoveryURL
+    ? fetchDataFromDiscoveryUrl(action.discoveryURL)
+    : Promise.resolve({ SSOProviders: [] })
+
+  // TODO check if the hosts differ and act on that.
+
+  // Promise all is safe since fetchDataFromDiscoveryUrl never rejects
+  const [
+    discoveryEndPointData,
+    boltDiscoveryData,
+    discoveryUrlParamData
+  ] = await Promise.all([
+    discoveryEndpointPromise,
+    boltDiscoveryPromise,
+    discoveryUrlParamPromise
+  ])
+
+  const mergedSSOProviders = [
+    ...discoveryEndPointData.SSOProviders,
+    ...boltDiscoveryData.SSOProviders,
+    ...discoveryUrlParamData.SSOProviders
+  ].reduceRight(
+    // reduce right since the last one is the most important
+    (acc: SSOProvider[], curr: SSOProvider) =>
+      acc.find(s => s.id === curr.id) ? acc : [...acc, curr],
+    []
+  )
+
+  const mergedDiscoveryData = {
+    ...discoveryEndPointData,
+    ...boltDiscoveryData,
+    ...discoveryUrlParamData,
+    ...dataFromForceURL,
+    SSOProviders: mergedSSOProviders
+  }
+
+  if (!mergedDiscoveryData.host) {
+    authLog('No host found in discovery data, aborting.')
+    return { success: false, discoveryData: {} }
+  }
+
+  const isAura = isCloudHost(mergedDiscoveryData.host, NEO4J_CLOUD_DOMAINS)
+  mergedDiscoveryData.supportsMultiDb =
+    !!action.requestedUseDb ||
+    (!isAura &&
+      parseInt((mergedDiscoveryData.neo4j_version || '0').charAt(0)) >= 4)
+
+  mergedDiscoveryData.host = generateBoltUrlWithAllowedScheme(
+    mergedDiscoveryData.host
+  )
+
+  return { success: true, discoveryData: mergedDiscoveryData }
 }
