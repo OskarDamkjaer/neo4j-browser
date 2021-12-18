@@ -19,30 +19,30 @@
  */
 
 import {
-  updateConnection,
-  getConnection
-} from 'shared/modules/connections/connectionsDuck'
+  authLog,
+  authRequestForSSO,
+  defaultSearchParamsToRemoveAfterAutoRedirect,
+  getSSOServerIdIfShouldRedirect,
+  handleAuthFromRedirect,
+  removeSearchParamsInBrowserHistory,
+  wasRedirectedBackFromSSOServer
+} from 'neo4j-client-sso'
+import { generateBoltUrl } from 'services/boltscheme.utils'
 import {
   APP_START,
-  USER_CLEAR,
-  hasDiscoveryEndpoint,
-  getHostedUrl,
-  getAllowedBoltSchemes,
   CLOUD_SCHEMES,
-  inDesktop
+  getAllowedBoltSchemes,
+  getHostedUrl,
+  hasDiscoveryEndpoint,
+  inDesktop,
+  USER_CLEAR
 } from 'shared/modules/app/appDuck'
-import { generateBoltUrl } from 'services/boltscheme.utils'
-import { isCloudHost, AUTH_STORAGE_CONNECT_HOST } from 'shared/services/utils'
-import { NEO4J_CLOUD_DOMAINS } from 'shared/modules/settings/settingsDuck'
 import {
-  authRequestForSSO,
-  handleAuthFromRedirect,
-  authLog,
-  removeSearchParamsInBrowserHistory,
-  getSSOServerIdIfShouldRedirect,
-  wasRedirectedBackFromSSOServer,
-  defaultSearchParamsToRemoveAfterAutoRedirect
-} from 'neo4j-client-sso'
+  getConnection,
+  updateConnection
+} from 'shared/modules/connections/connectionsDuck'
+import { NEO4J_CLOUD_DOMAINS } from 'shared/modules/settings/settingsDuck'
+import { AUTH_STORAGE_CONNECT_HOST, isCloudHost } from 'shared/services/utils'
 import { getAndMergeDiscoveryData } from './discoveryHelpers'
 
 export const NAME = 'discover-bolt-host'

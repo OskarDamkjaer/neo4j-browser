@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { ManualLink, ManualLinkProps } from 'browser-components/ManualLink'
+import React from 'react'
 
 const tests: [Omit<ManualLinkProps, 'children'>, string][] = [
   [

@@ -17,9 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { PlainPlayIcon } from 'browser-components/icons/Icons'
 import React from 'react'
 import styled from 'styled-components'
-import { PlainPlayIcon } from 'browser-components/icons/Icons'
 
 const chip = styled.div`
   word-break: break-all;

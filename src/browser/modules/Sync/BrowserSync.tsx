@@ -18,51 +18,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import TimeAgo from 'react-timeago'
-import { shouldAllowOutgoingConnections } from 'shared/modules/dbMeta/dbMetaDuck'
-import {
-  getConnectionState,
-  DISCONNECTED_STATE
-} from 'shared/modules/connections/connectionsDuck'
-import {
-  setSyncData,
-  setSyncMetadata,
-  clearSync as clearSyncAction,
-  clearSyncAndLocal as clearSyncAndLocalAction,
-  consentSync,
-  authorizedAs,
-  setSyncAuthData,
-  getLastSyncedAt,
-  getUserAuthStatus,
-  getServiceStatus,
-  getUserData,
-  SIGNED_IN,
-  DOWN,
-  PENDING
-} from 'shared/modules/sync/syncDuck'
-import { signOut } from 'services/browserSyncService'
-import { getBrowserSyncConfig } from 'shared/modules/settings/settingsDuck'
+import { FormButton, SyncSignInButton } from 'browser-components/buttons'
 import {
   Drawer,
   DrawerBody,
   DrawerHeader,
   DrawerSection,
-  DrawerSubHeader,
   DrawerSectionBody,
+  DrawerSubHeader,
   DrawerToppedHeader
 } from 'browser-components/drawer/drawer-styled'
-import { FormButton, SyncSignInButton } from 'browser-components/buttons'
 import { BinIcon } from 'browser-components/icons/Icons'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import TimeAgo from 'react-timeago'
+import { signOut } from 'services/browserSyncService'
 import {
-  ConsentCheckBox,
+  DISCONNECTED_STATE,
+  getConnectionState
+} from 'shared/modules/connections/connectionsDuck'
+import { shouldAllowOutgoingConnections } from 'shared/modules/dbMeta/dbMetaDuck'
+import { getBrowserSyncConfig } from 'shared/modules/settings/settingsDuck'
+import {
+  authorizedAs,
+  clearSync as clearSyncAction,
+  clearSyncAndLocal as clearSyncAndLocalAction,
+  consentSync,
+  DOWN,
+  getLastSyncedAt,
+  getServiceStatus,
+  getUserAuthStatus,
+  getUserData,
+  PENDING,
+  setSyncAuthData,
+  setSyncData,
+  setSyncMetadata,
+  SIGNED_IN
+} from 'shared/modules/sync/syncDuck'
+import { BrowserSyncSignoutIframe } from './BrowserSyncAuthIframes'
+import BrowserSyncAuthWindow from './BrowserSyncAuthWindow'
+import {
   AlertBox,
   ClearLocalConfirmationBox,
+  ConsentCheckBox,
   SmallHeaderText
 } from './styled'
-import BrowserSyncAuthWindow from './BrowserSyncAuthWindow'
-import { BrowserSyncSignoutIframe } from './BrowserSyncAuthIframes'
 
 type BrowserSyncState = any
 

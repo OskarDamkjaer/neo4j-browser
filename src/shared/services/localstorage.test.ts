@@ -61,7 +61,7 @@ describe('localstorage', () => {
 
   test('should fetch items from storage based on key input', () => {
     // Given
-    const keys = (['key1', 'key2', 'key3'] as unknown) as ls.LocalStorageKey[]
+    const keys = ['key1', 'key2', 'key3'] as unknown as ls.LocalStorageKey[]
     const vals = {
       key1: 'hello',
       key2: [1, 2, 3]
@@ -85,9 +85,9 @@ describe('localstorage', () => {
 
   it('returns "settings" with the playImplicitInitCommands flag set true', () => {
     ls.applyKeys('settings')
-    ls.setStorage(({
+    ls.setStorage({
       getItem: () => JSON.stringify({})
-    } as Partial<Storage>) as Storage)
+    } as Partial<Storage> as Storage)
 
     expect(ls.getAll()).toEqual(
       expect.objectContaining({
@@ -103,9 +103,9 @@ describe('localstorage', () => {
     ) => {
       const setItemMock = jest.fn()
       ls.applyKeys('connections')
-      ls.setStorage(({
+      ls.setStorage({
         setItem: setItemMock
-      } as Partial<Storage>) as Storage)
+      } as Partial<Storage> as Storage)
 
       const state = {
         connections: {
@@ -134,9 +134,8 @@ describe('localstorage', () => {
     }
 
     it('removes passwords from connection data if browser.retain_connection_credentials is false', () => {
-      const setItemMock = createAndInvokeMiddlewareWithRetainConnectionFlag(
-        false
-      )
+      const setItemMock =
+        createAndInvokeMiddlewareWithRetainConnectionFlag(false)
 
       expect(setItemMock).toHaveBeenCalledWith(
         'neo4j.connections',
@@ -147,9 +146,8 @@ describe('localstorage', () => {
     })
 
     it('retains passwords in connection data if browser.retain_connection_credentials is true', () => {
-      const setItemMock = createAndInvokeMiddlewareWithRetainConnectionFlag(
-        true
-      )
+      const setItemMock =
+        createAndInvokeMiddlewareWithRetainConnectionFlag(true)
 
       expect(setItemMock).toHaveBeenCalledWith(
         'neo4j.connections',
@@ -172,9 +170,9 @@ describe('localstorage', () => {
     }) => {
       const setItemMock = jest.fn()
       ls.applyKeys('history')
-      ls.setStorage(({
+      ls.setStorage({
         setItem: setItemMock
-      } as Partial<Storage>) as Storage)
+      } as Partial<Storage> as Storage)
 
       const state = {
         history: existingHistory,

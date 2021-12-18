@@ -20,11 +20,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import {
   commandSources,
   executeCommand
 } from 'shared/modules/commands/commandsDuck'
+import styled from 'styled-components'
 
 const ExecutableIcon = styled.i`
   padding-right: 4px;

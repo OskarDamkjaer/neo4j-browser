@@ -18,14 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
+import { DownloadIcon } from 'browser-components/icons/Icons'
+import {
+  recordToJSONMapper,
+  stringifyResultArray,
+  transformResultRecordsToResultArray
+} from 'browser/modules/Stream/CypherFrame/helpers'
 import { saveAs } from 'file-saver'
 import { map } from 'lodash-es'
-
-import { Frame } from 'shared/modules/frames/framesDuck'
-
+import React from 'react'
+import { csvFormat, stringModifier } from 'services/bolt/cypherTypesFormatting'
 import { CSVSerializer } from 'services/serializer'
-import { DownloadIcon } from 'browser-components/icons/Icons'
+import { stringifyMod } from 'services/utils'
+import { Frame } from 'shared/modules/frames/framesDuck'
+import {
+  downloadPNGFromSVG,
+  downloadSVG
+} from 'shared/services/exporting/imageUtils'
+import arrayHasItems from 'shared/utils/array-has-items'
 import {
   DropdownButton,
   DropdownContent,
@@ -33,18 +43,6 @@ import {
   DropDownItemDivider,
   DropdownList
 } from '../Stream/styled'
-import {
-  downloadPNGFromSVG,
-  downloadSVG
-} from 'shared/services/exporting/imageUtils'
-import {
-  stringifyResultArray,
-  transformResultRecordsToResultArray,
-  recordToJSONMapper
-} from 'browser/modules/Stream/CypherFrame/helpers'
-import { csvFormat, stringModifier } from 'services/bolt/cypherTypesFormatting'
-import arrayHasItems from 'shared/utils/array-has-items'
-import { stringifyMod } from 'services/utils'
 
 type ExportButtonProps = {
   frame: Frame

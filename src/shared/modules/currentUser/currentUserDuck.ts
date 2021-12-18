@@ -19,21 +19,21 @@
  */
 
 import bolt from 'services/bolt/bolt'
-import { shouldUseCypherThread } from 'shared/modules/settings/settingsDuck'
 import { APP_START } from 'shared/modules/app/appDuck'
 import {
   CONNECTION_SUCCESS,
   DISCONNECTION_SUCCESS,
   getAuthEnabled
 } from 'shared/modules/connections/connectionsDuck'
+import { shouldUseCypherThread } from 'shared/modules/settings/settingsDuck'
 import { getBackgroundTxMetadata } from 'shared/services/bolt/txMetadata'
+import { DB_META_DONE, SYSTEM_DB } from '../dbMeta/dbMetaDuck'
 import {
   canSendTxMetadata,
-  getShowCurrentUserProcedure,
   FIRST_MULTI_DB_SUPPORT,
-  FIRST_NO_MULTI_DB_SUPPORT
+  FIRST_NO_MULTI_DB_SUPPORT,
+  getShowCurrentUserProcedure
 } from '../features/versionedFeatures'
-import { DB_META_DONE, SYSTEM_DB } from '../dbMeta/dbMetaDuck'
 
 export const NAME = 'user'
 export const UPDATE_CURRENT_USER = `${NAME}/UPDATE_CURRENT_USER`

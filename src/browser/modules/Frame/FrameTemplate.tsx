@@ -18,19 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Frame } from 'shared/modules/frames/framesDuck'
-import FrameTitlebar from './FrameTitlebar'
 import FrameEditor from './FrameEditor'
-
+import FrameTitlebar from './FrameTitlebar'
 import {
+  ContentContainer,
   StyledFrame,
+  StyledFrameAside,
   StyledFrameBody,
   StyledFrameContents,
-  StyledFrameStatusbar,
   StyledFrameMainSection,
-  StyledFrameAside,
-  ContentContainer
+  StyledFrameStatusbar
 } from './styled'
 
 type FrameTemplateProps = {

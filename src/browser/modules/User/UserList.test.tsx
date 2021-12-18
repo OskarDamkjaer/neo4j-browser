@@ -20,14 +20,13 @@
 
 import { render } from '@testing-library/react'
 import React from 'react'
-import { createBus } from 'suber'
-
-import { UserList } from './UserList'
-import { ROUTED_CYPHER_WRITE_REQUEST } from 'shared/modules/cypher/cypherDuck'
 import {
   listRolesQuery,
   listUsersQuery
 } from 'shared/modules/cypher/boltUserHelper'
+import { ROUTED_CYPHER_WRITE_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import { createBus } from 'suber'
+import { UserList } from './UserList'
 
 // Stubbing out components dependant on the store
 jest.mock('browser/modules/Frame/FrameTitlebar', () => () => null)

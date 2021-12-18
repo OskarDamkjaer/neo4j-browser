@@ -19,35 +19,34 @@
  */
 
 import { syncResourceFor } from 'services/browserSyncService'
-
 import { setItem } from 'services/localstorage'
 import { APP_START } from 'shared/modules/app/appDuck'
 import {
+  ADD_FAVORITE,
   composeDocumentsToSync,
   favoritesToLoad,
   loadFavorites,
-  syncFavorites,
-  ADD_FAVORITE,
   REMOVE_FAVORITE,
+  syncFavorites,
   SYNC_FAVORITES,
   UPDATE_FAVORITES
 } from 'shared/modules/favorites/favoritesDuck'
 import {
-  REMOVE_FOLDER,
   ADD_FOLDER,
-  UPDATE_FOLDERS,
-  SYNC_FOLDERS,
   composeFoldersToSync,
   foldersToLoad,
   loadFolders,
-  syncFolders
+  REMOVE_FOLDER,
+  syncFolders,
+  SYNC_FOLDERS,
+  UPDATE_FOLDERS
 } from 'shared/modules/favorites/foldersDuck'
 import {
-  grassToLoad,
-  updateGraphStyleData,
   composeGrassToSync,
+  grassToLoad,
   syncGrass,
   SYNC_GRASS,
+  updateGraphStyleData,
   UPDATE_GRAPH_STYLE_DATA
 } from 'shared/modules/grass/grassDuck'
 import { CLEAR_LOCALSTORAGE } from 'shared/modules/localstorage/localstorageDuck'

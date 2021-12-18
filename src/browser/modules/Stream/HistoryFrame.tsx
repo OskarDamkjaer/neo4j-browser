@@ -21,8 +21,8 @@ import React from 'react'
 import { withBus } from 'react-suber'
 import * as editor from 'shared/modules/editor/editorDuck'
 import FrameTemplate from '../Frame/FrameTemplate'
-import { UnstyledList, PaddedDiv } from './styled'
 import HistoryRow from './HistoryRow'
+import { PaddedDiv, UnstyledList } from './styled'
 
 export const HistoryFrame = (props: any) => {
   const { frame, bus } = props

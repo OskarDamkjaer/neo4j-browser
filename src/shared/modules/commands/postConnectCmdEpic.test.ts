@@ -20,11 +20,10 @@
 
 import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus, createReduxMiddleware } from 'suber'
-import { UPDATE_SETTINGS } from 'shared/modules/dbMeta/dbMetaDuck'
-
-import * as commands from './commandsDuck'
 import { CONNECTION_SUCCESS } from 'shared/modules/connections/connectionsDuck'
+import { UPDATE_SETTINGS } from 'shared/modules/dbMeta/dbMetaDuck'
+import { createBus, createReduxMiddleware } from 'suber'
+import * as commands from './commandsDuck'
 
 describe('postConnectCmdEpic', () => {
   test('creates a SYSTEM_COMMAND_QUEUED if found', done => {

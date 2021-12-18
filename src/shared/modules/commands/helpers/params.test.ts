@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { replace, update } from 'shared/modules/params/paramsDuck'
 import * as params from './params'
-import { update, replace } from 'shared/modules/params/paramsDuck'
 
 jest.mock('services/bolt/bolt', () => ({
   routedWriteTransaction: jest.fn(() => {

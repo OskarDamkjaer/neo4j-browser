@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import ManualLink from 'browser-components/ManualLink'
-import { BuiltInGuideSidebarSlide } from '../../modules/Carousel/Slide'
 import { DrawerExternalLink } from 'browser-components/drawer/drawer-styled'
+import ManualLink from 'browser-components/ManualLink'
+import React from 'react'
+import { BuiltInGuideSidebarSlide } from '../../modules/Carousel/Slide'
 
 const title = 'Movie Graph Guide'
 const category = 'graphExamples'

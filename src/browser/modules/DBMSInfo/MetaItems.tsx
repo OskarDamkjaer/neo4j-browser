@@ -17,22 +17,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-import { escapeCypherIdentifier } from 'services/utils'
-import styles from './style_meta.css'
 import {
-  DrawerSubHeader,
   DrawerSection,
-  DrawerSectionBody
+  DrawerSectionBody,
+  DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
-import { StyledLabel, StyledRelationship, StyledProperty } from './styled'
-
-import numberToUSLocale from 'shared/utils/number-to-US-locale'
+import { ShowMoreOrAll } from 'browser-components/ShowMoreOrAll/ShowMoreOrAll'
+import { dark } from 'browser-styles/themes'
 import { GraphStyle } from 'browser/modules/D3Visualization/graphStyle'
 import deepmerge from 'deepmerge'
-import { ShowMoreOrAll } from 'browser-components/ShowMoreOrAll/ShowMoreOrAll'
+import React from 'react'
+import { escapeCypherIdentifier } from 'services/utils'
+import numberToUSLocale from 'shared/utils/number-to-US-locale'
 import { ThemeProvider } from 'styled-components'
-import { dark } from 'browser-styles/themes'
+import { StyledLabel, StyledProperty, StyledRelationship } from './styled'
+import styles from './style_meta.css'
 
 const wrapperStyle = (styles && styles.wrapper) || ''
 
@@ -43,7 +42,7 @@ function createStyleGetter(graphStyleData: any, kind: string) {
   }
 
   if (kind === 'node') {
-    return function(text: string) {
+    return function (text: string) {
       if (graphStyleData) {
         const styleForItem = graphStyle.forNode({
           labels: [text]
@@ -57,7 +56,7 @@ function createStyleGetter(graphStyleData: any, kind: string) {
     }
   }
   if (kind === 'relationship') {
-    return function(text: string) {
+    return function (text: string) {
       if (graphStyleData) {
         const styleForItem = graphStyle.forRelationship({
           type: text

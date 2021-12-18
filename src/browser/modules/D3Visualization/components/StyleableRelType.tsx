@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import { GrassEditor } from './GrassEditor'
-import { Popup } from 'semantic-ui-react'
 import { StyledRelationship } from 'browser/modules/DBMSInfo/styled'
 import { GraphStyle } from 'project-root/src/browser/modules/D3Visualization/graphStyle'
+import React from 'react'
+import { Popup } from 'semantic-ui-react'
+import { GrassEditor } from './GrassEditor'
 
 export type StyleableRelTypeProps = {
   graphStyle: GraphStyle

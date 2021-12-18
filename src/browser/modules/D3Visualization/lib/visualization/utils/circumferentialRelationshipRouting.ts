@@ -17,10 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import measureText from './textMeasurement'
+import ArcArrow from './arcArrow'
 import distributeCircular from './circumferentialDistribution'
 import StraightArrow from './straightArrow'
-import ArcArrow from './arcArrow'
+import measureText from './textMeasurement'
 
 export default class circumferentialRelationshipRouting {
   style: any
@@ -175,10 +175,7 @@ export default class circumferentialRelationshipRouting {
                 const square = (distance: any) => distance * distance
                 const centreDistance = Math.sqrt(square(dx) + square(dy))
 
-                if (
-                  Math.abs((deflection as unknown) as number) <
-                  Math.PI / 180
-                ) {
+                if (Math.abs(deflection as unknown as number) < Math.PI / 180) {
                   relationship.arrow = new StraightArrow(
                     relationship.source.radius,
                     relationship.target.radius,

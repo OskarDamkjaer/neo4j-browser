@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { getScriptDisplayName } from 'browser/components/SavedScripts'
+import { saveAs } from 'file-saver' // Polyfill for FF
 import JSZip from 'jszip'
 import { Favorite } from 'shared/modules/favorites/favoritesDuck'
-import { saveAs } from 'file-saver' // Polyfill for FF
-import { getScriptDisplayName } from 'browser/components/SavedScripts'
 import { Folder } from 'shared/modules/favorites/foldersDuck'
 
 export const CYPHER_FILE_EXTENSION = '.cypher'

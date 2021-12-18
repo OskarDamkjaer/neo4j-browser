@@ -21,10 +21,10 @@ import { QueryResult, types } from 'neo4j-driver'
 import WorkPool from 'services/WorkPool'
 import { applyGraphTypes } from './boltMappings'
 import {
+  BOLT_CONNECTION_ERROR_MESSAGE,
   CYPHER_ERROR_MESSAGE,
   CYPHER_RESPONSE_MESSAGE,
-  POST_CANCEL_TRANSACTION_MESSAGE,
-  BOLT_CONNECTION_ERROR_MESSAGE
+  POST_CANCEL_TRANSACTION_MESSAGE
 } from './boltWorkerMessages'
 
 export const setupBoltWorker = (

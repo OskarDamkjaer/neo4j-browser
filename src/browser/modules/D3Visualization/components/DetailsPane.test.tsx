@@ -18,18 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
+import GraphStyle from 'project-root/src/browser/modules/D3Visualization/graphStyle'
+import React from 'react'
 import {
-  DETAILS_PANE_STEP_SIZE,
   DetailsPaneComponent,
+  DETAILS_PANE_STEP_SIZE,
   ELLIPSIS,
-  MAX_LENGTH_WIDE,
   MAX_LENGTH_NARROW,
+  MAX_LENGTH_WIDE,
   WIDE_VIEW_THRESHOLD
 } from './DetailsPane'
 import { VizItem, VizNodeProperty } from './types'
-import GraphStyle from 'project-root/src/browser/modules/D3Visualization/graphStyle'
 
 describe('<DetailsPane />', () => {
   const mockGraphStyle = new GraphStyle()

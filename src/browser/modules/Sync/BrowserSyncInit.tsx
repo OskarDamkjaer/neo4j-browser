@@ -20,22 +20,21 @@
 
 import { Component } from 'react'
 import { connect } from 'react-redux'
-
+import { deepEquals } from 'services/utils'
+import { getBrowserSyncConfig } from 'shared/modules/settings/settingsDuck'
 import {
-  setSyncData,
-  setSyncMetadata,
   authorizedAs,
-  updateServiceStatus,
-  updateUserAuthStatus,
+  clearSync,
   resetSyncMetadata,
   setSyncAuthData,
-  clearSync,
+  setSyncData,
+  setSyncMetadata,
   SIGNED_IN,
-  SIGNED_OUT
+  SIGNED_OUT,
+  updateServiceStatus,
+  updateUserAuthStatus
 } from 'shared/modules/sync/syncDuck'
-import { getBrowserSyncConfig } from 'shared/modules/settings/settingsDuck'
 import { BrowserSyncAuthIframe } from './BrowserSyncAuthIframes'
-import { deepEquals } from 'services/utils'
 
 export function hasAuthData(props: any) {
   return props.authData && props.authData.data_token

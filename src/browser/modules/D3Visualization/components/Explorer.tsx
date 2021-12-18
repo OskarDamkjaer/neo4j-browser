@@ -18,26 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
 import deepmerge from 'deepmerge'
-import { connect, ConnectedComponent } from 'react-redux'
 import { debounce } from 'lodash'
-
-import Node from '../lib/visualization/components/node'
-import Relationship from '../lib/visualization/components/relationship'
-import { GraphStyle } from '../graphStyle'
-import { GlobalState } from 'shared/globalState'
-import { GraphComponent } from './Graph'
-import { GraphStats } from '../mapper'
-import { VizItem } from './types'
+import React, { Component } from 'react'
+import { connect, ConnectedComponent } from 'react-redux'
+import { Action, Dispatch } from 'redux'
 import { deepEquals } from 'services/utils'
-import { defaultPanelWidth, NodeInspectorPanel } from './NodeInspectorPanel'
-import { panelMinWidth, StyledFullSizeContainer } from './styled'
+import { GlobalState } from 'shared/globalState'
 import {
   getNodePropertiesExpandedByDefault,
   setNodePropertiesExpandedByDefault
 } from 'shared/modules/frames/framesDuck'
-import { Action, Dispatch } from 'redux'
+import { GraphStyle } from '../graphStyle'
+import Node from '../lib/visualization/components/node'
+import Relationship from '../lib/visualization/components/relationship'
+import { GraphStats } from '../mapper'
+import { GraphComponent } from './Graph'
+import { defaultPanelWidth, NodeInspectorPanel } from './NodeInspectorPanel'
+import { panelMinWidth, StyledFullSizeContainer } from './styled'
+import { VizItem } from './types'
 
 const deduplicateNodes = (nodes: any) => {
   return nodes.reduce(
@@ -157,8 +156,9 @@ export class ExplorerComponent extends Component<
               type: 'status-item',
               item: `Rendering was limited to ${
                 this.props.maxNeighbours
-              } of the node's total ${result.count +
-                currentNeighbours.length} neighbours due to browser config maxNeighbours.`
+              } of the node's total ${
+                result.count + currentNeighbours.length
+              } neighbours due to browser config maxNeighbours.`
             }
           })
         }

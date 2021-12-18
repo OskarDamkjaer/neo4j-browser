@@ -19,7 +19,7 @@
  */
 
 import React, { Component } from 'react'
-import { BorderedWrapper, TitleBar, ContentArea } from './styled'
+import { BorderedWrapper, ContentArea, TitleBar } from './styled'
 
 type AccordionState = any
 

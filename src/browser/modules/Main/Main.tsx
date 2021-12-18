@@ -17,27 +17,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import ErrorBoundary from 'browser-components/ErrorBoundary'
 import React, { useEffect } from 'react'
 import {
+  CONNECTING_STATE,
   DISCONNECTED_STATE,
-  PENDING_STATE,
-  CONNECTING_STATE
+  PENDING_STATE
 } from 'shared/modules/connections/connectionsDuck'
 import Editor from '../Editor/MainEditor'
+import AutoExecButton from '../Stream/auto-exec-button'
 import Stream from '../Stream/Stream'
-
+import { useSlowConnectionState } from './main.hooks'
 import {
-  StyledMain,
-  WarningBanner,
+  DismissConsentBanner,
   ErrorBanner,
   NotAuthedBanner,
+  StyledMain,
   UdcConsentBanner,
-  DismissConsentBanner,
-  UnderlineClickable
+  UnderlineClickable,
+  WarningBanner
 } from './styled'
-import ErrorBoundary from 'browser-components/ErrorBoundary'
-import { useSlowConnectionState } from './main.hooks'
-import AutoExecButton from '../Stream/auto-exec-button'
 
 type MainProps = {
   connectionState: number

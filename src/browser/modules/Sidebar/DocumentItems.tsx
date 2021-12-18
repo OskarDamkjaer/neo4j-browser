@@ -18,32 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {
+  DrawerExternalLink,
+  DrawerSection,
+  DrawerSectionBody,
+  DrawerSubHeader
+} from 'browser-components/drawer/drawer-styled'
+import {
+  SavedScriptsCollapseMenuIcon,
+  SavedScriptsExpandMenuRightIcon
+} from 'browser-components/icons/Icons'
+import { SavedScriptsFolderCollapseIcon } from 'browser-components/SavedScripts/styled'
 import React, { Dispatch, useState } from 'react'
 import { connect } from 'react-redux'
 import { Action } from 'redux'
-import {
-  DrawerSubHeader,
-  DrawerSection,
-  DrawerSectionBody,
-  DrawerExternalLink
-} from 'browser-components/drawer/drawer-styled'
-import {
-  StyledHelpItem,
-  StyledCommandListItem,
-  StyledCommandNamePair,
-  StyledName,
-  StyledCommand
-} from './styled'
 import {
   commandSources,
   executeCommand
 } from 'shared/modules/commands/commandsDuck'
 import styled from 'styled-components'
 import {
-  SavedScriptsCollapseMenuIcon,
-  SavedScriptsExpandMenuRightIcon
-} from 'browser-components/icons/Icons'
-import { SavedScriptsFolderCollapseIcon } from 'browser-components/SavedScripts/styled'
+  StyledCommand,
+  StyledCommandListItem,
+  StyledCommandNamePair,
+  StyledHelpItem,
+  StyledName
+} from './styled'
 
 const DrawerSubHeaderWithMargin = styled(DrawerSubHeader)`
   margin: 0 24px 0 24px;

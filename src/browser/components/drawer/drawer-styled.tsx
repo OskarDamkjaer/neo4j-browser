@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import linkIcon from 'icons/external-link.svg'
+import styled from 'styled-components'
 
 export const Drawer = styled.div`
   width: 290px;
@@ -98,7 +98,7 @@ export const DrawerExternalLink = styled.a.attrs({
   &:before {
     display: inline-block;
     content: ' ';
-    background-image: url("data:image/svg+xml;utf8,${linkIcon}");
+    background-image: url('data:image/svg+xml;utf8,${linkIcon}');
     height: 12px;
     width: 12px;
     margin-right: 7px;

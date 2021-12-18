@@ -85,7 +85,7 @@ const addShortenedNextWord = (line: any, word: any, measure: any) => {
   }
   return result
 }
-const noEmptyLines = function(lines: any[]) {
+const noEmptyLines = function (lines: any[]) {
   for (const line of Array.from(lines)) {
     if (line.text.length === 0) {
       return false
@@ -94,7 +94,7 @@ const noEmptyLines = function(lines: any[]) {
   return true
 }
 
-const fitCaptionIntoCircle = function(node: any, style: any) {
+const fitCaptionIntoCircle = function (node: any, style: any) {
   const template = style.forNode(node).get('caption')
   const nodeText = style.interpolate(template, node)
   const captionText =
@@ -106,7 +106,7 @@ const fitCaptionIntoCircle = function(node: any, style: any) {
 
   const words = captionText.split(' ')
 
-  const emptyLine = function(lineCount: any, iLine: any) {
+  const emptyLine = function (lineCount: any, iLine: any) {
     let baseline = (1 + iLine - lineCount / 2) * lineHeight
     if (style.forNode(node).get('icon-code')) {
       baseline = baseline + node.radius / 3
@@ -123,7 +123,7 @@ const fitCaptionIntoCircle = function(node: any, style: any) {
     }
   }
 
-  const fitOnFixedNumberOfLines = function(lineCount: any): [any, number] {
+  const fitOnFixedNumberOfLines = function (lineCount: any): [any, number] {
     const lines = []
     let iWord = 0
     for (

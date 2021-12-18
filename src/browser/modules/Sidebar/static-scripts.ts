@@ -15,19 +15,18 @@
  *
  */
 
-import { withBus } from 'react-suber'
-import { connect } from 'react-redux'
 import MyScripts from 'browser/components/SavedScripts'
+import { connect } from 'react-redux'
+import { withBus } from 'react-suber'
 import semver from 'semver'
-
-import * as editor from 'shared/modules/editor/editorDuck'
 import {
   commandSources,
   executeCommand
 } from 'shared/modules/commands/commandsDuck'
+import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
+import * as editor from 'shared/modules/editor/editorDuck'
 import * as favorites from '../../../shared/modules/favorites/favoritesDuck'
 import { getFolders } from '../../../shared/modules/favorites/foldersDuck'
-import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
 
 const mapFavoritesStateToProps = (state: any) => {
   const version = semver.coerce(getVersion(state) || '0') ?? '0'

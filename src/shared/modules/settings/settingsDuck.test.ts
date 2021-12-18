@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { dehydrate } from 'services/duckUtils'
 import reducer, {
   DISABLE_IMPLICIT_INIT_COMMANDS,
+  getInitCmd,
   NAME,
-  UPDATE,
   REPLACE,
-  getInitCmd
+  UPDATE
 } from './settingsDuck'
-import { dehydrate } from 'services/duckUtils'
 
 describe('settings reducer', () => {
   test('handles UPDATE without initial state', () => {

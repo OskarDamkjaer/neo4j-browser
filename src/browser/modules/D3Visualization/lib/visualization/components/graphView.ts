@@ -17,9 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import viz from './visualization'
-import layout from './layout'
 import GraphStyle from 'project-root/src/browser/modules/D3Visualization/graphStyle'
+import layout from './layout'
+import viz from './visualization'
 
 export default class graphView {
   callbacks: any
@@ -33,10 +33,13 @@ export default class graphView {
     this.viz = viz(element, measureSize, this.graph, forceLayout, this.style)
     this.callbacks = {}
     const { callbacks } = this
-    this.viz.trigger = (() => (event: any, ...args: any[]) =>
-      Array.from(callbacks[event] || []).map((callback: any) =>
-        callback.apply(null, args)
-      ))()
+    this.viz.trigger = (
+      () =>
+      (event: any, ...args: any[]) =>
+        Array.from(callbacks[event] || []).map((callback: any) =>
+          callback.apply(null, args)
+        )
+    )()
   }
 
   on(event: any, callback: any) {

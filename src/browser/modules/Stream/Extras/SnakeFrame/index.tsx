@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { FormButton } from 'browser/components/buttons/index'
 import React from 'react'
 import styled from 'styled-components'
-import Snake from './Snake'
-import Score from './Score'
 import FrameTemplate from '../../../Frame/FrameTemplate'
 import { PaddedDiv } from '../../styled'
-import { FormButton } from 'browser/components/buttons/index'
-import { worldColor, foodColor } from './helpers'
+import { foodColor, worldColor } from './helpers'
+import Score from './Score'
+import Snake from './Snake'
 
 const width = 600
 const height = 300

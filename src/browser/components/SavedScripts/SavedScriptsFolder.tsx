@@ -17,32 +17,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React, { useState } from 'react'
-import { useDrop } from 'react-dnd'
-import { useCustomBlur, useNameUpdate } from './hooks'
-
 import {
-  NavIcon,
   FolderIcon,
+  NavIcon,
   SavedScriptsCollapseMenuIcon,
   SavedScriptsExpandMenuRightIcon
 } from 'browser-components/icons/Icons'
-
+import React, { useState } from 'react'
+import { useDrop } from 'react-dnd'
+import { ExportFormat } from 'services/exporting/favoriteUtils'
+import { Folder } from 'shared/modules/favorites/foldersDuck'
+import { useCustomBlur, useNameUpdate } from './hooks'
 import {
+  ChildrenContainer,
+  ContextMenu,
+  ContextMenuContainer,
+  ContextMenuHoverParent,
+  ContextMenuItem,
+  FolderNameWrapper,
   SavedScriptsButtonWrapper,
   SavedScriptsFolderHeader,
   SavedScriptsFolderLabel,
   SavedScriptsFolderMain,
-  SavedScriptsInput,
-  ChildrenContainer,
-  FolderNameWrapper,
-  ContextMenuHoverParent,
-  ContextMenu,
-  ContextMenuContainer,
-  ContextMenuItem
+  SavedScriptsInput
 } from './styled'
-import { Folder } from 'shared/modules/favorites/foldersDuck'
-import { ExportFormat } from 'services/exporting/favoriteUtils'
 
 interface SavedScriptsFolderProps {
   folder: Folder

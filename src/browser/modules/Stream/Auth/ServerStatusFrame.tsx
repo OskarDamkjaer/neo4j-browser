@@ -18,24 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { H3 } from 'browser-components/headers'
+import { ClickToCode } from 'browser/modules/ClickToCode/index'
 import React from 'react'
 import { connect } from 'react-redux'
-import FrameTemplate from '../../Frame/FrameTemplate'
 import {
-  StyledConnectionAside,
-  StyledConnectionBodyContainer,
-  StyledConnectionBody
-} from './styled'
-import ConnectedView from './ConnectedView'
-import { H3 } from 'browser-components/headers'
-
-import {
-  getActiveConnectionData,
   getActiveConnection,
+  getActiveConnectionData,
   isConnected
 } from 'shared/modules/connections/connectionsDuck'
 import { shouldRetainConnectionCredentials } from 'shared/modules/dbMeta/dbMetaDuck'
-import { ClickToCode } from 'browser/modules/ClickToCode/index'
+import FrameTemplate from '../../Frame/FrameTemplate'
+import ConnectedView from './ConnectedView'
+import {
+  StyledConnectionAside,
+  StyledConnectionBody,
+  StyledConnectionBodyContainer
+} from './styled'
 
 export const ServerStatusFrame = (props: any) => {
   const { activeConnectionData, storeCredentials, isConnected } = props

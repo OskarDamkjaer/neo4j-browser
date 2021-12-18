@@ -18,15 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render, screen } from '@testing-library/react'
-import OverviewPane, { OVERVIEW_STEP_SIZE } from './OverviewPane'
+import GraphStyle from 'project-root/src/browser/modules/D3Visualization/graphStyle'
+import React from 'react'
 import {
   GraphStats,
   GraphStatsLabels,
   GraphStatsRelationshipTypes
 } from '../mapper'
-import GraphStyle from 'project-root/src/browser/modules/D3Visualization/graphStyle'
+import OverviewPane, { OVERVIEW_STEP_SIZE } from './OverviewPane'
 
 jest.mock('./StyleableNodeLabel')
 jest.mock('./StyleableRelType')

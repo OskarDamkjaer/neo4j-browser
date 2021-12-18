@@ -19,7 +19,7 @@
  */
 import d3 from 'd3'
 export default function clickHandler() {
-  const cc = function(selection: any) {
+  const cc = function (selection: any) {
     // euclidean distance
     const dist = (a: any, b: any) =>
       // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 2.
@@ -43,7 +43,10 @@ export default function clickHandler() {
         } else {
           event.click((d3.event as any).target.__data__)
           return (wait = window.setTimeout(
-            (_e => () => (wait = null))(d3.event),
+            (
+              _e => () =>
+                (wait = null)
+            )(d3.event),
             250
           ))
         }

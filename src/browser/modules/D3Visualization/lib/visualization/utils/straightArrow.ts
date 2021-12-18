@@ -49,7 +49,7 @@ export default class StraightArrow {
       y: 0
     }
 
-    this.outline = function(shortCaptionLength: any) {
+    this.outline = function (shortCaptionLength: any) {
       if (captionLayout === 'external') {
         const startBreak =
           startArrow + (this.shaftLength - shortCaptionLength) / 2
@@ -120,7 +120,7 @@ export default class StraightArrow {
       }
     }
 
-    this.overlay = function(minWidth: any) {
+    this.overlay = function (minWidth: any) {
       const radius = Math.max(minWidth / 2, shaftRadius)
       return [
         'M',

@@ -18,82 +18,80 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { editor } from 'monaco-editor'
-import React, { useEffect, useRef } from 'react'
-import { connect } from 'react-redux'
-import { withBus } from 'react-suber'
-import { ThemeProvider } from 'styled-components'
-import * as themes from 'browser/styles/themes'
-import {
-  getTheme,
-  getBrowserSyncConfig,
-  codeFontLigatures,
-  LIGHT_THEME
-} from 'shared/modules/settings/settingsDuck'
-import { utilizeBrowserSync } from 'shared/modules/features/featuresDuck'
-import { getOpenDrawer, open } from 'shared/modules/sidebar/sidebarDuck'
-import { getErrorMessage } from 'shared/modules/commands/commandsDuck'
-import {
-  findDatabaseByNameOrAlias,
-  shouldAllowOutgoingConnections
-} from 'shared/modules/dbMeta/dbMetaDuck'
-import {
-  getActiveConnection,
-  getConnectionState,
-  getLastConnectionUpdate,
-  getActiveConnectionData,
-  isConnected,
-  getConnectionData,
-  INITIAL_SWITCH_CONNECTION_FAILED,
-  SWITCH_CONNECTION_FAILED,
-  SWITCH_CONNECTION,
-  SILENT_DISCONNECT,
-  getUseDb
-} from 'shared/modules/connections/connectionsDuck'
-import { toggle } from 'shared/modules/sidebar/sidebarDuck'
-import {
-  CONNECTION_ID,
-  INJECTED_DISCOVERY
-} from 'shared/modules/discovery/discoveryDuck'
-import {
-  StyledWrapper,
-  StyledApp,
-  StyledBody,
-  StyledMainWrapper
-} from './styled'
-import Main from '../Main/Main'
-import Sidebar from '../Sidebar/Sidebar'
-import UserInteraction from '../UserInteraction'
-import DocTitle from '../DocTitle'
-import asTitleString from '../DocTitle/titleStringBuilder'
-import Segment, { MetricsData } from '../Segment'
-import { CannyLoader } from 'browser-services/canny'
-
-import BrowserSyncInit from '../Sync/BrowserSyncInit'
-import { getMetadata, getUserAuthStatus } from 'shared/modules/sync/syncDuck'
-import ErrorBoundary from 'browser-components/ErrorBoundary'
-import { getExperimentalFeatures } from 'shared/modules/experimentalFeatures/experimentalFeaturesDuck'
-import FeatureToggleProvider from '../FeatureToggle/FeatureToggleProvider'
-import { inWebEnv, URL_ARGUMENTS_CHANGE } from 'shared/modules/app/appDuck'
-import useDerivedTheme from 'browser-hooks/useDerivedTheme'
-import FileDrop from 'browser-components/FileDrop/FileDrop'
 import DesktopApi from 'browser-components/desktop-api/desktop-api'
 import {
   buildConnectionCreds,
   getDesktopTheme
 } from 'browser-components/desktop-api/desktop-api.handlers'
+import ErrorBoundary from 'browser-components/ErrorBoundary'
+import FileDrop from 'browser-components/FileDrop/FileDrop'
+import useDerivedTheme from 'browser-hooks/useDerivedTheme'
+import { CannyLoader } from 'browser-services/canny'
+import * as themes from 'browser/styles/themes'
+import { editor } from 'monaco-editor'
+import { version } from 'project-root/package.json'
+import React, { useEffect, useRef } from 'react'
+import { connect } from 'react-redux'
+import { withBus } from 'react-suber'
+import { isRunningE2ETest } from 'services/utils'
+import { GlobalState } from 'shared/globalState'
+import { inWebEnv, URL_ARGUMENTS_CHANGE } from 'shared/modules/app/appDuck'
+import { getErrorMessage } from 'shared/modules/commands/commandsDuck'
+import {
+  getActiveConnection,
+  getActiveConnectionData,
+  getConnectionData,
+  getConnectionState,
+  getLastConnectionUpdate,
+  getUseDb,
+  INITIAL_SWITCH_CONNECTION_FAILED,
+  isConnected,
+  SILENT_DISCONNECT,
+  SWITCH_CONNECTION,
+  SWITCH_CONNECTION_FAILED
+} from 'shared/modules/connections/connectionsDuck'
+import {
+  findDatabaseByNameOrAlias,
+  shouldAllowOutgoingConnections
+} from 'shared/modules/dbMeta/dbMetaDuck'
+import {
+  CONNECTION_ID,
+  INJECTED_DISCOVERY
+} from 'shared/modules/discovery/discoveryDuck'
+import { getExperimentalFeatures } from 'shared/modules/experimentalFeatures/experimentalFeaturesDuck'
+import { utilizeBrowserSync } from 'shared/modules/features/featuresDuck'
+import {
+  codeFontLigatures,
+  getBrowserSyncConfig,
+  getTheme,
+  LIGHT_THEME
+} from 'shared/modules/settings/settingsDuck'
+import { getOpenDrawer, open, toggle } from 'shared/modules/sidebar/sidebarDuck'
+import { getMetadata, getUserAuthStatus } from 'shared/modules/sync/syncDuck'
 import {
   getConsentBannerShownCount,
   METRICS_EVENT,
   udcInit,
   updateUdcData
 } from 'shared/modules/udc/udcDuck'
+import { getTelemetrySettings } from 'shared/utils/selectors'
+import { ThemeProvider } from 'styled-components'
+import DocTitle from '../DocTitle'
+import asTitleString from '../DocTitle/titleStringBuilder'
+import FeatureToggleProvider from '../FeatureToggle/FeatureToggleProvider'
+import Main from '../Main/Main'
+import Segment, { MetricsData } from '../Segment'
+import Sidebar from '../Sidebar/Sidebar'
+import BrowserSyncInit from '../Sync/BrowserSyncInit'
+import UserInteraction from '../UserInteraction'
 import { useKeyboardShortcuts } from './keyboardShortcuts'
 import PerformanceOverlay from './PerformanceOverlay'
-import { isRunningE2ETest } from 'services/utils'
-import { version } from 'project-root/package.json'
-import { GlobalState } from 'shared/globalState'
-import { getTelemetrySettings } from 'shared/utils/selectors'
+import {
+  StyledApp,
+  StyledBody,
+  StyledMainWrapper,
+  StyledWrapper
+} from './styled'
 
 export const MAIN_WRAPPER_DOM_ID = 'MAIN_WRAPPER_DOM_ID'
 

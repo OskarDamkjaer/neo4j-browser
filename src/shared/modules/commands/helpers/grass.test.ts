@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { fetchRemoteGrass } from './grass'
 import { parseGrass } from 'shared/services/grassUtils'
+import { fetchRemoteGrass } from './grass'
 
 jest.mock('services/remote', () => {
   return {

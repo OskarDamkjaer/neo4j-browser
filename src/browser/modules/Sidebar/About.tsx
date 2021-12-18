@@ -17,20 +17,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-import { connect } from 'react-redux'
-import { version as browserVersion } from 'project-root/package.json'
-
 import {
   Drawer,
   DrawerBody,
+  DrawerFooter,
   DrawerHeader,
-  DrawerSubHeader,
   DrawerSection,
   DrawerSectionBody,
-  DrawerFooter
+  DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
-import { getVersion, getEdition } from 'shared/modules/dbMeta/dbMetaDuck'
+import { version as browserVersion } from 'project-root/package.json'
+import React from 'react'
+import { connect } from 'react-redux'
+import { getEdition, getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
 
 function asChangeLogUrl(serverVersion: string): string | undefined {
   if (!serverVersion) {

@@ -18,34 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { CarouselButton } from 'browser-components/buttons/index'
+import {
+  StackNextIcon,
+  StackPreviousIcon
+} from 'browser-components/icons/Icons'
 import React, { useContext, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-import { fetchGuideFromAllowlistAction } from 'shared/modules/commands/commandsDuck'
-
-import Docs from '../Docs/Docs'
-import docs, { isPlayChapter } from '../../documentation'
-import FrameTemplate from '../Frame/FrameTemplate'
-import FrameAside from '../Frame/FrameAside'
 import {
   splitStringOnFirst,
   transformCommandToHelpTopic
 } from 'services/commandUtils'
-import { ErrorsView } from './CypherFrame/ErrorsView'
-import { CarouselButton } from 'browser-components/buttons/index'
-import {
-  StackPreviousIcon,
-  StackNextIcon
-} from 'browser-components/icons/Icons'
-import { splitMdxSlides } from '../Docs/MDX/splitMdx'
-import { LAST_GUIDE_SLIDE } from 'shared/modules/udc/udcDuck'
-import { connect } from 'react-redux'
 import { GlobalState } from 'shared/globalState'
-import { inCloudEnv, inDesktop } from 'shared/modules/app/appDuck'
-import { getEdition, isEnterprise } from 'shared/modules/dbMeta/dbMetaDuck'
-import { PromotionContainer, AuraPromoLink } from './styled'
-import { ThemeContext } from 'styled-components'
-import { DARK_THEME } from 'shared/modules/settings/settingsDuck'
+import { inDesktop } from 'shared/modules/app/appDuck'
+import { fetchGuideFromAllowlistAction } from 'shared/modules/commands/commandsDuck'
 import { isConnectedAuraHost } from 'shared/modules/connections/connectionsDuck'
+import { getEdition, isEnterprise } from 'shared/modules/dbMeta/dbMetaDuck'
+import { DARK_THEME } from 'shared/modules/settings/settingsDuck'
+import { LAST_GUIDE_SLIDE } from 'shared/modules/udc/udcDuck'
+import { ThemeContext } from 'styled-components'
+import docs, { isPlayChapter } from '../../documentation'
+import Docs from '../Docs/Docs'
+import { splitMdxSlides } from '../Docs/MDX/splitMdx'
+import FrameAside from '../Frame/FrameAside'
+import FrameTemplate from '../Frame/FrameTemplate'
+import { ErrorsView } from './CypherFrame/ErrorsView'
+import { AuraPromoLink, PromotionContainer } from './styled'
 
 const AuraPromotion = () => {
   const theme = useContext(ThemeContext)

@@ -18,15 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import Centered from 'browser-components/Centered'
-import { SpinnerContainer, StyledBodyMessage } from '../styled'
 import { SpinnerIcon } from 'browser-components/icons/Icons'
+import React from 'react'
 import {
-  Status,
   REQUEST_STATUS_CANCELED,
-  REQUEST_STATUS_CANCELING
+  REQUEST_STATUS_CANCELING,
+  Status
 } from 'shared/modules/requests/requestsDuck'
+import { SpinnerContainer, StyledBodyMessage } from '../styled'
 
 interface CancelViewProps {
   requestStatus: Status

@@ -18,16 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import styled from 'styled-components'
 import {
   DrawerSection,
-  DrawerSubHeader,
-  DrawerSectionBody
+  DrawerSectionBody,
+  DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
+import { uniqBy } from 'lodash'
+import React from 'react'
 import { escapeCypherIdentifier } from 'services/utils'
 import { Database } from 'shared/modules/dbMeta/dbMetaDuck'
-import { uniqBy } from 'lodash'
+import styled from 'styled-components'
 
 const Select = styled.select`
   width: 100%;

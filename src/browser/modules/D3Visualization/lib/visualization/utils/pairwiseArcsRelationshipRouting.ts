@@ -17,10 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import measureText from './textMeasurement'
+import ArcArrow from './arcArrow'
 import LoopArrow from './loopArrow'
 import StraightArrow from './straightArrow'
-import ArcArrow from './arcArrow'
+import measureText from './textMeasurement'
 
 export default class PairwiseArcsRelationshipRouting {
   style: any
@@ -271,19 +271,18 @@ export default class PairwiseArcsRelationshipRouting {
               }
 
               result1.push(
-                ([
-                  relationship.shortCaption,
-                  relationship.shortCaptionLength
-                ] = Array.from(
-                  (ref =
-                    relationship.arrow.shaftLength > relationship.captionLength
-                      ? [relationship.caption, relationship.captionLength]
-                      : this.shortenCaption(
-                          relationship,
-                          relationship.caption,
-                          relationship.arrow.shaftLength
-                        ))
-                )),
+                ([relationship.shortCaption, relationship.shortCaptionLength] =
+                  Array.from(
+                    (ref =
+                      relationship.arrow.shaftLength >
+                      relationship.captionLength
+                        ? [relationship.caption, relationship.captionLength]
+                        : this.shortenCaption(
+                            relationship,
+                            relationship.caption,
+                            relationship.arrow.shaftLength
+                          ))
+                  )),
                 ref
               )
             }

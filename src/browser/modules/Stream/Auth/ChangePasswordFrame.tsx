@@ -18,17 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import ConnectionForm from './ConnectionForm'
-import FrameTemplate from '../../Frame/FrameTemplate'
-import FrameError from '../../Frame/FrameError'
-
 import { H3 } from 'browser-components/headers'
 import { Lead } from 'browser-components/Text'
-import { StyledConnectionAside } from './styled'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { getActiveConnection } from 'shared/modules/connections/connectionsDuck'
+import FrameError from '../../Frame/FrameError'
+import FrameTemplate from '../../Frame/FrameTemplate'
+import ConnectionForm from './ConnectionForm'
+import { StyledConnectionAside } from './styled'
 
 type ChangePasswordFrameState = any
 

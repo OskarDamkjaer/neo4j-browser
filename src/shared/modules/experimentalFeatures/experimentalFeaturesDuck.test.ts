@@ -18,17 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import reducer, {
-  NAME,
-  enableExperimentalFeature,
-  disableExperimentalFeature,
-  getExperimentalFeatures,
-  showFeature,
-  experimentalFeatureSelfName,
-  initialState
-} from './experimentalFeaturesDuck'
 import { dehydrate } from 'services/duckUtils'
 import { APP_START } from '../app/appDuck'
+import reducer, {
+  disableExperimentalFeature,
+  enableExperimentalFeature,
+  experimentalFeatureSelfName,
+  getExperimentalFeatures,
+  initialState,
+  NAME,
+  showFeature
+} from './experimentalFeaturesDuck'
 
 describe('experimentalFeatures reducer', () => {
   test('handles initial value', () => {

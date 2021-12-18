@@ -18,21 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import uuid from 'uuid'
+import { Action } from 'redux'
+import { Epic } from 'redux-observable'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/mapTo'
 import { moveInArray } from 'services/utils'
-import { APP_START, AppStartAction } from 'shared/modules/app/appDuck'
+import { GlobalState } from 'shared/globalState'
+import { AppStartAction, APP_START } from 'shared/modules/app/appDuck'
+import { FrameView } from 'shared/modules/frames/frameViewTypes'
+import uuid from 'uuid'
+import { Database } from '../dbMeta/dbMetaDuck'
 import {
   getMaxFrames,
-  UPDATE as SETTINGS_UPDATE,
-  initialState as settingsDefaultState
+  initialState as settingsDefaultState,
+  UPDATE as SETTINGS_UPDATE
 } from '../settings/settingsDuck'
-import { Epic } from 'redux-observable'
-import { Action } from 'redux'
-import { FrameView } from 'shared/modules/frames/frameViewTypes'
-import { GlobalState } from 'shared/globalState'
-import { Database } from '../dbMeta/dbMetaDuck'
 
 export const NAME = 'frames'
 export const ADD = 'frames/ADD'

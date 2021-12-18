@@ -19,8 +19,8 @@
  */
 
 import {
-  selectorStringToArray,
-  selectorArrayToString
+  selectorArrayToString,
+  selectorStringToArray
 } from 'services/grassUtils'
 
 export class Selector {
@@ -261,26 +261,26 @@ export class GraphStyle {
     }
   }
 
-  parseSelector = function(key: string): Selector {
+  parseSelector = function (key: string): Selector {
     const tokens = selectorStringToArray(key)
     return new Selector(tokens[0], tokens.slice(1))
   }
 
-  nodeSelector = function(
+  nodeSelector = function (
     node: { labels: null | string[] } = { labels: null }
   ): Selector {
     const classes = node.labels != null ? node.labels : []
     return new Selector('node', classes)
   }
 
-  relationshipSelector = function(
+  relationshipSelector = function (
     rel: { type: null | string } = { type: null }
   ): Selector {
     const classes = rel.type != null ? [rel.type] : []
     return new Selector('relationship', classes)
   }
 
-  findRule = function(
+  findRule = function (
     selector: Selector,
     rules: StyleRule[]
   ): StyleRule | undefined {
@@ -293,7 +293,7 @@ export class GraphStyle {
     return undefined
   }
 
-  findAvailableDefaultColor = function(rules: StyleRule[]): DefaultColorType {
+  findAvailableDefaultColor = function (rules: StyleRule[]): DefaultColorType {
     const usedColors = rules
       .filter((rule: StyleRule) => {
         return rule.props.color != null
@@ -307,7 +307,7 @@ export class GraphStyle {
     return DEFAULT_COLORS[index]
   }
 
-  getDefaultNodeCaption = function(
+  getDefaultNodeCaption = function (
     item: any
   ): { caption: string } | { defaultCaption: string } {
     if (
@@ -402,7 +402,7 @@ export class GraphStyle {
     }
   }
 
-  parse = function(string: string) {
+  parse = function (string: string) {
     const chars = string.split('')
     let insideString = false
     let insideProps = false
@@ -498,19 +498,19 @@ export class GraphStyle {
     }
   }
 
-  defaultSizes = function(): DefaultSizeType[] {
+  defaultSizes = function (): DefaultSizeType[] {
     return DEFAULT_SIZES
   }
 
-  defaultIconCodes = function(): DefaultIconCodeType[] {
+  defaultIconCodes = function (): DefaultIconCodeType[] {
     return DEFAULT_ICON_CODES
   }
 
-  defaultArrayWidths = function(): DefaultArrayWidthType[] {
+  defaultArrayWidths = function (): DefaultArrayWidthType[] {
     return DEFAULT_ARRAY_WIDTHS
   }
 
-  defaultColors = function(): DefaultColorType[] {
+  defaultColors = function (): DefaultColorType[] {
     return DEFAULT_COLORS
   }
 

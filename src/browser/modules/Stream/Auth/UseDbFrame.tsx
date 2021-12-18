@@ -18,18 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
-import {
-  StyledConnectionAside,
-  StyledConnectionBodyContainer,
-  StyledConnectionBody,
-  StyledCode
-} from './styled'
 import { H3 } from 'browser-components/headers'
 import TextCommand from 'browser/modules/DecoratedText/TextCommand'
+import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
+import React from 'react'
 import { listDbsCommand } from 'shared/modules/commands/commandsDuck'
 import { BaseFrameProps } from '../Stream'
+import {
+  StyledCode,
+  StyledConnectionAside,
+  StyledConnectionBody,
+  StyledConnectionBodyContainer
+} from './styled'
 
 const UseDbFrame = (props: BaseFrameProps) => {
   const { frame } = props

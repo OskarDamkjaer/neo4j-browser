@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
-import { createGraph, mapRelationships, getGraphStats } from '../mapper'
-import { GraphEventHandler } from '../GraphEventHandler'
-import '../lib/visualization/index'
-import { dim } from 'browser-styles/constants'
-import { StyledZoomHolder, StyledSvgWrapper, StyledZoomButton } from './styled'
 import { ZoomInIcon, ZoomOutIcon } from 'browser-components/icons/Icons'
+import { dim } from 'browser-styles/constants'
+import React, { Component } from 'react'
+import { GraphEventHandler } from '../GraphEventHandler'
 import graphView from '../lib/visualization/components/graphView'
+import '../lib/visualization/index'
+import { createGraph, getGraphStats, mapRelationships } from '../mapper'
+import { StyledSvgWrapper, StyledZoomButton, StyledZoomHolder } from './styled'
 
 type State = any
 

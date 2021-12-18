@@ -15,6 +15,7 @@
  *
  */
 
+import JSZip from 'jszip'
 import {
   assign,
   compact,
@@ -31,9 +32,8 @@ import {
   tail,
   values
 } from 'lodash-es'
-import JSZip from 'jszip'
-import uuid from 'uuid'
 import { CYPHER_FILE_EXTENSION } from 'services/exporting/favoriteUtils'
+import uuid from 'uuid'
 
 /**
  * Extracts folders from favorites

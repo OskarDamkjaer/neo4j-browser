@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { editor } from 'monaco-editor/esm/vs/editor/editor.api'
 import { base, dark } from 'browser-styles/themes'
+import { editor } from 'monaco-editor/esm/vs/editor/editor.api'
 import {
+  DARK_THEME,
   LIGHT_THEME,
-  OUTLINE_THEME,
-  DARK_THEME
+  OUTLINE_THEME
 } from 'shared/modules/settings/settingsDuck'
 
 type BrowserTheme =

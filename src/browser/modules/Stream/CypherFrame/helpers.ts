@@ -18,31 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import neo4j from 'neo4j-driver'
-import { Duration } from 'luxon'
 import {
   entries,
-  flatten,
   filter,
+  flatten,
   get,
   includes,
   isObjectLike,
   lowerCase,
   map,
-  some,
   reduce,
+  some,
   take
 } from 'lodash-es'
-
+import neo4j from 'neo4j-driver'
 import bolt from 'services/bolt/bolt'
-
-import * as viewTypes from 'shared/modules/frames/frameViewTypes'
 import { recursivelyExtractGraphItems } from 'services/bolt/boltMappings'
-import { stringifyMod, unescapeDoubleQuotesForDisplay } from 'services/utils'
 import {
   durationFormat,
   stringModifier
 } from 'services/bolt/cypherTypesFormatting'
+import { stringifyMod, unescapeDoubleQuotesForDisplay } from 'services/utils'
+import * as viewTypes from 'shared/modules/frames/frameViewTypes'
 
 /**
  * Checks if a results has records which fields will be truncated when displayed
@@ -92,8 +89,9 @@ export function getBodyAndStatusBarMessages(result: any, maxRows: any) {
       : `completed ${totalTimeString} ${streamMessageTail}`
 
   if (updateMessages && updateMessages.length > 0) {
-    updateMessages = `${updateMessages[0].toUpperCase() +
-      updateMessages.slice(1)}, `
+    updateMessages = `${
+      updateMessages[0].toUpperCase() + updateMessages.slice(1)
+    }, `
   } else {
     streamMessage = streamMessage[0].toUpperCase() + streamMessage.slice(1)
   }
@@ -102,11 +100,13 @@ export function getBodyAndStatusBarMessages(result: any, maxRows: any) {
   const bodyMessage =
     (!updateMessages || updateMessages.length === 0) &&
     result.records.length === 0
-      ? `(${(systemUpdatesValue > 0 &&
-          `${systemUpdatesValue} system update${(systemUpdatesValue > 1 &&
-            's') ||
-            ''}`) ||
-          'no changes'}, no records)`
+      ? `(${
+          (systemUpdatesValue > 0 &&
+            `${systemUpdatesValue} system update${
+              (systemUpdatesValue > 1 && 's') || ''
+            }`) ||
+          'no changes'
+        }, no records)`
       : `${updateMessages}completed ${totalTimeString} ms.`
 
   return {

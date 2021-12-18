@@ -20,15 +20,15 @@
 
 import neo4j, { Driver } from 'neo4j-driver'
 import { buildTxFunctionByMode } from 'services/bolt/boltHelpers'
-import { isBoltConnectionErrorCode } from './boltConnectionErrors'
 import { Connection } from 'shared/modules/connections/connectionsDuck'
+import { isBoltConnectionErrorCode } from './boltConnectionErrors'
 import { createDriverOrFailFn } from './driverFactory'
 import {
-  setGlobalDrivers,
-  getGlobalDrivers,
-  unsetGlobalDrivers,
+  buildAuthObj,
   buildGlobalDriversObject,
-  buildAuthObj
+  getGlobalDrivers,
+  setGlobalDrivers,
+  unsetGlobalDrivers
 } from './globalDrivers'
 
 export const DIRECT_CONNECTION = 'DIRECT_CONNECTION'

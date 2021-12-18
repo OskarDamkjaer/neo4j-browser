@@ -18,22 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { connect } from 'react-redux'
-import React from 'react'
-import FrameTemplate from '../../Frame/FrameTemplate'
-import {
-  getRequest,
-  BrowserRequest
-} from 'shared/modules/requests/requestsDuck'
-import { Frame, getFrame } from 'shared/modules/frames/framesDuck'
-import { StyledStatusSection } from 'browser-components/buttons'
-
-import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
-import { WrapperCenter, ContentSizer, PointerFrameCommand } from './styled'
 import Accordion from 'browser-components/Accordion/Accordion'
-import { Summary, CypherSummary } from './Summary'
-import { Icon } from './Icon'
+import { StyledStatusSection } from 'browser-components/buttons'
+import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Frame, getFrame } from 'shared/modules/frames/framesDuck'
+import {
+  BrowserRequest,
+  getRequest
+} from 'shared/modules/requests/requestsDuck'
+import FrameTemplate from '../../Frame/FrameTemplate'
 import { BaseFrameProps } from '../Stream'
+import { Icon } from './Icon'
+import { ContentSizer, PointerFrameCommand, WrapperCenter } from './styled'
+import { CypherSummary, Summary } from './Summary'
 
 const isCypher = (str: string) => !str.startsWith(':')
 

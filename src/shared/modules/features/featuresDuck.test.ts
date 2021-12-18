@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { dehydrate } from 'services/duckUtils'
+import { NAME as META_NAME } from '../dbMeta/dbMetaDuck'
 import reducer, * as features from './featuresDuck'
 import { canSendTxMetadata } from './versionedFeatures'
-import { NAME as META_NAME } from '../dbMeta/dbMetaDuck'
-import { dehydrate } from 'services/duckUtils'
 
 describe('features reducer', () => {
   test('handles initial value', () => {

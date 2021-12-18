@@ -20,15 +20,15 @@
 
 import Rx from 'rxjs/Rx'
 import bolt from 'services/bolt/bolt'
-import { APP_START, DESKTOP, CLOUD } from 'shared/modules/app/appDuck'
+import { APP_START, CLOUD, DESKTOP } from 'shared/modules/app/appDuck'
 import {
   CONNECTION_SUCCESS,
   DISCONNECTION_SUCCESS
 } from 'shared/modules/connections/connectionsDuck'
 import { shouldUseCypherThread } from 'shared/modules/settings/settingsDuck'
 import { getBackgroundTxMetadata } from 'shared/services/bolt/txMetadata'
-import { canSendTxMetadata } from '../features/versionedFeatures'
 import { SYSTEM_DB } from '../dbMeta/dbMetaDuck'
+import { canSendTxMetadata } from '../features/versionedFeatures'
 
 export const NAME = 'features'
 const CLEAR = 'features/CLEAR'
@@ -64,7 +64,7 @@ export const initialState = {
   }
 }
 
-export default function(state = initialState, action: any) {
+export default function (state = initialState, action: any) {
   switch (action.type) {
     case APP_START:
       return {

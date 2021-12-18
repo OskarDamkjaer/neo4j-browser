@@ -18,39 +18,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import React, { memo, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import React, { memo, useRef, useEffect } from 'react'
-import { StyledStream, Padding, AnimationContainer } from './styled'
-import CypherFrame from './CypherFrame/CypherFrame'
-import HistoryFrame from './HistoryFrame'
-import PlayFrame from './PlayFrame'
+import { upperFirst } from 'services/utils'
+import { GlobalState } from 'shared/globalState'
+import {
+  Connection,
+  getActiveConnectionData
+} from 'shared/modules/connections/connectionsDuck'
+import { Frame, FrameStack, getFrames } from 'shared/modules/frames/framesDuck'
+import { getScrollToTop } from 'shared/modules/settings/settingsDuck'
 import DefaultFrame from '../Frame/DefaultFrame'
-import PreFrame from './PreFrame'
-import ParamsFrame from './ParamsFrame'
-import ErrorFrame from './ErrorFrame'
-import HelpFrame from './HelpFrame'
-import CypherScriptFrame from './CypherScriptFrame/CypherScriptFrame'
-import SchemaFrame from './SchemaFrame'
-import StyleFrame from './StyleFrame'
-import SysInfoFrame from './SysInfoFrame/SysInfoFrame'
+import UserAdd from '../User/UserAdd'
+import UserList from '../User/UserList'
+import ChangePasswordFrame from './Auth/ChangePasswordFrame'
 import ConnectionFrame from './Auth/ConnectionFrame'
+import DbsFrame from './Auth/DbsFrame'
 import DisconnectFrame from './Auth/DisconnectFrame'
 import ServerStatusFrame from './Auth/ServerStatusFrame'
 import ServerSwitchFrame from './Auth/ServerSwitchFrame'
 import UseDbFrame from './Auth/UseDbFrame'
-import ChangePasswordFrame from './Auth/ChangePasswordFrame'
+import CypherFrame from './CypherFrame/CypherFrame'
+import CypherScriptFrame from './CypherScriptFrame/CypherScriptFrame'
+import ErrorFrame from './ErrorFrame'
+import HelpFrame from './HelpFrame'
+import HistoryFrame from './HistoryFrame'
+import ParamsFrame from './ParamsFrame'
+import PlayFrame from './PlayFrame'
+import PreFrame from './PreFrame'
 import QueriesFrame from './Queries/QueriesFrame'
-import UserList from '../User/UserList'
-import UserAdd from '../User/UserAdd'
-import { GlobalState } from 'shared/globalState'
-import { FrameStack, Frame, getFrames } from 'shared/modules/frames/framesDuck'
-import {
-  getActiveConnectionData,
-  Connection
-} from 'shared/modules/connections/connectionsDuck'
-import { getScrollToTop } from 'shared/modules/settings/settingsDuck'
-import DbsFrame from './Auth/DbsFrame'
-import { upperFirst } from 'services/utils'
+import SchemaFrame from './SchemaFrame'
+import { AnimationContainer, Padding, StyledStream } from './styled'
+import StyleFrame from './StyleFrame'
+import SysInfoFrame from './SysInfoFrame/SysInfoFrame'
 
 const nameToFrame: Record<string, React.ComponentType<any>> = {
   error: ErrorFrame,

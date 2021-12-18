@@ -60,10 +60,7 @@ export const syncResourceFor = (userId: any, key: any, value: any) => {
 }
 
 export const setupUser = (userId: any, initialData: any) => {
-  firebase
-    .database()
-    .ref(`users/${userId}`)
-    .set(initialData)
+  firebase.database().ref(`users/${userId}`).set(initialData)
 }
 
 export const signOut = () => {

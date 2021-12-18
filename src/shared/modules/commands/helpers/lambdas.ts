@@ -15,6 +15,7 @@
  *
  */
 
+import { parseLambda } from '@neo4j/browser-lambda-parser'
 import {
   assign,
   head,
@@ -26,8 +27,6 @@ import {
   tail,
   trim
 } from 'lodash-es'
-import { parseLambda } from '@neo4j/browser-lambda-parser'
-
 import bolt from '../../../services/bolt/bolt'
 import { recursivelyTypeGraphItems } from '../../../services/bolt/boltMappings'
 import arrayHasItems from '../../../utils/array-has-items'

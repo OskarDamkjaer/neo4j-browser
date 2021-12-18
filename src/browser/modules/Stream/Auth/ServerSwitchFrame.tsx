@@ -18,17 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { H3 } from 'browser-components/headers'
 import React from 'react'
+import ClickToCode from '../../ClickToCode'
 import FrameTemplate from '../../Frame/FrameTemplate'
+import ConnectedView from './ConnectedView'
 import {
   StyledConnectionAside,
-  StyledConnectionBodyContainer,
-  StyledConnectionBody
+  StyledConnectionBody,
+  StyledConnectionBodyContainer
 } from './styled'
-import ConnectedView from './ConnectedView'
-import { H3 } from 'browser-components/headers'
-
-import ClickToCode from '../../ClickToCode'
 
 const connectionFailed = (frame: any) => {
   return frame.type === 'switch-fail'

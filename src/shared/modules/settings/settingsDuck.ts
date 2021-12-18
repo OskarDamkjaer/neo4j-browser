@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { get } from 'lodash-es'
-
 import { GlobalState } from 'shared/globalState'
 import { APP_START, USER_CLEAR } from 'shared/modules/app/appDuck'
 

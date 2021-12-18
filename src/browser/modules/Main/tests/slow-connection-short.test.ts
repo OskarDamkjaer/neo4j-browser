@@ -19,16 +19,14 @@
  *
  */
 
+import { act, renderHook } from '@testing-library/react-hooks'
 import '@testing-library/react-hooks/dont-cleanup-after-each.js'
-import { renderHook, act } from '@testing-library/react-hooks'
 import mockDate from 'mockdate'
-
 import {
   CONNECTED_STATE,
   CONNECTING_STATE,
   DISCONNECTED_STATE
 } from 'shared/modules/connections/connectionsDuck'
-
 import { useSlowConnectionState } from '../main.hooks'
 
 mockDate.set(0)

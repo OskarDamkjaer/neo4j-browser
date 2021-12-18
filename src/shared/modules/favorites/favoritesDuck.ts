@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import uuid from 'uuid'
-import {
-  USER_CLEAR,
-  APP_START,
-  AppStartAction,
-  UserClearAction
-} from 'shared/modules/app/appDuck'
 import { getBrowserName } from 'services/utils'
+import {
+  AppStartAction,
+  APP_START,
+  UserClearAction,
+  USER_CLEAR
+} from 'shared/modules/app/appDuck'
+import uuid from 'uuid'
 import { scripts as staticScriptsList } from './staticScripts'
 
 export const NAME = 'documents'

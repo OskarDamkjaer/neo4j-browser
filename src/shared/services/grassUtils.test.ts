@@ -19,10 +19,10 @@
  */
 
 import {
-  parseGrass,
   objToCss,
-  selectorStringToArray,
-  selectorArrayToString
+  parseGrass,
+  selectorArrayToString,
+  selectorStringToArray
 } from 'services/grassUtils'
 
 describe('parseGrass', () => {

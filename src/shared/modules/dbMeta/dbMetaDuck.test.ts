@@ -19,8 +19,8 @@
  */
 
 import neo4j from 'neo4j-driver'
-import reducer, * as meta from './dbMetaDuck'
 import { APP_START } from 'shared/modules/app/appDuck'
+import reducer, * as meta from './dbMetaDuck'
 
 describe('hydrating state', () => {
   test('should merge inital state and state on load', () => {

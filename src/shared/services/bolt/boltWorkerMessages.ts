@@ -19,9 +19,8 @@
  */
 
 import { Action, AnyAction } from 'redux'
-
-import { recursivelyTypeGraphItems } from './boltMappings'
 import { ROUTED_WRITE_CONNECTION } from './boltConnection'
+import { recursivelyTypeGraphItems } from './boltMappings'
 
 export const RUN_CYPHER_MESSAGE = 'RUN_CYPHER_MESSAGE'
 export const CANCEL_TRANSACTION_MESSAGE = 'CANCEL_TRANSACTION_MESSAGE'

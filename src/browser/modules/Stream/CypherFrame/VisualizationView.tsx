@@ -18,20 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { resultHasTruncatedFields } from 'browser/modules/Stream/CypherFrame/helpers'
 import neo4j from 'neo4j-driver'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { deepEquals } from 'services/utils'
-import * as grassActions from 'shared/modules/grass/grassDuck'
-import bolt from 'services/bolt/bolt'
 import { withBus } from 'react-suber'
+import bolt from 'services/bolt/bolt'
+import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
+import { deepEquals } from 'services/utils'
+import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import * as grassActions from 'shared/modules/grass/grassDuck'
+import { getMaxFieldItems } from 'shared/modules/settings/settingsDuck'
 import Explorer from '../../D3Visualization/components/Explorer'
 import { StyledVisContainer } from './VisualizationView.styled'
-
-import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
-import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
-import { getMaxFieldItems } from 'shared/modules/settings/settingsDuck'
-import { resultHasTruncatedFields } from 'browser/modules/Stream/CypherFrame/helpers'
 
 type VisualizationState = any
 
@@ -71,14 +70,12 @@ export class Visualization extends Component<any, VisualizationState> {
   }
 
   populateDataToStateFromProps(props: any) {
-    const {
-      nodes,
-      relationships
-    } = bolt.extractNodesAndRelationshipsFromRecordsForOldVis(
-      props.result.records,
-      true,
-      props.maxFieldItems
-    )
+    const { nodes, relationships } =
+      bolt.extractNodesAndRelationshipsFromRecordsForOldVis(
+        props.result.records,
+        true,
+        props.maxFieldItems
+      )
     const hasTruncatedFields = resultHasTruncatedFields(
       props.result,
       props.maxFieldItems
@@ -115,8 +112,9 @@ export class Visualization extends Component<any, VisualizationState> {
                    AND NOT (id(o) IN[${currentNeighbourIds.join(',')}])
                    RETURN path, size((a)--()) as c
                    ORDER BY id(o)
-                   LIMIT ${this.props.maxNeighbours -
-                     currentNeighbourIds.length}`
+                   LIMIT ${
+                     this.props.maxNeighbours - currentNeighbourIds.length
+                   }`
     return new Promise((resolve, reject) => {
       this.props.bus &&
         this.props.bus.self(
@@ -130,11 +128,12 @@ export class Visualization extends Component<any, VisualizationState> {
                 response.result.records.length > 0
                   ? parseInt(response.result.records[0].get('c').toString())
                   : 0
-              const resultGraph = bolt.extractNodesAndRelationshipsFromRecordsForOldVis(
-                response.result.records,
-                false,
-                this.props.maxFieldItems
-              )
+              const resultGraph =
+                bolt.extractNodesAndRelationshipsFromRecordsForOldVis(
+                  response.result.records,
+                  false,
+                  this.props.maxFieldItems
+                )
               this.autoCompleteRelationships(
                 this.graph._nodes,
                 resultGraph.nodes

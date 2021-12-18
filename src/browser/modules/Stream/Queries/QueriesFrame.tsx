@@ -18,49 +18,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
+import { EnterpriseOnlyFrame } from 'browser-components/EditionView'
+import { GlobalState } from 'project-root/src/shared/globalState'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-import FrameTemplate from '../../Frame/FrameTemplate'
-import FrameAside from '../../Frame/FrameAside'
 import bolt from 'services/bolt/bolt'
+import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
 import {
-  listQueriesProcedure,
-  killQueriesProcedure
-} from 'shared/modules/cypher/queriesProcedureHelper'
-import { getAvailableProcedures } from 'shared/modules/features/featuresDuck'
+  CONNECTED_STATE,
+  getConnectionState
+} from 'shared/modules/connections/connectionsDuck'
 import {
-  CYPHER_REQUEST,
+  AD_HOC_CYPHER_REQUEST,
   CLUSTER_CYPHER_REQUEST,
-  AD_HOC_CYPHER_REQUEST
+  CYPHER_REQUEST
 } from 'shared/modules/cypher/cypherDuck'
 import {
-  getConnectionState,
-  CONNECTED_STATE,
-  ConnectionState
-} from 'shared/modules/connections/connectionsDuck'
-import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
+  killQueriesProcedure,
+  listQueriesProcedure
+} from 'shared/modules/cypher/queriesProcedureHelper'
+import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
+import { getAvailableProcedures } from 'shared/modules/features/featuresDuck'
+import { getDefaultBoltScheme } from 'shared/modules/features/versionedFeatures'
+import FrameAside from '../../Frame/FrameAside'
+import FrameError from '../../Frame/FrameError'
+import FrameTemplate from '../../Frame/FrameTemplate'
 import {
-  StyledTh,
+  AutoRefreshSpan,
+  AutoRefreshToggle,
+  StatusbarWrapper,
+  StyledStatusBar
+} from '../AutoRefresh/styled'
+import {
+  Code,
   StyledHeaderRow,
   StyledTable,
   StyledTableWrapper,
   StyledTd,
-  Code
+  StyledTh
 } from './styled'
-import {
-  StyledStatusBar,
-  AutoRefreshToggle,
-  AutoRefreshSpan,
-  StatusbarWrapper
-} from '../AutoRefresh/styled'
-import { EnterpriseOnlyFrame } from 'browser-components/EditionView'
-
-import FrameError from '../../Frame/FrameError'
-import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
-import { getDefaultBoltScheme } from 'shared/modules/features/versionedFeatures'
-import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
-import { GlobalState } from 'project-root/src/shared/globalState'
 
 type QueriesFrameState = {
   queries: any[]

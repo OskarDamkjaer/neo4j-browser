@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import reducer, * as currentUser from './currentUserDuck'
 import { dehydrate } from 'services/duckUtils'
+import reducer, * as currentUser from './currentUserDuck'
 
 describe('user reducer current info', () => {
   test('handles unknown action type', () => {

@@ -19,8 +19,8 @@
  */
 import React from 'react'
 import {
-  CarouselIndicatorInactive,
   CarouselIndicatorActive,
+  CarouselIndicatorInactive,
   StyledUl
 } from './styled'
 

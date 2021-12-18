@@ -19,8 +19,8 @@
  */
 
 import {
-  getActiveGraph,
-  createConnectionCredentialsObject
+  createConnectionCredentialsObject,
+  getActiveGraph
 } from './desktop-api.utils'
 
 export const buildConnectionCreds = async (

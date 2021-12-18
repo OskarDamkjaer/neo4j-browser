@@ -17,16 +17,16 @@
  * You should have received data copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import neo4j from 'neo4j-driver'
-import React from 'react'
-import {
-  itemIntToString,
-  extractFromNeoObjects
-} from 'services/bolt/boltMappings'
 import {
   StyledSysInfoTable,
   SysInfoTableEntry
 } from 'browser-components/Tables'
+import neo4j from 'neo4j-driver'
+import React from 'react'
+import {
+  extractFromNeoObjects,
+  itemIntToString
+} from 'services/bolt/boltMappings'
 import { toKeyString } from 'services/utils'
 
 export const getTableDataFromRecords = (records: any) => {

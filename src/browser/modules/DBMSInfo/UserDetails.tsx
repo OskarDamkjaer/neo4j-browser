@@ -18,14 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
-
 import {
-  DrawerSubHeader,
   DrawerSection,
-  DrawerSectionBody
+  DrawerSectionBody,
+  DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
-import { StyledTable, StyledKey, StyledValue, Link } from './styled'
+import React, { Component } from 'react'
+import { Link, StyledKey, StyledTable, StyledValue } from './styled'
 
 export class UserDetails extends Component<any> {
   render() {

@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Observable } from 'rxjs'
-import { Epic } from 'redux-observable'
-import { GlobalState } from 'shared/globalState'
-import { tryGetRemoteInitialSlideFromUrl } from 'services/guideResolverHelper'
-import { resolveGuide } from '../../services/guideResolverHelper'
-import { OpenSidebarAction, open } from '../sidebar/sidebarDuck'
 import { Guide, isBuiltInGuide } from 'browser/documentation'
+import { Epic } from 'redux-observable'
+import { Observable } from 'rxjs'
+import { tryGetRemoteInitialSlideFromUrl } from 'services/guideResolverHelper'
+import { GlobalState } from 'shared/globalState'
 import { isOfType } from 'shared/utils/typeSafeActions'
+import { resolveGuide } from '../../services/guideResolverHelper'
+import { open, OpenSidebarAction } from '../sidebar/sidebarDuck'
 
 export const NAME = 'guides'
 export const FETCH_GUIDE = 'guides/FETCH_GUIDE'

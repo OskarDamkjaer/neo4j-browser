@@ -18,51 +18,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { assign, reduce } from 'lodash-es'
 import neo4j from 'neo4j-driver'
 import Rx from 'rxjs/Rx'
 import semver from 'semver'
 import bolt from 'services/bolt/bolt'
 import { isConfigValFalsy } from 'services/bolt/boltHelpers'
+import { GlobalState } from 'shared/globalState'
 import { APP_START } from 'shared/modules/app/appDuck'
-import {
-  CONNECTED_STATE,
-  CONNECTION_SUCCESS,
-  connectionLossFilter,
-  DISCONNECTION_SUCCESS,
-  SILENT_DISCONNECT,
-  LOST_CONNECTION,
-  UPDATE_CONNECTION_STATE,
-  setRetainCredentials,
-  setAuthEnabled,
-  onLostConnection,
-  getUseDb,
-  getLastUseDb,
-  useDb,
-  getActiveConnectionData,
-  updateConnection
-} from 'shared/modules/connections/connectionsDuck'
 import {
   commandSources,
   executeCommand
 } from 'shared/modules/commands/commandsDuck'
+import {
+  CONNECTED_STATE,
+  connectionLossFilter,
+  CONNECTION_SUCCESS,
+  DISCONNECTION_SUCCESS,
+  getActiveConnectionData,
+  getLastUseDb,
+  getUseDb,
+  LOST_CONNECTION,
+  onLostConnection,
+  setAuthEnabled,
+  setRetainCredentials,
+  SILENT_DISCONNECT,
+  updateConnection,
+  UPDATE_CONNECTION_STATE,
+  useDb
+} from 'shared/modules/connections/connectionsDuck'
+import { clearHistory } from 'shared/modules/history/historyDuck'
 import { shouldUseCypherThread } from 'shared/modules/settings/settingsDuck'
 import { getBackgroundTxMetadata } from 'shared/services/bolt/txMetadata'
+import {
+  FEATURE_DETECTION_DONE,
+  hasClientConfig,
+  isACausalCluster,
+  setClientConfig,
+  updateUserCapability,
+  USER_CAPABILITIES
+} from '../features/featuresDuck'
 import {
   canSendTxMetadata,
   getDbClusterRole
 } from '../features/versionedFeatures'
 import { extractServerInfo } from './dbMeta.utils'
-import { assign, reduce } from 'lodash-es'
-import {
-  hasClientConfig,
-  updateUserCapability,
-  USER_CAPABILITIES,
-  FEATURE_DETECTION_DONE,
-  isACausalCluster,
-  setClientConfig
-} from '../features/featuresDuck'
-import { clearHistory } from 'shared/modules/history/historyDuck'
-import { GlobalState } from 'shared/globalState'
 
 export const NAME = 'meta'
 export const UPDATE = 'meta/UPDATE'

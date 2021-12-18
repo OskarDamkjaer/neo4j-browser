@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import { dim } from 'browser-styles/constants'
+import styled from 'styled-components'
 
 type FullscreenProps = { fullscreen: boolean }
 export const StyledFrame = styled.article<FullscreenProps>`
@@ -185,11 +185,11 @@ export const StyledFrameCommand = styled.label<{ selectedDb: string | null }>`
   display: block;
   &::before {
     color: ${props => props.theme.promptText};
-    content: "${props => (props.selectedDb || '') + '$ '}";
+    content: '${props => (props.selectedDb || '') + '$ '}';
   }
   .disable-font-ligatures & {
     font-variant-ligatures: none !important;
-  } 
+  }
 `
 
 export const ContentContainer = styled.div`

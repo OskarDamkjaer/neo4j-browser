@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { H3 } from 'browser-components/headers'
+import { Lead } from 'browser-components/Text'
 import React from 'react'
 import FrameTemplate from '../../Frame/FrameTemplate'
 import { StyledConnectionAside } from './styled'
-import { H3 } from 'browser-components/headers'
-import { Lead } from 'browser-components/Text'
 
 const Disconnect = ({ frame, activeConnectionData }: any) => {
   return (

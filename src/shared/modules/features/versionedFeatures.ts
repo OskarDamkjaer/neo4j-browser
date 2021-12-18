@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import semver from 'semver'
-import { getVersion, getActiveDbName } from '../dbMeta/dbMetaDuck'
-import { getUseDb } from '../connections/connectionsDuck'
-import { guessSemverVersion } from './featureDuck.utils'
 import { GlobalState } from 'project-root/src/shared/globalState'
+import semver from 'semver'
+import { getUseDb } from '../connections/connectionsDuck'
+import { getActiveDbName, getVersion } from '../dbMeta/dbMetaDuck'
+import { guessSemverVersion } from './featureDuck.utils'
 
 const NEO4J_TX_METADATA_VERSION = '3.5.0-alpha01'
 const NEO4J_4_0 = '4.0.0-alpha01'

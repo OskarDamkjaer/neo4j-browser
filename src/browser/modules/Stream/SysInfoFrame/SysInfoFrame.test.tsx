@@ -18,16 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render } from '@testing-library/react'
-import { SysInfoFrame } from './SysInfoFrame'
+import React from 'react'
+import { Database } from 'shared/modules/dbMeta/dbMetaDuck'
 import { Frame } from 'shared/modules/frames/framesDuck'
 import { Bus } from 'suber'
-import { Database } from 'shared/modules/dbMeta/dbMetaDuck'
+import { SysInfoFrame } from './SysInfoFrame'
 
 const baseProps = {
   databases: [],
-  bus: ({ self: () => undefined } as unknown) as Bus,
+  bus: { self: () => undefined } as unknown as Bus,
   frame: {} as Frame,
   hasMultiDbSupport: true,
   isConnected: true,
@@ -38,12 +38,14 @@ const baseProps = {
 jest.mock(
   'browser/modules/Frame/FrameTemplate',
   // eslint-disable-next-line
-  () => ({ contents, children }: any) => (
-    <div>
-      {contents}
-      {children}
-    </div>
-  )
+  () =>
+    ({ contents, children }: any) =>
+      (
+        <div>
+          {contents}
+          {children}
+        </div>
+      )
 )
 
 describe('sysinfo component', () => {

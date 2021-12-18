@@ -20,13 +20,13 @@
 
 import { version } from 'project-root/package.json'
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus } from 'suber'
 import { flushPromises } from 'services/utils'
+import { createBus } from 'suber'
 import {
-  executeSystemCommand,
+  autoCommitTxCommand,
   executeSingleCommand,
-  handleSingleCommandEpic,
-  autoCommitTxCommand
+  executeSystemCommand,
+  handleSingleCommandEpic
 } from './commandsDuck'
 
 jest.mock('services/bolt/bolt', () => {

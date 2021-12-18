@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { StyledNodeInspectorContainer } from './styled'
 import React, { TransitionEvent, useEffect, useState } from 'react'
+import { StyledNodeInspectorContainer } from './styled'
 
 const Closing = 'CLOSING'
 const Closed = 'CLOSED'

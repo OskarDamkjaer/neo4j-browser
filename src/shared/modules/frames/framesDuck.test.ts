@@ -20,8 +20,8 @@
 
 import reducer, {
   add,
-  ENSURE_MAX_FRAMES,
   EnsureMaxFramesAction,
+  ENSURE_MAX_FRAMES,
   FramesState,
   initialState
 } from './framesDuck'

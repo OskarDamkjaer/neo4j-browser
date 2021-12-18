@@ -19,21 +19,21 @@
  */
 
 import neo4j from 'neo4j-driver'
+import { csvFormat, stringModifier } from 'services/bolt/cypherTypesFormatting'
 import * as viewTypes from 'shared/modules/frames/frameViewTypes'
 import {
-  resultHasNodes,
-  resultHasRows,
-  resultHasWarnings,
-  resultHasPlan,
-  resultIsError,
-  getRecordsToDisplayInTable,
-  initialView,
   extractRecordsToResultArray,
   flattenGraphItemsInResultArray,
-  stringifyResultArray,
-  recordToJSONMapper
+  getRecordsToDisplayInTable,
+  initialView,
+  recordToJSONMapper,
+  resultHasNodes,
+  resultHasPlan,
+  resultHasRows,
+  resultHasWarnings,
+  resultIsError,
+  stringifyResultArray
 } from './helpers'
-import { stringModifier, csvFormat } from 'services/bolt/cypherTypesFormatting'
 
 describe('helpers', () => {
   test('getRecordsToDisplayInTable should report if there are rows or not in the result', () => {

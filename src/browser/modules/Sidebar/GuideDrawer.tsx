@@ -18,32 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { Guide } from 'browser/documentation'
 import React, { useRef } from 'react'
-import { Action, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-
+import { Action, Dispatch } from 'redux'
+import { GlobalState } from 'shared/globalState'
 import {
-  RemoteGuide,
+  fetchRemoteGuide,
   getCurrentGuide,
   getRemoteGuides,
-  resetGuide,
   gotoSlide,
+  RemoteGuide,
+  resetGuide,
   setCurrentGuide,
-  fetchRemoteGuide,
   updateRemoteGuides
 } from 'shared/modules/guides/guidesDuck'
-import { GlobalState } from 'shared/globalState'
-import { Guide } from 'browser/documentation'
-import GuideCarousel from '../GuideCarousel/GuideCarousel'
 import { BackIcon } from '../../components/icons/Icons'
-import {
-  StyledGuideDrawer,
-  GuideTitle,
-  BackIconContainer,
-  StyledGuideDrawerHeader,
-  StyledDrawerSeparator
-} from './styled'
+import GuideCarousel from '../GuideCarousel/GuideCarousel'
 import GuidePicker from './GuidePicker'
+import {
+  BackIconContainer,
+  GuideTitle,
+  StyledDrawerSeparator,
+  StyledGuideDrawer,
+  StyledGuideDrawerHeader
+} from './styled'
 
 export type GuideDrawerProps = {
   currentGuide: Guide | null

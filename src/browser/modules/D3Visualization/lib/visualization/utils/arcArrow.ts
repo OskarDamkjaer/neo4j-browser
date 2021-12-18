@@ -46,7 +46,7 @@ export default class ArcArrow {
     const radiusRatio = startRadius / (endRadius + headLength)
     const homotheticCenter = (-endCentre * radiusRatio) / (1 - radiusRatio)
 
-    const intersectWithOtherCircle = function(
+    const intersectWithOtherCircle = function (
       fixedPoint: any,
       radius: any,
       xCenter: any,
@@ -107,7 +107,7 @@ export default class ArcArrow {
       y: cy - arcRadius * Math.cos(midShaftAngle)
     }
 
-    const startTangent = function(dr: any) {
+    const startTangent = function (dr: any) {
       const dx = (dr < 0 ? 1 : -1) * Math.sqrt(square(dr) / (1 + square(g1)))
       const dy = g1 * dx
       return {
@@ -116,7 +116,7 @@ export default class ArcArrow {
       }
     }
 
-    const endTangent = function(dr: any) {
+    const endTangent = function (dr: any) {
       const dx = (dr < 0 ? -1 : 1) * Math.sqrt(square(dr) / (1 + square(g2)))
       const dy = g2 * dx
       return {
@@ -130,7 +130,7 @@ export default class ArcArrow {
       y: cy - (arcRadius + dr) * Math.cos(angle)
     })
 
-    const endNormal = function(dc: any) {
+    const endNormal = function (dc: any) {
       const dx =
         (dc < 0 ? -1 : 1) * Math.sqrt(square(dc) / (1 + square(1 / g2)))
       const dy = dx / g2
@@ -140,7 +140,7 @@ export default class ArcArrow {
       }
     }
 
-    const endOverlayCorner = function(dr: any, dc: any) {
+    const endOverlayCorner = function (dr: any, dc: any) {
       const shoulder = endTangent(dr)
       const arrowTip = endNormal(dc)
       return {
@@ -156,7 +156,7 @@ export default class ArcArrow {
     const positiveSweep = startAttach.y > 0 ? 0 : 1
     const negativeSweep = startAttach.y < 0 ? 0 : 1
 
-    this.outline = function(shortCaptionLength: any) {
+    this.outline = function (shortCaptionLength: any) {
       if (startAngle > endAngle) {
         return [
           'M',
@@ -259,7 +259,7 @@ export default class ArcArrow {
       }
     }
 
-    this.overlay = function(minWidth: any) {
+    this.overlay = function (minWidth: any) {
       const radius = Math.max(minWidth / 2, shaftRadius)
 
       return [

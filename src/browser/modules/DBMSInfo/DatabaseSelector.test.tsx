@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { fireEvent, render } from '@testing-library/react'
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
-import { DatabaseSelector } from './DatabaseSelector'
 import { Database } from 'shared/modules/dbMeta/dbMetaDuck'
+import { DatabaseSelector } from './DatabaseSelector'
 
 const testId = 'database-selection-list'
 

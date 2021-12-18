@@ -18,11 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { fireEvent, render } from '@testing-library/react'
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
-
-import Snake from './Snake'
 import { SnakeFrame } from './index'
+import Snake from './Snake'
 
 test('Frame renders', () => {
   const { getByText } = render(<SnakeFrame />)

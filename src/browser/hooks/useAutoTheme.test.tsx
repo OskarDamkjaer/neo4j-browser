@@ -1,5 +1,5 @@
+import { act, render } from '@testing-library/react'
 import React from 'react'
-import { render, act } from '@testing-library/react'
 import { createMediaListenerMatch } from './testUtils'
 import useAutoTheme from './useAutoTheme'
 import { colorSchemes } from './useDetectColorScheme'

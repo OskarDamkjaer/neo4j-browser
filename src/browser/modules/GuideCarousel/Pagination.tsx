@@ -19,7 +19,7 @@
  */
 
 import React from 'react'
-import { PaginationItem, Dots } from './styled'
+import { Dots, PaginationItem } from './styled'
 type PaginationProps = {
   gotoIndex: (index: number) => void
   itemCount: number

@@ -19,10 +19,10 @@
  */
 
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus } from 'suber'
-import { flushPromises } from 'services/utils'
-import { executeSingleCommand, handleSingleCommandEpic } from './commandsDuck'
 import bolt from 'services/bolt/bolt'
+import { flushPromises } from 'services/utils'
+import { createBus } from 'suber'
+import { executeSingleCommand, handleSingleCommandEpic } from './commandsDuck'
 
 jest.mock('services/bolt/transactions', () => {
   const orig = jest.requireActual('services/bolt/transactions')

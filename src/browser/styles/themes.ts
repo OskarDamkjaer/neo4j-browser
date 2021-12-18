@@ -19,9 +19,9 @@
  */
 
 import {
+  DARK_THEME,
   LIGHT_THEME,
-  OUTLINE_THEME,
-  DARK_THEME
+  OUTLINE_THEME
 } from 'shared/modules/settings/settingsDuck'
 
 export const base = {

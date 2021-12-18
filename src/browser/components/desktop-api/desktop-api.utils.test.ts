@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-  getActiveGraph,
-  eventToHandler,
-  createConnectionCredentialsObject
-} from './desktop-api.utils'
 import { KERBEROS, NATIVE } from 'services/bolt/boltHelpers'
+import {
+  createConnectionCredentialsObject,
+  eventToHandler,
+  getActiveGraph
+} from './desktop-api.utils'
 
 describe('getActiveGraph', () => {
   const graphs = [

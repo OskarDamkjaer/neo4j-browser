@@ -20,9 +20,9 @@
 
 import neo4j, { Session } from 'neo4j-driver'
 import { v4 } from 'uuid'
-import { getGlobalDrivers } from './globalDrivers'
-import { buildTxFunctionByMode } from './boltHelpers'
 import { BoltConnectionError } from '../exceptions'
+import { buildTxFunctionByMode } from './boltHelpers'
+import { getGlobalDrivers } from './globalDrivers'
 
 const runningQueryRegister: Record<string, (cb?: () => void) => void> = {}
 

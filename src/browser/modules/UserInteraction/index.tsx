@@ -20,9 +20,9 @@
 
 import { Component } from 'react'
 import { withBus } from 'react-suber'
-import { Bus } from 'suber'
 import { throttle } from 'services/utils'
 import { USER_INTERACTION } from 'shared/modules/userInteraction/userInteractionDuck'
+import { Bus } from 'suber'
 
 const reportInteraction = (bus: any) => {
   if (!bus) return

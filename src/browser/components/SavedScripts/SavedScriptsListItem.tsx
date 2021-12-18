@@ -18,24 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { NavIcon } from 'browser-components/icons/Icons'
 import React, { useState } from 'react'
 import { useDrag } from 'react-dnd'
+import { Favorite } from 'shared/modules/favorites/favoritesDuck'
 import { useCustomBlur, useNameUpdate } from './hooks'
 import { RunButton } from './SavedScriptsButton'
 import {
+  ContextMenu,
+  ContextMenuContainer,
+  ContextMenuHoverParent,
+  ContextMenuItem,
   SavedScriptsButtonWrapper,
   SavedScriptsInput,
   SavedScriptsListItemDisplayName,
   SavedScriptsListItemMain,
-  ContextMenuHoverParent,
-  ContextMenu,
-  ContextMenuContainer,
-  ContextMenuItem,
   Separator
 } from './styled'
-import { Favorite } from 'shared/modules/favorites/favoritesDuck'
 import { getScriptDisplayName } from './utils'
-import { NavIcon } from 'browser-components/icons/Icons'
 
 interface SavedScriptsListItemProps {
   script: Favorite

@@ -20,14 +20,14 @@
 
 import {
   authenticate,
-  initialize,
-  status,
   getResourceFor,
+  initialize,
   setupUser,
-  signOut
+  signOut,
+  status
 } from 'services/browserSyncService'
 import { getBrowserName } from 'services/utils'
-import { UP, DOWN } from 'shared/modules/sync/syncDuck'
+import { DOWN, UP } from 'shared/modules/sync/syncDuck'
 
 class SyncSignInManager {
   _downTimer: any

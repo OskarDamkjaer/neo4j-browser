@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react'
 import Directives from 'browser-components/Directives'
+import React, { useEffect } from 'react'
 import {
-  GuideNavContainer,
   GuideNavButton,
+  GuideNavContainer,
+  GuideProgressContainer,
   GuideUl,
-  StyledCarousel,
-  GuideProgressContainer
+  StyledCarousel
 } from '../Sidebar/styled'
 import Pagination from './Pagination'
 

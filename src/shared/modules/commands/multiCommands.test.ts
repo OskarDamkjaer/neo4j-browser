@@ -20,11 +20,11 @@
 
 import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
+import bolt from 'services/bolt/bolt'
+import { add as addFrame } from 'shared/modules/frames/framesDuck'
+import { addHistory } from 'shared/modules/history/historyDuck'
 import { createBus, createReduxMiddleware } from 'suber'
 import * as commands from './commandsDuck'
-import bolt from 'services/bolt/bolt'
-import { addHistory } from 'shared/modules/history/historyDuck'
-import { add as addFrame } from 'shared/modules/frames/framesDuck'
 
 // jest.unmock('services/bolt/bolt')
 const originalRoutedWriteTransaction = bolt.routedWriteTransaction

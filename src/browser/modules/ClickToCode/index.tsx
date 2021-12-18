@@ -19,12 +19,12 @@
  */
 import React from 'react'
 import { withBus } from 'react-suber'
-import { SET_CONTENT, setContent } from 'shared/modules/editor/editorDuck'
-import { StyledCodeBlock } from './styled'
 import {
-  executeCommand,
-  commandSources
+  commandSources,
+  executeCommand
 } from 'shared/modules/commands/commandsDuck'
+import { setContent, SET_CONTENT } from 'shared/modules/editor/editorDuck'
+import { StyledCodeBlock } from './styled'
 
 const setOnClick = (bus: any, code: any) => {
   code = Array.isArray(code) ? code.join('') : code

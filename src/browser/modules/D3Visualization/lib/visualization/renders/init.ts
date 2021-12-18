@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Renderer from '../components/renderer'
-const noop = function() {}
+const noop = function () {}
 
 const nodeRingStrokeSize = 8
 
@@ -28,14 +28,10 @@ const nodeOutline = new Renderer({
       .selectAll('circle.outline')
       .data((node: any) => [node])
 
-    circles
-      .enter()
-      .append('circle')
-      .classed('outline', true)
-      .attr({
-        cx: 0,
-        cy: 0
-      })
+    circles.enter().append('circle').classed('outline', true).attr({
+      cx: 0,
+      cy: 0
+    })
 
     circles.attr({
       r(node: any) {
@@ -148,10 +144,7 @@ const arrowPath = new Renderer({
   onGraphChange(selection: any, viz: any) {
     const paths = selection.selectAll('path.outline').data((rel: any) => [rel])
 
-    paths
-      .enter()
-      .append('path')
-      .classed('outline', true)
+    paths.enter().append('path').classed('outline', true)
 
     paths
       .attr('fill', (rel: any) => viz.style.forRelationship(rel).get('color'))
@@ -216,10 +209,7 @@ const relationshipOverlay = new Renderer({
   onGraphChange(selection: any) {
     const rects = selection.selectAll('path.overlay').data((rel: any) => [rel])
 
-    rects
-      .enter()
-      .append('path')
-      .classed('overlay', true)
+    rects.enter().append('path').classed('overlay', true)
 
     return rects.exit().remove()
   },

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { mapNodes, mapRelationships, getGraphStats } from './mapper'
+import { getGraphStats, mapNodes, mapRelationships } from './mapper'
 
 export class GraphEventHandler {
   getNodeNeighbours: any

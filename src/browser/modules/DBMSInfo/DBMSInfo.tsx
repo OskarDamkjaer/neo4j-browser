@@ -18,6 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {
+  Drawer,
+  DrawerBody,
+  DrawerHeader
+} from 'browser-components/drawer/drawer-styled'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
@@ -26,19 +31,14 @@ import {
   executeCommand,
   useDbCommand
 } from 'shared/modules/commands/commandsDuck'
-import { getCurrentUser } from 'shared/modules/currentUser/currentUserDuck'
-import { getGraphStyleData } from 'shared/modules/grass/grassDuck'
-import { LabelItems, RelationshipItems, PropertyItems } from './MetaItems'
-import { UserDetails } from './UserDetails'
-import DatabaseKernelInfo from './DatabaseKernelInfo'
-import {
-  Drawer,
-  DrawerBody,
-  DrawerHeader
-} from 'browser-components/drawer/drawer-styled'
-import { DatabaseSelector } from './DatabaseSelector'
 import { getUseDb } from 'shared/modules/connections/connectionsDuck'
+import { getCurrentUser } from 'shared/modules/currentUser/currentUserDuck'
 import { getDatabases } from 'shared/modules/dbMeta/dbMetaDuck'
+import { getGraphStyleData } from 'shared/modules/grass/grassDuck'
+import DatabaseKernelInfo from './DatabaseKernelInfo'
+import { DatabaseSelector } from './DatabaseSelector'
+import { LabelItems, PropertyItems, RelationshipItems } from './MetaItems'
+import { UserDetails } from './UserDetails'
 
 export function DBMSInfo(props: any): JSX.Element {
   const moreStep = 50

@@ -17,30 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Drawer, DrawerHeader } from 'browser-components/drawer/drawer-styled'
+import {
+  CannyFeedbackIcon,
+  CannyNotificationsIcon
+} from 'browser-components/icons/Icons'
+import { cannyOptions, CANNY_FEATURE_REQUEST_URL } from 'browser-services/canny'
 import React, { Dispatch, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Action } from 'redux'
 import semver from 'semver'
-
-import { cannyOptions, CANNY_FEATURE_REQUEST_URL } from 'browser-services/canny'
 import { GlobalState } from 'shared/globalState'
 import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
 import {
   TRACK_CANNY_CHANGELOG,
   TRACK_CANNY_FEATURE_REQUEST
 } from 'shared/modules/sidebar/sidebarDuck'
+import { formatDocVersion } from './docsUtils'
 import DocumentItems from './DocumentItems'
-import { Drawer, DrawerHeader } from 'browser-components/drawer/drawer-styled'
-import {
-  CannyFeedbackIcon,
-  CannyNotificationsIcon
-} from 'browser-components/icons/Icons'
 import {
   StyledFeedbackButton,
   StyledFullSizeDrawerBody,
   StyledHeaderContainer
 } from './styled'
-import { formatDocVersion } from './docsUtils'
 
 export const shouldLinkToNewRefs = (v: string): boolean => {
   if (!semver.valid(v)) return true

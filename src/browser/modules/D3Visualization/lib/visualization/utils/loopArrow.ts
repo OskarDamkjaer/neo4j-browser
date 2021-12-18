@@ -53,7 +53,7 @@ export default class LoopArrow {
       }
     }
 
-    const normalPoint = function(sweep: any, radius: any, displacement: any) {
+    const normalPoint = function (sweep: any, radius: any, displacement: any) {
       const localLoopRadius = radius * Math.tan(spread / 2)
       const cy = radius / Math.cos(spread / 2)
       return new Point(
@@ -67,7 +67,7 @@ export default class LoopArrow {
     const endPoint = (radius: any, displacement: any) =>
       normalPoint(-(Math.PI + spread) / 2, radius, displacement)
 
-    this.outline = function() {
+    this.outline = function () {
       const inner = loopRadius - shaftRadius
       const outer = loopRadius + shaftRadius
       return [
@@ -107,7 +107,7 @@ export default class LoopArrow {
       ].join(' ')
     }
 
-    this.overlay = function(minWidth: any) {
+    this.overlay = function (minWidth: any) {
       const displacement = Math.max(minWidth / 2, shaftRadius)
       const inner = loopRadius - displacement
       const outer = loopRadius + displacement

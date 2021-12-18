@@ -18,54 +18,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { debounce } from 'lodash-es'
+import { authLog, Success } from 'neo4j-client-sso'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-import { debounce } from 'lodash-es'
-import {
-  getActiveConnectionData,
-  getActiveConnection,
-  setActiveConnection,
-  updateConnection,
-  CONNECT,
-  VERIFY_CREDENTIALS,
-  isConnected,
-  getConnectionData
-} from 'shared/modules/connections/connectionsDuck'
-import {
-  getInitCmd,
-  getPlayImplicitInitCommands
-} from 'shared/modules/settings/settingsDuck'
-import { executeSystemCommand } from 'shared/modules/commands/commandsDuck'
-import { shouldRetainConnectionCredentials } from 'shared/modules/dbMeta/dbMetaDuck'
-import { FORCE_CHANGE_PASSWORD } from 'shared/modules/cypher/cypherDuck'
 import { NATIVE, NO_AUTH, SSO } from 'services/bolt/boltHelpers'
-
-import ConnectForm from './ConnectForm'
-import ConnectedView from './ConnectedView'
-import ChangePasswordForm from './ChangePasswordForm'
-import { getAllowedBoltSchemes } from 'shared/modules/app/appDuck'
-import { FOCUS } from 'shared/modules/editor/editorDuck'
 import {
   generateBoltUrl,
   getScheme,
-  toggleSchemeRouting,
-  isNonSupportedRoutingSchemeError
+  isNonSupportedRoutingSchemeError,
+  toggleSchemeRouting
 } from 'services/boltscheme.utils'
-import { StyledConnectionBody } from './styled'
-import { CONNECTION_ID } from 'shared/modules/discovery/discoveryDuck'
-
-import { isCloudHost } from 'shared/services/utils'
-import { NEO4J_CLOUD_DOMAINS } from 'shared/modules/settings/settingsDuck'
-import { CLOUD_SCHEMES } from 'shared/modules/app/appDuck'
-import { AuthenticationMethod } from 'shared/modules/connections/connectionsDuck'
 import {
-  stripQueryString,
-  stripScheme,
-  boltToHttp
-} from 'shared/services/boltscheme.utils'
+  CLOUD_SCHEMES,
+  getAllowedBoltSchemes
+} from 'shared/modules/app/appDuck'
+import { executeSystemCommand } from 'shared/modules/commands/commandsDuck'
+import {
+  AuthenticationMethod,
+  CONNECT,
+  getActiveConnection,
+  getActiveConnectionData,
+  getConnectionData,
+  isConnected,
+  setActiveConnection,
+  updateConnection,
+  VERIFY_CREDENTIALS
+} from 'shared/modules/connections/connectionsDuck'
+import { FORCE_CHANGE_PASSWORD } from 'shared/modules/cypher/cypherDuck'
+import { shouldRetainConnectionCredentials } from 'shared/modules/dbMeta/dbMetaDuck'
+import { CONNECTION_ID } from 'shared/modules/discovery/discoveryDuck'
 import { fetchBrowserDiscoveryDataFromUrl } from 'shared/modules/discovery/discoveryHelpers'
-import { Success, authLog } from 'neo4j-client-sso'
+import { FOCUS } from 'shared/modules/editor/editorDuck'
+import {
+  getInitCmd,
+  getPlayImplicitInitCommands,
+  NEO4J_CLOUD_DOMAINS
+} from 'shared/modules/settings/settingsDuck'
+import {
+  boltToHttp,
+  stripQueryString,
+  stripScheme
+} from 'shared/services/boltscheme.utils'
+import { isCloudHost } from 'shared/services/utils'
+import ChangePasswordForm from './ChangePasswordForm'
+import ConnectedView from './ConnectedView'
+import ConnectForm from './ConnectForm'
+import { StyledConnectionBody } from './styled'
 
 type ConnectionFormState = any
 

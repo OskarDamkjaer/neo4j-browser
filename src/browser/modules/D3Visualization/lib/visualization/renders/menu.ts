@@ -21,11 +21,11 @@ import d3 from 'd3'
 import Renderer from '../components/renderer'
 import icons from './d3Icons'
 
-const noop = function() {}
+const noop = function () {}
 
 const numberOfItemsInContextMenu = 3
 
-const arc = function(radius?: any, itemNumber?: any, width?: any) {
+const arc = function (radius?: any, itemNumber?: any, width?: any) {
   const localWidth = width == null ? 30 : width
   const startAngle =
     ((2 * Math.PI) / numberOfItemsInContextMenu) * (itemNumber - 1)
@@ -40,7 +40,7 @@ const arc = function(radius?: any, itemNumber?: any, width?: any) {
     .padAngle(0.03)
 }
 
-const getSelectedNode = function(node: any) {
+const getSelectedNode = function (node: any) {
   if (node.selected) {
     return [node]
   } else {
@@ -81,7 +81,7 @@ const attachContextEvent = (
     return result
   })()
 
-const createMenuItem = function(
+const createMenuItem = function (
   selection: any,
   viz: any,
   eventName: any,

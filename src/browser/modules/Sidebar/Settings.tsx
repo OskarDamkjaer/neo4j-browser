@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-import { connect } from 'react-redux'
-import * as actions from 'shared/modules/settings/settingsDuck'
 import {
   Drawer,
   DrawerBody,
@@ -28,26 +25,29 @@ import {
   DrawerSectionBody,
   DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
-import { RadioSelector, CheckboxSelector } from 'browser-components/Form'
+import { CheckboxSelector, RadioSelector } from 'browser-components/Form'
+import FeatureToggle from 'browser/modules/FeatureToggle/FeatureToggle'
+import React from 'react'
+import { connect } from 'react-redux'
+import { toKeyString } from 'services/utils'
+import { GlobalState } from 'shared/globalState'
+import {
+  disableExperimentalFeature,
+  enableExperimentalFeature,
+  experimentalFeatureSelfName,
+  getExperimentalFeatures
+} from 'shared/modules/experimentalFeatures/experimentalFeaturesDuck'
+import * as actions from 'shared/modules/settings/settingsDuck'
+import {
+  getTelemetrySettings,
+  TelemetrySettings,
+  TelemetrySettingSource
+} from 'shared/utils/selectors'
 import {
   StyledSetting,
   StyledSettingLabel,
   StyledSettingTextInput
 } from './styled'
-import { toKeyString } from 'services/utils'
-import {
-  getExperimentalFeatures,
-  experimentalFeatureSelfName,
-  enableExperimentalFeature,
-  disableExperimentalFeature
-} from 'shared/modules/experimentalFeatures/experimentalFeaturesDuck'
-import FeatureToggle from 'browser/modules/FeatureToggle/FeatureToggle'
-import {
-  TelemetrySettings,
-  getTelemetrySettings,
-  TelemetrySettingSource
-} from 'shared/utils/selectors'
-import { GlobalState } from 'shared/globalState'
 
 const visualSettings = [
   {

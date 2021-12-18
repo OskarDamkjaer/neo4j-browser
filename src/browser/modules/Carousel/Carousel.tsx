@@ -18,26 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import Directives from 'browser-components/Directives'
 import { CarouselButton } from 'browser-components/buttons'
+import Directives from 'browser-components/Directives'
 import {
-  SlidePreviousIcon,
-  SlideNextIcon
+  SlideNextIcon,
+  SlidePreviousIcon
 } from 'browser-components/icons/Icons'
+import React, { useEffect, useRef, useState } from 'react'
 import CarouselSlidePicker from './CarouselSlidePicker'
 import {
-  StyledCarousel,
   SlideContainer,
+  StyledCarousel,
   StyledCarouselButtonContainer,
   StyledCarouselButtonContainerInner,
   StyledCarouselCount,
-  StyledCarouselIntroAnimated,
-  StyledCarouselIntro
+  StyledCarouselIntro,
+  StyledCarouselIntroAnimated
 } from './styled'
-import { useState } from 'react'
-import { useRef } from 'react'
-import { useEffect } from 'react'
 
 export default function Carousel({
   onSlide,

@@ -17,46 +17,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withBus } from 'react-suber'
-import uuid from 'uuid'
-import { map } from 'lodash-es'
-
-import {
-  commandSources,
-  executeCommand
-} from 'shared/modules/commands/commandsDuck'
-import { canAssignRolesToUser } from 'shared/modules/features/featuresDuck'
-
-import bolt from 'services/bolt/bolt'
-import {
-  listRolesQuery,
-  createDatabaseUser,
-  addRoleToUser
-} from 'shared/modules/cypher/boltUserHelper'
-import { ROUTED_CYPHER_WRITE_REQUEST } from 'shared/modules/cypher/cypherDuck'
-
-import RolesSelector from './RolesSelector'
-import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
-import FrameAside from 'browser/modules/Frame/FrameAside'
-import FrameError from 'browser/modules/Frame/FrameError'
-import FrameSuccess from 'browser/modules/Frame/FrameSuccess'
-
-import { CloseIcon } from 'browser-components/icons/Icons'
 import { FormButton, StyledLink } from 'browser-components/buttons'
+import { EnterpriseOnlyFrame } from 'browser-components/EditionView'
 import {
   StyledForm,
   StyledFormElement,
   StyledFormElementWrapper,
   StyledLabel
 } from 'browser-components/Form'
-import { StyledInput, StyleRolesContainer } from './styled'
+import { CloseIcon } from 'browser-components/icons/Icons'
+import FrameAside from 'browser/modules/Frame/FrameAside'
+import FrameError from 'browser/modules/Frame/FrameError'
+import FrameSuccess from 'browser/modules/Frame/FrameSuccess'
+import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
+import { map } from 'lodash-es'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withBus } from 'react-suber'
+import bolt from 'services/bolt/bolt'
 import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
-import { driverDatabaseSelection } from 'shared/modules/features/versionedFeatures'
-import { isEnterprise } from 'shared/modules/dbMeta/dbMetaDuck'
-import { EnterpriseOnlyFrame } from 'browser-components/EditionView'
+import {
+  commandSources,
+  executeCommand
+} from 'shared/modules/commands/commandsDuck'
 import { isConnectedAuraHost } from 'shared/modules/connections/connectionsDuck'
+import {
+  addRoleToUser,
+  createDatabaseUser,
+  listRolesQuery
+} from 'shared/modules/cypher/boltUserHelper'
+import { ROUTED_CYPHER_WRITE_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import { isEnterprise } from 'shared/modules/dbMeta/dbMetaDuck'
+import { canAssignRolesToUser } from 'shared/modules/features/featuresDuck'
+import { driverDatabaseSelection } from 'shared/modules/features/versionedFeatures'
+import uuid from 'uuid'
+import RolesSelector from './RolesSelector'
+import { StyledInput, StyleRolesContainer } from './styled'
 
 type UserAddState = any
 

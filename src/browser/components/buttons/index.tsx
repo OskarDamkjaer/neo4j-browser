@@ -18,15 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import styled, { StyledComponent } from 'styled-components'
 import { dim } from 'browser-styles/constants'
-
+import React from 'react'
 import SVGInline from 'react-svg-inline'
-
+import styled, { StyledComponent } from 'styled-components'
 import { hexToRgba } from '../../styles/utils'
-
-import styles from './style.css'
 
 export const CloseButton = (props: any): JSX.Element => {
   return <button {...props}>×</button>

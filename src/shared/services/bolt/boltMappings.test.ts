@@ -20,14 +20,14 @@
 
 import neo4j from 'neo4j-driver'
 import {
-  itemIntToString,
   arrayIntToString,
+  extractFromNeoObjects,
   extractNodesAndRelationshipsFromRecords,
   extractNodesAndRelationshipsFromRecordsForOldVis,
   extractPlan,
   flattenProperties,
-  objIntToString,
-  extractFromNeoObjects
+  itemIntToString,
+  objIntToString
 } from './boltMappings'
 
 describe('boltMappings', () => {

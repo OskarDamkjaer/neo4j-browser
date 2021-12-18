@@ -14,38 +14,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { Dispatch } from 'redux'
-import { connect } from 'react-redux'
-import { useQuery, useMutation, ApolloError } from '@apollo/client'
-import { flatMap } from 'lodash-es'
-
-import * as editor from 'shared/modules/editor/editorDuck'
-import {
-  ExecuteCommandAction,
-  commandSources,
-  executeCommand
-} from 'shared/modules/commands/commandsDuck'
-import {
-  ProjectFilesQueryVars,
-  ProjectFileMutationVars,
-  mapProjectFileToFavorites,
-  updateCacheRemoveProjectFile
-} from './projectFilesUtils'
-import {
-  ProjectFilesResult,
-  ProjectFilesVariables,
-  GET_PROJECT_FILES,
-  DELETE_PROJECT_FILE,
-  REMOVE_PROJECT_FILE
-} from './projectFilesConstants'
-import { Bus } from 'suber'
-import { StyledErrorListContainer } from '../../modules/Sidebar/styled'
-import { withBus } from 'react-suber'
+import { ApolloError, useMutation, useQuery } from '@apollo/client'
 import ProjectFileList, {
   ProjectFileScript
 } from 'browser-components/ProjectFiles/ProjectFilesList'
+import { flatMap } from 'lodash-es'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { withBus } from 'react-suber'
+import { Dispatch } from 'redux'
+import {
+  commandSources,
+  executeCommand,
+  ExecuteCommandAction
+} from 'shared/modules/commands/commandsDuck'
+import * as editor from 'shared/modules/editor/editorDuck'
+import { Bus } from 'suber'
+import { StyledErrorListContainer } from '../../modules/Sidebar/styled'
+import {
+  DELETE_PROJECT_FILE,
+  GET_PROJECT_FILES,
+  ProjectFilesResult,
+  ProjectFilesVariables,
+  REMOVE_PROJECT_FILE
+} from './projectFilesConstants'
+import {
+  mapProjectFileToFavorites,
+  ProjectFileMutationVars,
+  ProjectFilesQueryVars,
+  updateCacheRemoveProjectFile
+} from './projectFilesUtils'
 
 interface ProjectFilesError {
   apolloErrors: (ApolloError | undefined)[]
@@ -81,15 +79,15 @@ interface ProjectFilesScripts {
 }
 
 function ProjectFilesScripts(props: ProjectFilesScripts): JSX.Element {
-  const { data, error: getProjectFilesError, refetch } = useQuery<
-    ProjectFilesResult,
-    ProjectFilesVariables
-  >(GET_PROJECT_FILES, {
+  const {
+    data,
+    error: getProjectFilesError,
+    refetch
+  } = useQuery<ProjectFilesResult, ProjectFilesVariables>(GET_PROJECT_FILES, {
     variables: ProjectFilesQueryVars(props.projectId)
   })
-  const [removeFile, { error: removeProjectFileError }] = useMutation(
-    DELETE_PROJECT_FILE
-  )
+  const [removeFile, { error: removeProjectFileError }] =
+    useMutation(DELETE_PROJECT_FILE)
   const [projectFiles, setProjectFiles] = useState<ProjectFileScript[]>([])
 
   useEffect(() => {

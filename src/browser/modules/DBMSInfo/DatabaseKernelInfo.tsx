@@ -17,37 +17,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-import { connect } from 'react-redux'
-import { withBus } from 'react-suber'
-import {
-  getVersion,
-  getEdition,
-  getStoreSize,
-  getClusterRole,
-  getDatabases,
-  Database
-} from 'shared/modules/dbMeta/dbMetaDuck'
-import {
-  executeCommand,
-  commandSources,
-  listDbsCommand
-} from 'shared/modules/commands/commandsDuck'
-import { toHumanReadableBytes } from 'services/utils'
-
 import {
   DrawerSection,
   DrawerSectionBody,
   DrawerSubHeader
 } from 'browser-components/drawer/drawer-styled'
+import React from 'react'
+import { connect } from 'react-redux'
+import { withBus } from 'react-suber'
+import { toHumanReadableBytes } from 'services/utils'
 import {
-  StyledTable,
-  StyledKey,
-  StyledValue,
-  StyledValueUCFirst,
-  Link
-} from './styled'
+  commandSources,
+  executeCommand,
+  listDbsCommand
+} from 'shared/modules/commands/commandsDuck'
+import {
+  Database,
+  getClusterRole,
+  getDatabases,
+  getEdition,
+  getStoreSize,
+  getVersion
+} from 'shared/modules/dbMeta/dbMetaDuck'
 import { getUsedDbName } from 'shared/modules/features/versionedFeatures'
+import {
+  Link,
+  StyledKey,
+  StyledTable,
+  StyledValue,
+  StyledValueUCFirst
+} from './styled'
 
 type DatabaseKernelInfo = {
   role: any

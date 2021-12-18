@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import { StyledTd } from 'browser-components/DataTables'
 import {
   StyledInput as Input,
   StyledSelect as Select
 } from 'browser-components/Form'
+import styled from 'styled-components'
 
 export const StyledUserTd = styled(StyledTd)`
   padding: 10px 16px 10px 0;

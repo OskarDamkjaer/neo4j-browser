@@ -17,9 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useState, useEffect } from 'react'
-import useAutoTheme from './useAutoTheme'
+import { useEffect, useState } from 'react'
 import { AUTO_THEME, LIGHT_THEME } from 'shared/modules/settings/settingsDuck'
+import useAutoTheme from './useAutoTheme'
 
 export default function useDerivedTheme(
   selectedTheme: any,

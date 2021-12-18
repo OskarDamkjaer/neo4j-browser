@@ -20,16 +20,16 @@
 import React, { Component } from 'react'
 import { deepEquals } from 'services/utils'
 import {
+  StyledBr,
+  StyledCypherErrorMessage,
   StyledCypherMessage,
   StyledCypherWarningMessage,
-  StyledCypherErrorMessage,
-  StyledHelpContent,
-  StyledH4,
-  StyledPreformattedArea,
-  StyledHelpDescription,
   StyledDiv,
-  StyledBr,
-  StyledHelpFrame
+  StyledH4,
+  StyledHelpContent,
+  StyledHelpDescription,
+  StyledHelpFrame,
+  StyledPreformattedArea
 } from '../styled'
 
 const getWarningComponent = (severity: any) => {

@@ -71,7 +71,7 @@ const appendGraphLayers = (svgElement: any, svg: any) => {
   window.d3
     .select(svgElement)
     .selectAll('g.layer')
-    .each(function() {
+    .each(function () {
       svg.node().appendChild(
         window.d3
           // @ts-expect-error ts-migrate(2683) FIXME: 'this' implicitly has type 'any' because it does n... Remove this comment to see the full error message
@@ -86,7 +86,7 @@ const appendPlanLayers = (svgElement: any, svg: any) => {
   window.d3
     .select(svgElement)
     .selectAll('g.layer')
-    .each(function() {
+    .each(function () {
       svg.node().appendChild(
         window.d3
           // @ts-expect-error ts-migrate(2683) FIXME: 'this' implicitly has type 'any' because it does n... Remove this comment to see the full error message

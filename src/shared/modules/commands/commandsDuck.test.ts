@@ -20,26 +20,25 @@
 
 import configureMockStore, { MockStoreEnhanced } from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus, createReduxMiddleware } from 'suber'
-
-import { BoltConnectionError } from '../../services/exceptions'
-import * as commands from './commandsDuck'
-import helper from 'services/commandInterpreterHelper'
-import { update as updateQueryResult } from '../requests/requestsDuck'
-import { send } from 'shared/modules/requests/requestsDuck'
-import * as frames from 'shared/modules/frames/framesDuck'
-import { disconnectAction } from 'shared/modules/connections/connectionsDuck'
-import {
-  update as updateParams,
-  replace as replaceParams
-} from 'shared/modules/params/paramsDuck'
-import {
-  update as updateSettings,
-  replace as replaceSettings
-} from 'shared/modules/settings/settingsDuck'
-import { cleanCommand, getInterpreter } from 'services/commandUtils'
 import bolt from 'services/bolt/bolt'
+import helper from 'services/commandInterpreterHelper'
+import { cleanCommand, getInterpreter } from 'services/commandUtils'
+import { disconnectAction } from 'shared/modules/connections/connectionsDuck'
+import * as frames from 'shared/modules/frames/framesDuck'
+import {
+  replace as replaceParams,
+  update as updateParams
+} from 'shared/modules/params/paramsDuck'
+import { send } from 'shared/modules/requests/requestsDuck'
+import {
+  replace as replaceSettings,
+  update as updateSettings
+} from 'shared/modules/settings/settingsDuck'
+import { createBus, createReduxMiddleware } from 'suber'
+import { BoltConnectionError } from '../../services/exceptions'
 import { fetchMetaData } from '../dbMeta/dbMetaDuck'
+import { update as updateQueryResult } from '../requests/requestsDuck'
+import * as commands from './commandsDuck'
 
 const originalRoutedWriteTransaction = bolt.routedWriteTransaction
 

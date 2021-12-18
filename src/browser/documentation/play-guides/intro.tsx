@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { isMac } from 'browser/modules/App/keyboardShortcuts'
 import React from 'react'
 import Slide from '../../modules/Carousel/Slide'
-import { isMac } from 'browser/modules/App/keyboardShortcuts'
 
 const title = 'Intro'
 const slides = [

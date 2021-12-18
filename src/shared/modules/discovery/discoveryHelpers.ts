@@ -18,22 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { pick } from 'lodash'
 import {
   authLog,
-  fetchDiscoveryDataFromUrl,
   DiscoveryResult,
-  FetchError,
-  NoProviderError
+  fetchDiscoveryDataFromUrl,
+  FetchError
 } from 'neo4j-client-sso'
-import {
-  DiscoverableData,
-  Connection
-} from 'shared/modules/connections/connectionsDuck'
 import { getDiscoveryEndpoint } from 'services/bolt/boltHelpers'
 import { boltToHttp, boltUrlsHaveSameHost } from 'services/boltscheme.utils'
-import { getUrlInfo, isCloudHost } from 'shared/services/utils'
+import {
+  Connection,
+  DiscoverableData
+} from 'shared/modules/connections/connectionsDuck'
 import { NEO4J_CLOUD_DOMAINS } from 'shared/modules/settings/settingsDuck'
-import { pick } from 'lodash'
+import { getUrlInfo, isCloudHost } from 'shared/services/utils'
 
 type ExtraDiscoveryFields = {
   host?: string

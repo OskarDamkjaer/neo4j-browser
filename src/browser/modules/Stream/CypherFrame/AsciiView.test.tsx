@@ -18,13 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render } from '@testing-library/react'
 import neo4j from 'neo4j-driver'
-
+import React from 'react'
 import {
-  AsciiViewComponent as AsciiView,
-  AsciiStatusbarComponent as AsciiStatusbar
+  AsciiStatusbarComponent as AsciiStatusbar,
+  AsciiViewComponent as AsciiView
 } from './AsciiView'
 
 describe('AsciiViews', () => {

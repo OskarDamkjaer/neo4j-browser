@@ -18,23 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import { includes, last, split, startsWith } from 'lodash-es'
-
-import MdxSlide from 'browser/modules/Docs/MDX/MdxSlide'
-import Slide from 'browser/modules/Carousel/Slide'
 import docs, { isBuiltInGuide } from 'browser/documentation'
 import guideUnfound from 'browser/documentation/sidebar-guides/unfound'
-import {
-  addProtocolsToUrlList,
-  extractAllowlistFromConfigString,
-  resolveAllowlistWildcard
-} from './utils'
-import { fetchRemoteGuideAsync } from 'shared/modules/commands/helpers/playAndGuides'
-import {
-  getDefaultRemoteContentHostnameAllowlist,
-  getRemoteContentHostnameAllowlist
-} from 'shared/modules/dbMeta/dbMetaDuck'
+import Slide from 'browser/modules/Carousel/Slide'
+import MdxSlide from 'browser/modules/Docs/MDX/MdxSlide'
 import { splitMdxSlides } from 'browser/modules/Docs/MDX/splitMdx'
 import {
   StyledCypherErrorMessage,
@@ -45,7 +32,19 @@ import {
   StyledHelpFrame,
   StyledPreformattedArea
 } from 'browser/modules/Stream/styled'
+import { includes, last, split, startsWith } from 'lodash-es'
+import React from 'react'
 import { GlobalState } from 'shared/globalState'
+import { fetchRemoteGuideAsync } from 'shared/modules/commands/helpers/playAndGuides'
+import {
+  getDefaultRemoteContentHostnameAllowlist,
+  getRemoteContentHostnameAllowlist
+} from 'shared/modules/dbMeta/dbMetaDuck'
+import {
+  addProtocolsToUrlList,
+  extractAllowlistFromConfigString,
+  resolveAllowlistWildcard
+} from './utils'
 
 interface ResponseException extends Error {
   response: Response

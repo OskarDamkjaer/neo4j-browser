@@ -41,7 +41,7 @@ function addHistoryHelper(
   return newHistory.slice(0, maxHistory)
 }
 
-export default function(state: string[] = [], action: any) {
+export default function (state: string[] = [], action: any) {
   switch (action.type) {
     case ADD:
       return addHistoryHelper(state, action.state, action.maxHistory)

@@ -19,13 +19,12 @@
  */
 
 import { formatDocVersion } from 'browser/modules/Sidebar/docsUtils'
+import { GlobalState } from 'project-root/src/shared/globalState'
 import React from 'react'
 import { connect } from 'react-redux'
 import semver from 'semver'
-
 import { getVersion } from 'shared/modules/dbMeta/dbMetaDuck'
 import { DrawerExternalLink } from './drawer/drawer-styled'
-import { GlobalState } from 'project-root/src/shared/globalState'
 
 const movedPages: { [key: string]: { oldPage: string; oldContent: string } } = {
   '/administration/indexes-for-search-performance/': {

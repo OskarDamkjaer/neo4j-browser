@@ -18,34 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
 import React, { Component, ReactNode } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
-import { Database, isEnterprise } from 'shared/modules/dbMeta/dbMetaDuck'
-import {
-  isConnected,
-  getUseDb
-} from 'shared/modules/connections/connectionsDuck'
-import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
-import {
-  StyledStatusBar,
-  AutoRefreshToggle,
-  AutoRefreshSpan,
-  StatusbarWrapper
-} from '../AutoRefresh/styled'
 import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
-import { hasMultiDbSupport } from 'shared/modules/features/versionedFeatures'
-import { ErrorsView } from '../CypherFrame/ErrorsView'
-import { getDatabases } from 'shared/modules/dbMeta/dbMetaDuck'
-import * as legacyHelpers from './legacyHelpers'
-import * as helpers from './helpers'
-import { SysInfoTable } from './SysInfoTable'
-import { Bus } from 'suber'
 import { GlobalState } from 'shared/globalState'
+import {
+  getUseDb,
+  isConnected
+} from 'shared/modules/connections/connectionsDuck'
+import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import {
+  Database,
+  getDatabases,
+  isEnterprise
+} from 'shared/modules/dbMeta/dbMetaDuck'
+import { hasMultiDbSupport } from 'shared/modules/features/versionedFeatures'
 import { Frame } from 'shared/modules/frames/framesDuck'
+import { Bus } from 'suber'
 import { ExclamationTriangleIcon } from '../../../components/icons/Icons'
+import {
+  AutoRefreshSpan,
+  AutoRefreshToggle,
+  StatusbarWrapper,
+  StyledStatusBar
+} from '../AutoRefresh/styled'
+import { ErrorsView } from '../CypherFrame/ErrorsView'
+import * as helpers from './helpers'
+import * as legacyHelpers from './legacyHelpers'
 import { InlineError } from './styled'
+import { SysInfoTable } from './SysInfoTable'
 
 export type DatabaseMetric = { label: string; value?: string }
 export type SysInfoFrameState = {
@@ -216,13 +219,8 @@ export class SysInfoFrame extends Component<
       storeSizes,
       transactions
     } = this.state
-    const {
-      databases,
-      frame,
-      isConnected,
-      isEnterprise,
-      hasMultiDbSupport
-    } = this.props
+    const { databases, frame, isConnected, isEnterprise, hasMultiDbSupport } =
+      this.props
 
     const content = isConnected ? (
       <SysInfoTable

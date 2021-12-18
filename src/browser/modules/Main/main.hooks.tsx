@@ -19,11 +19,10 @@
  *
  */
 
-import { useState, useEffect } from 'react'
-
+import { useEffect, useState } from 'react'
 import {
-  PENDING_STATE,
-  CONNECTING_STATE
+  CONNECTING_STATE,
+  PENDING_STATE
 } from 'shared/modules/connections/connectionsDuck'
 
 const FIVE_SECONDS = 5 * 1000

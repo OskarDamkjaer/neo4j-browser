@@ -7,7 +7,7 @@ function perfTracker() {
   let lastTime = performance.now()
   let frames = 0
 
-  return function(onFpsData: (fps: number) => void) {
+  return function (onFpsData: (fps: number) => void) {
     frames = frames + 1
     const currentTime = performance.now()
     if (currentTime >= lastTime + 1000) {

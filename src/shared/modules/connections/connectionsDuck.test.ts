@@ -20,15 +20,15 @@
 
 import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus, createReduxMiddleware } from 'suber'
-import reducer, * as connections from './connectionsDuck'
+import bolt from 'services/bolt/bolt'
 import {
-  DONE as DISCOVERY_DONE,
   CONNECTION_ID,
+  DONE as DISCOVERY_DONE,
   updateDiscoveryConnection
 } from 'shared/modules/discovery/discoveryDuck'
+import { createBus, createReduxMiddleware } from 'suber'
+import reducer, * as connections from './connectionsDuck'
 
-import bolt from 'services/bolt/bolt'
 jest.mock('services/bolt/bolt', () => {
   return {
     closeConnection: jest.fn(),

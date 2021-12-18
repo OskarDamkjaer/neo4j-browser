@@ -18,20 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component, TransitionEvent } from 'react'
 import {
-  StyledNavigationButton,
   NavigationButtonContainer,
-  StyledCannyBadgeAnchor
+  StyledCannyBadgeAnchor,
+  StyledNavigationButton
 } from 'browser-components/buttons'
-import {
-  StyledSidebar,
-  StyledDrawer,
-  StyledTabsWrapper,
-  StyledTopNav,
-  StyledBottomNav
-} from './styled'
+import React, { Component, TransitionEvent } from 'react'
 import { GUIDE_DRAWER_ID } from 'shared/modules/sidebar/sidebarDuck'
+import {
+  StyledBottomNav,
+  StyledDrawer,
+  StyledSidebar,
+  StyledTabsWrapper,
+  StyledTopNav
+} from './styled'
 
 export const LARGE_DRAWER_WIDTH = 500
 export const STANDARD_DRAWER_WIDTH = 300

@@ -19,9 +19,9 @@
  */
 import jsonic from 'jsonic'
 import { splitStringOnFirst } from 'services/commandUtils'
-import { update, replace } from 'shared/modules/params/paramsDuck'
-import { collectLambdaValues, parseLambdaStatement } from './lambdas'
 import { SYSTEM_DB } from 'shared/modules/dbMeta/dbMetaDuck'
+import { replace, update } from 'shared/modules/params/paramsDuck'
+import { collectLambdaValues, parseLambdaStatement } from './lambdas'
 
 export const extractParams = (param: any) => {
   // early bail, now handled by parser

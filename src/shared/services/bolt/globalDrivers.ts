@@ -19,14 +19,14 @@
  */
 
 import neo4j, { Driver } from 'neo4j-driver'
-import { createDriverOrFailFn } from './driverFactory'
 import { KERBEROS, NATIVE, SSO } from 'services/bolt/boltHelpers'
 import {
   isNonRoutingScheme,
-  toNonRoutingScheme,
-  isNonSupportedRoutingSchemeError
+  isNonSupportedRoutingSchemeError,
+  toNonRoutingScheme
 } from 'services/boltscheme.utils'
 import { Connection } from 'shared/modules/connections/connectionsDuck'
+import { createDriverOrFailFn } from './driverFactory'
 
 interface GlobalDriversObject {
   getDirectDriver: () => Driver | null

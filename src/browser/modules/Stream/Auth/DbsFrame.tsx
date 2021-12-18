@@ -18,23 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
-import {
-  StyledConnectionAside,
-  StyledConnectionBodyContainer,
-  StyledConnectionBody,
-  StyledDbsRow
-} from './styled'
 import { H3 } from 'browser-components/headers'
-import { toKeyString, escapeCypherIdentifier } from 'services/utils'
-import { AliasText, UnstyledList } from '../styled'
-import { useDbCommand } from 'shared/modules/commands/commandsDuck'
-import TextCommand from 'browser/modules/DecoratedText/TextCommand'
 import ClickToCode from 'browser/modules/ClickToCode/index'
+import TextCommand from 'browser/modules/DecoratedText/TextCommand'
+import FrameTemplate from 'browser/modules/Frame/FrameTemplate'
 import { StyledCodeBlockFrame } from 'browser/modules/Main/styled'
 import { uniqBy } from 'lodash-es'
+import React from 'react'
+import { escapeCypherIdentifier, toKeyString } from 'services/utils'
+import { useDbCommand } from 'shared/modules/commands/commandsDuck'
 import { BaseFrameProps } from '../Stream'
+import { AliasText, UnstyledList } from '../styled'
+import {
+  StyledConnectionAside,
+  StyledConnectionBody,
+  StyledConnectionBodyContainer,
+  StyledDbsRow
+} from './styled'
 
 const DbsFrame = (props: BaseFrameProps) => {
   const { frame } = props

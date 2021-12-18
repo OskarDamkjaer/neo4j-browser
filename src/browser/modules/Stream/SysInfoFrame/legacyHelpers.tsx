@@ -18,17 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
-import { getTableDataFromRecords, buildTableData } from './sysinfo-utils'
-import { toHumanReadableBytes } from 'services/utils'
-import arrayHasItems from 'shared/utils/array-has-items'
-
+import { QuestionIcon } from 'browser-components/icons/Icons'
 import {
-  SysInfoTableContainer,
   StyledSysInfoTable,
+  SysInfoTableContainer,
   SysInfoTableEntry
 } from 'browser-components/Tables'
-import { QuestionIcon } from 'browser-components/icons/Icons'
+import React from 'react'
+import { toHumanReadableBytes } from 'services/utils'
+import arrayHasItems from 'shared/utils/array-has-items'
+import { buildTableData, getTableDataFromRecords } from './sysinfo-utils'
 
 export const sysinfoQuery = () => 'CALL dbms.queryJmx("org.neo4j:*")'
 
@@ -93,7 +92,7 @@ export const Sysinfo = ({
 }
 
 export const responseHandler = (setState: any) =>
-  function(res: any) {
+  function (res: any) {
     if (!res.success) {
       setState({ error: 'No results', success: false })
       return

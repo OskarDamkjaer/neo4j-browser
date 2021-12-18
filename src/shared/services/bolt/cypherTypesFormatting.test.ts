@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { stringModifier } from 'services/bolt/cypherTypesFormatting'
 import neo4j from 'neo4j-driver'
+import { stringModifier } from 'services/bolt/cypherTypesFormatting'
 
 describe('stringModifier', () => {
   describe('Cypher Types Number modifier only modifies where needed', () => {

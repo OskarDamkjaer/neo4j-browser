@@ -72,7 +72,7 @@ function queryPlan(this: any, element: any) {
     .domain(d3.keys(operatorCategories))
     .range(operatorColors)
 
-  const color = function(d: any) {
+  const color = function (d: any) {
     for (const name in operatorCategories) {
       const keywords = operatorCategories[name]
       for (const keyword of Array.from(keywords)) {
@@ -84,7 +84,7 @@ function queryPlan(this: any, element: any) {
     return augment(colors('other'))
   }
 
-  const rows = function(operator: any) {
+  const rows = function (operator: any) {
     let left
     return (left =
       operator.Rows != null ? operator.Rows : operator.EstimatedRows) != null
@@ -92,7 +92,7 @@ function queryPlan(this: any, element: any) {
       : 0
   }
 
-  const plural = function(noun: any, count: any) {
+  const plural = function (noun: any, count: any) {
     if (count === 1) {
       return noun
     } else {
@@ -102,7 +102,7 @@ function queryPlan(this: any, element: any) {
 
   const formatNumber = d3.format(',.0f')
 
-  const operatorDetails = function(operator: any): any {
+  const operatorDetails = function (operator: any): any {
     let expression, identifiers, index, left, left1
     if (!operator.expanded) {
       return []
@@ -110,7 +110,7 @@ function queryPlan(this: any, element: any) {
 
     const details: any[] = []
 
-    const wordWrap = function(string: any, className: any) {
+    const wordWrap = function (string: any, className: any) {
       const measure = (text: any) => measureText(text, fixedWidthFont, 10)
 
       const words = string.split(/([^a-zA-Z\d])/)
@@ -243,7 +243,7 @@ function queryPlan(this: any, element: any) {
     return details
   }
 
-  const transform = function(queryPlan: any) {
+  const transform = function (queryPlan: any) {
     const operators: any = []
     const links: any = []
 
@@ -252,7 +252,7 @@ function queryPlan(this: any, element: any) {
       children: [queryPlan.root]
     }
 
-    const collectLinks = function(operator: any, rank: any) {
+    const collectLinks = function (operator: any, rank: any) {
       operators.push(operator)
       operator.rank = rank
       return (() => {
@@ -276,8 +276,8 @@ function queryPlan(this: any, element: any) {
     return [operators, links]
   }
 
-  const layout = function(operators: any[], links: any[]) {
-    const costHeight = (function() {
+  const layout = function (operators: any[], links: any[]) {
+    const costHeight = (function () {
       const scale = d3.scale
         .log()
         .domain([
@@ -292,7 +292,7 @@ function queryPlan(this: any, element: any) {
         scale((operator.DbHits != null ? operator.DbHits : 0) + 1)
     })()
 
-    const operatorHeight = function(operator: any) {
+    const operatorHeight = function (operator: any) {
       let height = operatorHeaderHeight
       if (operator.expanded) {
         height += operatorDetails(operator).slice(-1)[0].y + operatorPadding * 2
@@ -301,7 +301,7 @@ function queryPlan(this: any, element: any) {
       return height
     }
 
-    const linkWidth = (function() {
+    const linkWidth = (function () {
       const scale = d3.scale
         .log()
         .domain([
@@ -466,7 +466,7 @@ function queryPlan(this: any, element: any) {
     return [width, height]
   }
 
-  const render = function(
+  const render = function (
     operators: any,
     links: any,
     width: any,
@@ -759,13 +759,12 @@ function queryPlan(this: any, element: any) {
                       }
                     },
                     selections(enter: any, update: any) {
-                      const rotateForExpand = function(d: any) {
+                      const rotateForExpand = function (d: any) {
                         // @ts-expect-error
                         d3.transform()
-                        return `translate(${operatorHeaderHeight /
-                          2}, ${operatorHeaderHeight / 2}) rotate(${
-                          d.expanded ? 90 : 0
-                        }) scale(0.5)`
+                        return `translate(${operatorHeaderHeight / 2}, ${
+                          operatorHeaderHeight / 2
+                        }) rotate(${d.expanded ? 90 : 0}) scale(0.5)`
                       }
 
                       enter
@@ -1041,7 +1040,7 @@ function queryPlan(this: any, element: any) {
     })
   }
 
-  const display = function(queryPlan: any) {
+  const display = function (queryPlan: any) {
     const [operators, links] = Array.from(transform(queryPlan))
     const [width, height] = Array.from(layout(operators, links))
     return render(operators, links, width, height, () => display(queryPlan))

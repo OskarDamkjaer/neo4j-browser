@@ -17,20 +17,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { FrameButton } from 'browser-components/buttons'
+import { FireExtinguisherIcon } from 'browser-components/icons/Icons'
+import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
 import React from 'react'
 import { connect } from 'react-redux'
-import FrameTemplate from '../Frame/FrameTemplate'
-import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
-import { StyledFrameTitlebarButtonSection } from 'browser/modules/Frame/styled'
-import { FrameButton } from 'browser-components/buttons'
 import { objToCss } from 'services/grassUtils'
 import {
-  executeSystemCommand,
+  commandSources,
   executeCommand,
-  commandSources
+  executeSystemCommand
 } from 'shared/modules/commands/commandsDuck'
-import { FireExtinguisherIcon } from 'browser-components/icons/Icons'
+import FrameTemplate from '../Frame/FrameTemplate'
 import { InfoView } from './InfoView'
+import { PaddedDiv, StyledOneRowStatsBar, StyledRightPartial } from './styled'
 
 const StyleFrame = ({ frame }: any) => {
   let grass: string | false = ''

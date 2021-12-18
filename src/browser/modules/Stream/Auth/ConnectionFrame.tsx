@@ -18,14 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
-
-import FrameTemplate from '../../Frame/FrameTemplate'
-import ConnectionForm from './ConnectionForm'
-import FrameError from '../../Frame/FrameError'
 import { H3 } from 'browser-components/headers'
 import { Lead } from 'browser-components/Text'
-
+import React, { Component } from 'react'
+import FrameError from '../../Frame/FrameError'
+import FrameTemplate from '../../Frame/FrameTemplate'
+import ConnectionForm from './ConnectionForm'
 import { StyledConnectionAside, StyledConnectionBodyContainer } from './styled'
 
 type State = any

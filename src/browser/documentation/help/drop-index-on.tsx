@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import ManualLink from 'browser-components/ManualLink'
+import React from 'react'
 const title = 'DROP INDEX ON'
 const subtitle = 'Drop a schema index'
 const category = 'schemaClauses'

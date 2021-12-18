@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import { dim } from 'browser-styles/constants'
+import styled from 'styled-components'
 
 export const StyledVisContainer = styled.div<{ fullscreen: boolean }>`
   width: 100%;

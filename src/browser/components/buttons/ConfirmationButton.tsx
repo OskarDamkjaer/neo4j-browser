@@ -18,13 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {
+  CancelIcon,
+  MinusIcon,
+  RightArrowIcon
+} from 'browser-components/icons/Icons'
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import {
-  MinusIcon,
-  RightArrowIcon,
-  CancelIcon
-} from 'browser-components/icons/Icons'
 
 const IconButton = styled.button`
   margin-left: 4px;

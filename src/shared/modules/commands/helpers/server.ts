@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { getCommandAndParam } from 'services/commandUtils'
-import * as connections from 'shared/modules/connections/connectionsDuck'
-import { add as addFrameAction } from 'shared/modules/frames/framesDuck'
-import { UnknownCommandError } from 'services/exceptions'
-import { shouldRetainConnectionCredentials } from 'shared/modules/dbMeta/dbMetaDuck'
 import { clearRefreshTokenData } from 'neo4j-client-sso'
+import { getCommandAndParam } from 'services/commandUtils'
+import { UnknownCommandError } from 'services/exceptions'
+import * as connections from 'shared/modules/connections/connectionsDuck'
+import { shouldRetainConnectionCredentials } from 'shared/modules/dbMeta/dbMetaDuck'
+import { add as addFrameAction } from 'shared/modules/frames/framesDuck'
 
 export function handleServerCommand(action: any, put: any, store: any) {
   const [serverCmd, props] = getCommandAndParam(action.cmd.substr(1))

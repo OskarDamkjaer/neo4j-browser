@@ -19,8 +19,8 @@
  */
 import React from 'react'
 import {
-  StyledConnectionBody,
   StyledCode,
+  StyledConnectionBody,
   StyledConnectionFooter
 } from './styled'
 

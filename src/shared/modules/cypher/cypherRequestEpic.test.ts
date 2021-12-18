@@ -20,13 +20,12 @@
 
 import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
-import { createBus, createReduxMiddleware } from 'suber'
-
-import { cypherRequestEpic, CYPHER_REQUEST } from './cypherDuck'
 import {
-  NEO4J_BROWSER_USER_QUERY,
-  getUserDirectTxMetadata
+  getUserDirectTxMetadata,
+  NEO4J_BROWSER_USER_QUERY
 } from 'services/bolt/txMetadata'
+import { createBus, createReduxMiddleware } from 'suber'
+import { cypherRequestEpic, CYPHER_REQUEST } from './cypherDuck'
 
 jest.mock('services/bolt/bolt', () => {
   const orig = require.requireActual('services/bolt/bolt')

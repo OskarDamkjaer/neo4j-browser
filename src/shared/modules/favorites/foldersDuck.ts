@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { APP_START, USER_CLEAR } from 'shared/modules/app/appDuck'
 import { getBrowserName } from 'services/utils'
+import { APP_START, USER_CLEAR } from 'shared/modules/app/appDuck'
 import { folders } from './staticScripts'
 
 export const NAME = 'folders'

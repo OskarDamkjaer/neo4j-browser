@@ -21,9 +21,7 @@
 
 import { act, renderHook } from '@testing-library/react-hooks'
 import mockDate from 'mockdate'
-
 import { DISCONNECTED_STATE } from 'shared/modules/connections/connectionsDuck'
-
 import { useSlowConnectionState } from '../main.hooks'
 
 mockDate.set(0)

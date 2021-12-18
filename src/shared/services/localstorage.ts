@@ -86,7 +86,7 @@ export function getAll(): Partial<GlobalState> {
 export function createReduxMiddleware(): Middleware {
   return store => next => action => {
     const result = next(action)
-    const state = (store.getState() as unknown) as GlobalState
+    const state = store.getState() as unknown as GlobalState
 
     keys.forEach(key => {
       if (key === 'connections' && !shouldRetainConnectionCredentials(state)) {

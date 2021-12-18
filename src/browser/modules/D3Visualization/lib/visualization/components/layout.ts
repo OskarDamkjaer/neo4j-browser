@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import d3 from 'd3'
-import collision from './collision'
-import circularLayout from '../utils/circularLayout'
 import cloneArray from '../utils/arrays'
+import circularLayout from '../utils/circularLayout'
+import collision from './collision'
 
 const layout = {
   force: () => {
@@ -40,7 +40,7 @@ const layout = {
           )
           .charge(-1000)
 
-        const newStatsBucket = function() {
+        const newStatsBucket = function () {
           const bucket = {
             layoutTime: 0,
             layoutSteps: 0
@@ -50,13 +50,13 @@ const layout = {
 
         let currentStats = newStatsBucket()
 
-        forceLayout.collectStats = function() {
+        forceLayout.collectStats = function () {
           const latestStats = currentStats
           currentStats = newStatsBucket()
           return latestStats
         }
 
-        const accelerateLayout = function() {
+        const accelerateLayout = function () {
           let maxStepsPerTick = 100
           const maxAnimationFramesPerSecond = 60
           const maxComputeTime = 1000 / maxAnimationFramesPerSecond
@@ -66,7 +66,7 @@ const layout = {
               : () => Date.now()
 
           const d3Tick = d3force.tick
-          return (d3force.tick = function() {
+          return (d3force.tick = function () {
             const startTick = now()
             let step = maxStepsPerTick
             while (step-- && now() - startTick < maxComputeTime) {
@@ -93,7 +93,7 @@ const layout = {
             (pair: any) => pair.relationships[0]
           )
 
-        forceLayout.update = function(graph: any, size: any) {
+        forceLayout.update = function (graph: any, size: any) {
           const nodes = cloneArray(graph.nodes())
           const relationships = oneRelationshipPerPairOfNodes(graph)
 
@@ -104,11 +104,7 @@ const layout = {
           }
           circularLayout(nodes, center, radius)
 
-          return d3force
-            .nodes(nodes)
-            .links(relationships)
-            .size(size)
-            .start()
+          return d3force.nodes(nodes).links(relationships).size(size).start()
         }
 
         forceLayout.drag = d3force.drag

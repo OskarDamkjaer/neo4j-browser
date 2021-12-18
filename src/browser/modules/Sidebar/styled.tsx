@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Button } from 'semantic-ui-react'
-import styled from 'styled-components'
 import {
   DrawerBody,
   DrawerBrowserCommand
 } from 'browser-components/drawer/drawer-styled'
-import { dark } from 'browser-styles/themes'
 import { LARGE_DRAWER_WIDTH } from 'browser-components/TabNavigation/Navigation'
+import { dark } from 'browser-styles/themes'
+import { Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 export const StyledSetting = styled.div`
   padding-bottom: 15px;

@@ -18,34 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react'
 import asciitable from 'ascii-data-table'
-
 import Ellipsis from 'browser-components/Ellipsis'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Icon } from 'semantic-ui-react'
+import { stringModifier } from 'services/bolt/cypherTypesFormatting'
 import { shallowEquals } from 'services/utils'
+import { GlobalState } from 'shared/globalState'
+import { BrowserRequestResult } from 'shared/modules/requests/requestsDuck'
+import { getMaxFieldItems } from 'shared/modules/settings/settingsDuck'
 import {
-  StyledStatsBar,
   PaddedDiv,
+  StyledAsciiPre,
   StyledBodyMessage,
   StyledRightPartial,
-  StyledWidthSliderContainer,
-  StyledWidthSlider,
+  StyledStatsBar,
   StyledTruncatedMessage,
-  StyledAsciiPre
+  StyledWidthSlider,
+  StyledWidthSliderContainer
 } from '../styled'
 import {
   getBodyAndStatusBarMessages,
   getRecordsToDisplayInTable,
-  transformResultRecordsToResultArray,
+  resultHasTruncatedFields,
   stringifyResultArray,
-  resultHasTruncatedFields
+  transformResultRecordsToResultArray
 } from './helpers'
-import { stringModifier } from 'services/bolt/cypherTypesFormatting'
-import { getMaxFieldItems } from 'shared/modules/settings/settingsDuck'
-import { connect } from 'react-redux'
-import { Icon } from 'semantic-ui-react'
-import { GlobalState } from 'shared/globalState'
-import { BrowserRequestResult } from 'shared/modules/requests/requestsDuck'
 
 interface BaseAsciiViewComponentProps {
   result: BrowserRequestResult

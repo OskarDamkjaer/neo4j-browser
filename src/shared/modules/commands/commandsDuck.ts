@@ -19,21 +19,31 @@
  */
 
 import Rx from 'rxjs'
-import { v4 } from 'uuid'
+import helper from 'services/commandInterpreterHelper'
 import {
+  buildCommandObject,
   cleanCommand,
   extractPostConnectCommandsFromServerConfig,
-  buildCommandObject,
   extractStatementsFromString
 } from 'services/commandUtils'
 import {
-  extractAllowlistFromConfigString,
   addProtocolsToUrlList,
+  extractAllowlistFromConfigString,
   firstSuccessPromise,
-  serialExecution,
-  resolveAllowlistWildcard
+  resolveAllowlistWildcard,
+  serialExecution
 } from 'services/utils'
-import helper from 'services/commandInterpreterHelper'
+import { APP_START, USER_CLEAR } from 'shared/modules/app/appDuck'
+import { add as addFrame } from 'shared/modules/frames/framesDuck'
+import { update as updateQueryResult } from 'shared/modules/requests/requestsDuck'
+import { v4 } from 'uuid'
+import { CONNECTION_SUCCESS } from '../connections/connectionsDuck'
+import {
+  getAvailableSettings,
+  getDefaultRemoteContentHostnameAllowlist,
+  getRemoteContentHostnameAllowlist,
+  UPDATE_SETTINGS
+} from '../dbMeta/dbMetaDuck'
 import { addHistory } from '../history/historyDuck'
 import {
   getMaxHistory,
@@ -41,16 +51,6 @@ import {
   shouldEnableMultiStatementMode
 } from '../settings/settingsDuck'
 import { fetchRemoteGuideAsync } from './helpers/playAndGuides'
-import { CONNECTION_SUCCESS } from '../connections/connectionsDuck'
-import {
-  UPDATE_SETTINGS,
-  getAvailableSettings,
-  getRemoteContentHostnameAllowlist,
-  getDefaultRemoteContentHostnameAllowlist
-} from '../dbMeta/dbMetaDuck'
-import { APP_START, USER_CLEAR } from 'shared/modules/app/appDuck'
-import { add as addFrame } from 'shared/modules/frames/framesDuck'
-import { update as updateQueryResult } from 'shared/modules/requests/requestsDuck'
 
 export const NAME = 'commands'
 export const SINGLE_COMMAND_QUEUED = `${NAME}/SINGLE_COMMAND_QUEUED`

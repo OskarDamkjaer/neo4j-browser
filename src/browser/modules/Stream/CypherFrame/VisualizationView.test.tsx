@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import { render } from '@testing-library/react'
 import neo4j from 'neo4j-driver'
-import { Visualization } from './VisualizationView'
+import React from 'react'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
+import { Visualization } from './VisualizationView'
 
 const mockStore = configureMockStore()
 const store = mockStore({

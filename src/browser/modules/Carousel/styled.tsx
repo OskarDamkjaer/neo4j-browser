@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import { bounceRight } from 'browser-styles/animations'
 import { dark } from 'browser-styles/themes'
+import styled from 'styled-components'
 
 export const StyledCarousel = styled.div`
   padding-bottom: 20px;

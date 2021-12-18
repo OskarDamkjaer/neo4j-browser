@@ -131,16 +131,12 @@ declare module 'cypher-editor-support' {
     start: CypherPosition
     stop: CypherPosition
   }
-  export function parse(
-    input: string
-  ): {
+  export function parse(input: string): {
     referencesListener: {
       queriesAndCommands: QueryOrCommand[]
     }
   }
-  export function extractStatements(
-    input: string
-  ): {
+  export function extractStatements(input: string): {
     referencesListener: {
       statements: [{ raw: () => Record<string, unknown>[] }]
     }

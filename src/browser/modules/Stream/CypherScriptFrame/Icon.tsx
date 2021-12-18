@@ -18,15 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
 import {
-  SmallSpinnerIcon,
-  SquareIcon,
   CheckedSquareIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  SmallSpinnerIcon,
+  SquareIcon
 } from 'browser-components/icons/Icons'
-import { WarningSpan, ErrorSpan, SuccessSpan } from './styled'
+import React from 'react'
 import { Status } from 'shared/modules/requests/requestsDuck'
+import { ErrorSpan, SuccessSpan, WarningSpan } from './styled'
 
 interface IconProps {
   status: Status

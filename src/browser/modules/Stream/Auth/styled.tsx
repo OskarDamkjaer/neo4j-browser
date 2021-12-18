@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import styled from 'styled-components'
 import { StyledInput, StyledSelect } from 'browser-components/Form'
+import styled from 'styled-components'
 import { StyledFrameAside } from '../../Frame/styled'
 
 export const StyledConnectionForm = styled.form`

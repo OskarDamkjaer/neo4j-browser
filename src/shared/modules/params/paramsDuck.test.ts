@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import reducer, * as params from './paramsDuck'
 import { dehydrate } from 'services/duckUtils'
+import reducer, * as params from './paramsDuck'
 
 describe('paramsDuck', () => {
   test('Finds the reducer', () => {

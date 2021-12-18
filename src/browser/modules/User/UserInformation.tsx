@@ -18,33 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { FormButton } from 'browser-components/buttons'
+import { StyledBodyTr } from 'browser-components/DataTables'
+import { CloseIcon } from 'browser-components/icons/Icons'
 import React, { Component } from 'react'
-import uuid, { v4 } from 'uuid'
-
-import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-
+import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
 import {
-  deleteUser,
-  addRoleToUser,
-  removeRoleFromUser,
   activateUser,
+  addRoleToUser,
+  deleteUser,
+  removeRoleFromUser,
   suspendUser
 } from 'shared/modules/cypher/boltUserHelper'
-
-import { FormButton } from 'browser-components/buttons'
-import { CloseIcon } from 'browser-components/icons/Icons'
-import { StyledBodyTr } from 'browser-components/DataTables'
+import { CYPHER_REQUEST } from 'shared/modules/cypher/cypherDuck'
+import { driverDatabaseSelection } from 'shared/modules/features/versionedFeatures'
+import uuid, { v4 } from 'uuid'
+import RolesSelector from './RolesSelector'
 import {
-  StyledUserTd,
   StyledButtonContainer,
+  StyledUserTd,
   StyleRolesContainer
 } from './styled'
-
-import RolesSelector from './RolesSelector'
-import { NEO4J_BROWSER_USER_ACTION_QUERY } from 'services/bolt/txMetadata'
-import { driverDatabaseSelection } from 'shared/modules/features/versionedFeatures'
-import { connect } from 'react-redux'
 
 type UserInformationState = any
 

@@ -19,12 +19,12 @@
  */
 
 import d3 from 'd3'
-import NeoD3Geometry from './graphGeometry'
 import * as vizRenderers from '../renders/init'
 import { menu as menuRenderer } from '../renders/menu'
 import vizClickHandler from '../utils/clickHandler'
+import NeoD3Geometry from './graphGeometry'
 
-const vizFn = function(
+const vizFn = function (
   el: any,
   measureSize: any,
   graph: any,
@@ -60,7 +60,7 @@ const vizFn = function(
   let updateViz = true
 
   // To be overridden
-  viz.trigger = function(_event: any, ..._args: any[]) {}
+  viz.trigger = function (_event: any, ..._args: any[]) {}
 
   const onNodeClick = (node: any) => {
     updateViz = false
@@ -85,7 +85,7 @@ const vizFn = function(
 
   let zoomLevel = null
 
-  const zoomed = function(): any {
+  const zoomed = function (): any {
     draw = true
     return container.attr(
       'transform',
@@ -108,7 +108,7 @@ const vizFn = function(
           translate
         )
         const s = d3.interpolate(zoomBehavior.scale(), scale)
-        return function(a: number) {
+        return function (a: number) {
           zoomBehavior.scale(s(a)).translate(t(a) as [number, number])
           return zoomed()
         }
@@ -116,17 +116,17 @@ const vizFn = function(
 
   let isZoomingIn = true
 
-  viz.zoomInClick = function() {
+  viz.zoomInClick = function () {
     isZoomingIn = true
     return zoomClick(this)
   }
 
-  viz.zoomOutClick = function() {
+  viz.zoomOutClick = function () {
     isZoomingIn = false
     return zoomClick(this)
   }
 
-  const zoomClick = function(_element: any) {
+  const zoomClick = function (_element: any) {
     draw = true
     const limitsReached = { zoomInLimit: false, zoomOutLimit: false }
 
@@ -166,11 +166,11 @@ const vizFn = function(
     .on('wheel.zoom', null as any)
     .on('mousewheel.zoom', null as any)
 
-  const newStatsBucket = function() {
+  const newStatsBucket = function () {
     const bucket: any = {
       frameCount: 0,
       geometry: 0,
-      relationshipRenderers: (function() {
+      relationshipRenderers: (function () {
         const timings: any = {}
         vizRenderers.relationship.forEach((r: any) => (timings[r.name] = 0))
         return timings
@@ -181,7 +181,7 @@ const vizFn = function(
       ((1000 * bucket.frameCount) / bucket.duration()).toFixed(1)
     bucket.lps = () =>
       ((1000 * bucket.layout.layoutSteps) / bucket.duration()).toFixed(1)
-    bucket.top = function() {
+    bucket.top = function () {
       let time
       const renderers = []
       for (const name in bucket.relationshipRenderers) {
@@ -216,7 +216,7 @@ const vizFn = function(
       ? () => window.performance.now()
       : () => Date.now()
 
-  const render = function() {
+  const render = function () {
     if (!currentStats.firstFrame) {
       currentStats.firstFrame = now()
     }
@@ -238,8 +238,9 @@ const vizFn = function(
       .attr(
         'transform',
         (d: any) =>
-          `translate(${d.source.x} ${d.source.y}) rotate(${d.naturalAngle +
-            180})`
+          `translate(${d.source.x} ${d.source.y}) rotate(${
+            d.naturalAngle + 180
+          })`
       )
 
     for (renderer of Array.from<any>(vizRenderers.relationship)) {
@@ -260,14 +261,14 @@ const vizFn = function(
     // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     .on('dragend.node', () => onNodeDragToggle())
 
-  viz.collectStats = function() {
+  viz.collectStats = function () {
     const latestStats = currentStats
     latestStats.layout = force.collectStats()
     currentStats = newStatsBucket()
     return latestStats
   }
 
-  viz.update = function() {
+  viz.update = function () {
     if (!graph) {
       return
     }
@@ -345,7 +346,7 @@ const vizFn = function(
     return (updateViz = true)
   }
 
-  viz.resize = function() {
+  viz.resize = function () {
     const size = measureSize()
     return root.attr(
       'viewBox',

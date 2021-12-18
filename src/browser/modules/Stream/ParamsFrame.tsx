@@ -17,16 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-
-import { ExclamationTriangleIcon } from 'browser-components/icons/Icons'
 import Ellipsis from 'browser-components/Ellipsis'
+import { ExclamationTriangleIcon } from 'browser-components/icons/Icons'
+import React from 'react'
+import { applyGraphTypes } from 'services/bolt/boltMappings'
 import { stringModifier } from 'services/bolt/cypherTypesFormatting'
 import { stringifyMod } from 'services/utils'
 import FrameTemplate from '../Frame/FrameTemplate'
-import { PaddedDiv, ErrorText, SuccessText, StyledStatsBar } from './styled'
-import { applyGraphTypes } from 'services/bolt/boltMappings'
 import AutoExecButton from './auto-exec-button'
+import { ErrorText, PaddedDiv, StyledStatsBar, SuccessText } from './styled'
 
 const ParamsFrame = ({ frame }: any) => {
   const params = applyGraphTypes(frame.params)
