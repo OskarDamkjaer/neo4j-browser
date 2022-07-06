@@ -126,7 +126,10 @@ export class Graph extends React.Component<GraphProps, GraphState> {
       graph,
       graphStyle,
       isFullscreen,
-      wheelZoomRequiresModKey
+      wheelZoomRequiresModKey,
+      initialZoomToFit
+        ? () => this.visualization?.zoomByType(ZoomType.FIT)
+        : undefined
     )
 
     const graphEventHandler = new GraphEventHandlerModel(
@@ -162,11 +165,6 @@ export class Graph extends React.Component<GraphProps, GraphState> {
     }
     if (assignVisElement) {
       assignVisElement(this.svgElement.current, this.visualization)
-    }
-
-    if (initialZoomToFit) {
-      this.visualization.endSimulationCallback = () =>
-        this.visualization?.zoomByType(ZoomType.FIT)
     }
   }
 

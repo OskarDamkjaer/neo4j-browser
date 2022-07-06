@@ -51,9 +51,11 @@ const oneRelationshipPerPairOfNodes = (graph: GraphModel) =>
 export class ForceSimulation {
   simulation: Simulation<NodeModel, RelationshipModel>
   simulationTimeout: null | number = null
-  endSimulationCallback: null | (() => void) = null
 
-  constructor(private render: () => void) {
+  constructor(
+    private render: () => void,
+    private endSimulationCallback?: () => void
+  ) {
     this.simulation = forceSimulation<NodeModel, RelationshipModel>()
       .velocityDecay(VELOCITY_DECAY)
       .force('charge', forceManyBody().strength(FORCE_CHARGE))
@@ -64,8 +66,8 @@ export class ForceSimulation {
         render()
       })
       .on('end', () => {
-        this.endSimulationCallback && this.endSimulationCallback()
-        this.endSimulationCallback = null
+        this.endSimulationCallback?.()
+        this.endSimulationCallback = undefined
       })
       .stop()
   }

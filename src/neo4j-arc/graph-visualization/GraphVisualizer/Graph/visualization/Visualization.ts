@@ -79,7 +79,8 @@ export class Visualization {
     private graph: GraphModel,
     public style: GraphStyleModel,
     public isFullscreen: boolean,
-    public wheelZoomRequiresModKey?: boolean
+    public wheelZoomRequiresModKey?: boolean,
+    private endSimulationCallback?: () => void
   ) {
     this.root = d3Select(element)
 
@@ -166,11 +167,10 @@ export class Visualization {
       // Single click is not panning
       .on('click.zoom', () => (this.draw = false))
 
-    this.forceSimulation = new ForceSimulation(this.render.bind(this))
-  }
-
-  set endSimulationCallback(cb: null | (() => void)) {
-    this.forceSimulation.endSimulationCallback = cb
+    this.forceSimulation = new ForceSimulation(
+      this.render.bind(this),
+      this.endSimulationCallback
+    )
   }
 
   private render() {
