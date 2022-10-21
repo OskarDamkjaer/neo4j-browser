@@ -169,7 +169,7 @@ export class Visualization extends Component<
           this.autoCompleteCallback &&
             this.autoCompleteCallback(graph.relationships)
         })
-        .catch(() => undefined)
+        .catch(() => this.autoCompleteCallback && this.autoCompleteCallback([]))
     } else {
       this.autoCompleteCallback && this.autoCompleteCallback([])
     }
@@ -245,7 +245,7 @@ LIMIT ${maxNewNeighbours}`
           },
           (response: any) => {
             if (!response.success) {
-              reject(new Error())
+              reject(response.error)
             } else {
               resolve({
                 ...bolt.extractNodesAndRelationshipsFromRecordsForOldVis(
