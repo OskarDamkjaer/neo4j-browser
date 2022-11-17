@@ -309,16 +309,16 @@ export const stringifyMod = (
   pretty: boolean | number = false,
   skipOpeningIndentation = false
 ): string => {
+  debugger
   const prettyLevel = isNumber(pretty) ? pretty : +pretty
   const nextPrettyLevel = prettyLevel ? prettyLevel + 1 : false
   const newLine = prettyLevel ? '\n' : ''
   const indentation =
-    prettyLevel && !skipOpeningIndentation ? Array(prettyLevel).join('  ') : ''
-  const nextIndentation =
-    nextPrettyLevel && !skipOpeningIndentation
-      ? Array(nextPrettyLevel).join('  ')
-      : ''
-  const endIndentation = prettyLevel ? Array(prettyLevel).join('  ') : ''
+    prettyLevel && !skipOpeningIndentation ? '  '.repeat(prettyLevel - 1) : ''
+  const nextIndentation = nextPrettyLevel
+    ? Array(nextPrettyLevel).join('  ')
+    : ''
+  const endIndentation = prettyLevel ? '  '.repeat(prettyLevel - 1) : ''
   const propSpacing = prettyLevel ? ' ' : ''
   const toString = Object.prototype.toString
   const isArray =
