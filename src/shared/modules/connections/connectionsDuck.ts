@@ -367,22 +367,35 @@ export const setAuthEnabled = (authEnabled: any) => {
   }
 }
 
+function getTokenExpiryTime(token?: string): number | undefined {
+  if (!token) return
+  try {
+    // Get the expiration from the JWT's payload, which is a JSON string encoded
+    // using base64. You could also use a JWT parsing lib
+    const [, payloadBase64] = token.split('.')
+    const payload: { exp: number } = JSON.parse(
+      window.atob(payloadBase64 ?? '')
+    )
+
+    if (typeof payload?.exp !== 'number') {
+      return
+    }
+
+    return payload.exp
+  } catch {
+    return
+  }
+}
+
 function currentTokenExpiresSeconds(state: GlobalState) {
   const activeConnection = getActiveConnectionData(state)
   const token = activeConnection?.password
 
-  if (!token) return
+  const expiryTime = getTokenExpiryTime(token)
 
-  // Get the expiration from the JWT's payload, which is a JSON string encoded
-  // using base64. You could also use a JWT parsing lib
-  const [, payloadBase64] = token.split('.')
-  const payload: { exp: number } = JSON.parse(window.atob(payloadBase64 ?? ''))
+  if (!expiryTime) return
 
-  if (typeof payload?.exp !== 'number') {
-    return
-  }
-
-  return payload.exp - Date.now() / 1000
+  return expiryTime - Date.now() / 1000
 }
 
 // Typically the refresh flow is triggered through a query failing
@@ -553,7 +566,17 @@ export const startupConnectEpic = (action$: any, store: any) => {
         })
       )
 
+      // if the stored stored credentials are SSO credentials
+      // that means we don't have a refresh token, so we can't
+      // refresh the token and we need to redo the SSO flow
+      // TODO actually check if there's a refresh token first, it can be around if you simply refresh actually
+      const storedTokenExpiryTime = getTokenExpiryTime(
+        savedConnection?.password
+      )
+      const oldConnectionIsSSO = typeof storedTokenExpiryTime === 'number'
+
       if (
+        !oldConnectionIsSSO &&
         !(discovered && discovered.hasForceUrl) && // If we have force url, don't try old connection data
         shouldTryAutoconnecting(savedConnection)
       ) {
