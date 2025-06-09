@@ -89,15 +89,13 @@ type PlayFrameProps = {
   showPromotion: boolean
   isFullscreen: boolean
   isCollapsed: boolean
-  inDesktop: boolean
 }
 export function PlayFrame({
   stack,
   bus,
   showPromotion,
   isFullscreen,
-  isCollapsed,
-  inDesktop
+  isCollapsed
 }: PlayFrameProps): JSX.Element {
   const [stackIndex, setStackIndex] = useState(0)
   const [atSlideStart, setAtSlideStart] = useState<boolean | null>(null)
@@ -126,8 +124,7 @@ export function PlayFrame({
         bus,
         onSlide,
         initialPlay,
-        showPromotion,
-        inDesktop
+        showPromotion
       )
       if (stillMounted) {
         setInitialPlay(false)
@@ -210,8 +207,7 @@ function generateContent(
   bus: Bus,
   onSlide: any,
   shouldUseSlidePointer: boolean,
-  showPromotion = false,
-  inDesktop = false
+  showPromotion = false
 ): Content | Promise<Content> {
   // Not found
   if (stackFrame.response && stackFrame.response.status === 404) {
@@ -292,22 +288,17 @@ function generateContent(
 
   // Check if content exists locally
   if (isPlayChapter(guideName)) {
-    const isPreviewAvailable =
-      localStorage.getItem('previewAvailable') === 'true' && !inDesktop
-
-    const { content, title, subtitle, slides = null } = chapters[guideName]
+    const { title, subtitle, slides = null } = chapters[guideName]
 
     const isPlayStart = stackFrame.cmd.trim() === ':play start'
     const updatedContent =
       isPlayStart && showPromotion ? (
         <>
-          {isPreviewAvailable ? <PreviewFrame /> : content}
+          <PreviewFrame />
           <AuraPromotion />
         </>
-      ) : isPreviewAvailable ? (
-        <PreviewFrame />
       ) : (
-        content
+        <PreviewFrame />
       )
 
     return {
@@ -388,8 +379,7 @@ const mapStateToProps = (state: GlobalState) => ({
     (getEdition(state) !== null &&
       !isEnterprise(state) &&
       !isConnectedAuraHost(state)) ||
-    inDesktop(state),
-  inDesktop: inDesktop(state)
+    inDesktop(state)
 })
 
 export default connect(mapStateToProps)(withBus(PlayFrame))
