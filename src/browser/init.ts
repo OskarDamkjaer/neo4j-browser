@@ -20,6 +20,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
+import './styles/style-reset.css'
 import './styles/bootstrap.grid-only.min.css'
 import './styles/streamline.css'
 import './styles/neo4j-world.css'

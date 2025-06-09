@@ -1,4 +1,4 @@
-const notOptedOutOfPreview = (): boolean => {
+export const notOptedOutOfPreview = (): boolean => {
   const prefersOldBrowser = localStorage.getItem('prefersOldBrowser')
   const doesPreferQuery = prefersOldBrowser === 'false'
 

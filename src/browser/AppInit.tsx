@@ -275,7 +275,7 @@ const client = new ApolloClient({
   link: uploadLink
 })
 
-const AppInit = (): JSX.Element => {
+export const AppInit = (): JSX.Element => {
   return (
     <Provider store={store as any}>
       <BusProvider bus={bus}>

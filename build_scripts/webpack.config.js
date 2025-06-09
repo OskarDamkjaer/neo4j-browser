@@ -22,6 +22,7 @@ const path = require('path')
 const getPlugins = require('./webpack-plugins')
 const rules = require('./webpack-rules')
 const helpers = require('./webpack-helpers')
+const webpack = require('webpack')
 
 module.exports = {
   mode: helpers.isProduction ? 'production' : 'development',
@@ -30,13 +31,14 @@ module.exports = {
   },
   entry: [path.resolve(helpers.browserPath, 'index.tsx')],
   output: {
-    filename: 'app-[hash].js',
-    chunkFilename: '[name]-[hash].bundle.js',
+    filename: 'neo4j-browser.bundle.js', // Single bundle output
     publicPath: '',
     path: helpers.buildPath,
     globalObject: 'this'
   },
-  plugins: getPlugins(),
+  module: {
+    rules
+  },
   resolve: {
     symlinks: false,
     alias: {
@@ -61,39 +63,14 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js']
   },
-  module: {
-    rules
+  optimization: {
+    splitChunks: false,
+    runtimeChunk: false
   },
-  optimization: helpers.isProduction
-    ? {
-        splitChunks: {
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/](@firebase|react-markdown|@apollo)[\\/]/,
-              name: 'vendor',
-              chunks: 'all',
-              enforce: true
-            },
-            'cypher-editor': {
-              test: /[\\/]node_modules[\\/](antlr4|cypher-editor-support|monaco-editor-core|@neo4j-cypher)[\\/]/,
-              name: 'cypher-editor',
-              chunks: 'all',
-              enforce: true
-            },
-            'neo4j-ndl': {
-              test: /[\\/]node_modules[\\/](semantic-ui-react|@neo4j-ndl|refractor|@heroicons)[\\/]/,
-              name: 'ui-libs',
-              chunks: 'all',
-              enforce: true
-            }
-          }
-        }
-      }
-    : {
-        removeAvailableModules: false,
-        removeEmptyChunks: false,
-        splitChunks: false
-      },
+  plugins: [
+    ...getPlugins(),
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
+  ],
   devtool: helpers.isProduction ? false : 'eval-cheap-module-source-map',
   devServer: {
     host: '0.0.0.0',

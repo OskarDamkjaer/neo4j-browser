@@ -17,32 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react'
-import ReactDOM from 'react-dom'
 
-import AppInit, { setupSentry } from './AppInit'
-import './init'
-import { navigateToPreview } from './modules/Stream/StartPreviewFrame'
-import { optedInByLocalhost } from 'browser-services/preview-optin-service'
+// todo handle case when get item would throw
+async function init() {
+  const prefersOldBrowser = localStorage.getItem('prefersOldBrowser')
+  if (prefersOldBrowser === 'true') {
+    // eslint-disable-next-line no-unused-vars
 
-setupSentry()
+    try {
+      const React = await import('react')
+      const ReactDOM = await import('react-dom')
+      const { AppInit, setupSentry } = await import('./AppInit')
+      await import('./init')
 
-;(async () => {
-  const optedInToPreview = optedInByLocalhost()
-  try {
-    const response = await fetch('./preview/manifest.json')
-    if (response.status === 200) {
-      if (optedInToPreview) {
-        navigateToPreview()
-      } else {
-        localStorage.setItem('previewAvailable', 'true')
-      }
-    } else {
-      localStorage.setItem('previewAvailable', 'false')
+      ReactDOM.render(<AppInit />, document.getElementById('mount'))
+      setupSentry()
+    } catch (e) {
+      console.error(e)
     }
-  } catch (e) {
-    localStorage.setItem('previewAvailable', 'false')
   }
+}
 
-  ReactDOM.render(<AppInit />, document.getElementById('mount'))
-})()
+init()
