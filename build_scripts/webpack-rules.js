@@ -32,13 +32,26 @@ const tsLoaderOptions = {
 
 module.exports = [
   {
+    test: /\.tsx?$/,
+    include: [path.resolve(helpers.browserPath, 'index.tsx')],
+    use: {
+      loader: 'ts-loader',
+      options: {
+        ...tsLoaderOptions,
+        compilerOptions: {
+          module: 'esnext'
+        }
+      }
+    }
+  },
+  {
     test: /\.(ts|tsx)?$/,
     use: {
       loader: 'ts-loader',
       options: tsLoaderOptions
     },
     include: [path.resolve('src')],
-    exclude: /node_modules/
+    exclude: [/node_modules/, path.resolve(helpers.browserPath, 'index.tsx')]
   },
   {
     test: /\.(js|jsx)$/,

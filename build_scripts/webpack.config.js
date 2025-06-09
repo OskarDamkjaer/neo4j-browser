@@ -22,7 +22,6 @@ const path = require('path')
 const getPlugins = require('./webpack-plugins')
 const rules = require('./webpack-rules')
 const helpers = require('./webpack-helpers')
-const webpack = require('webpack')
 
 module.exports = {
   mode: helpers.isProduction ? 'production' : 'development',
@@ -31,7 +30,7 @@ module.exports = {
   },
   entry: [path.resolve(helpers.browserPath, 'index.tsx')],
   output: {
-    filename: 'neo4j-browser.bundle.js', // Single bundle output
+    filename: 'neo4j-browser.bundle.js',
     publicPath: '',
     path: helpers.buildPath,
     globalObject: 'this'
@@ -63,14 +62,8 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js']
   },
-  optimization: {
-    splitChunks: false,
-    runtimeChunk: false
-  },
-  plugins: [
-    ...getPlugins(),
-    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
-  ],
+  optimization: {},
+  plugins: [...getPlugins()],
   devtool: helpers.isProduction ? false : 'eval-cheap-module-source-map',
   devServer: {
     host: '0.0.0.0',

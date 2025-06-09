@@ -18,23 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// todo handle case when get item would throw
 async function init() {
   const prefersOldBrowser = localStorage.getItem('prefersOldBrowser')
   if (prefersOldBrowser === 'true') {
-    // eslint-disable-next-line no-unused-vars
-
-    try {
-      const React = await import('react')
-      const ReactDOM = await import('react-dom')
-      const { AppInit, setupSentry } = await import('./AppInit')
-      await import('./init')
-
-      ReactDOM.render(<AppInit />, document.getElementById('mount'))
-      setupSentry()
-    } catch (e) {
-      console.error(e)
-    }
+    import('./bootstrap').then(bootstrap => bootstrap.bootstrapBrowser())
   }
 }
 
