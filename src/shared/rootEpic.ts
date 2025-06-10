@@ -58,8 +58,8 @@ import {
 } from './modules/cypher/cypherDuck'
 import {
   clearMetaOnDisconnectEpic,
-  dbMetaEpic,
   dbCountEpic,
+  dbMetaEpic,
   serverConfigEpic
 } from './modules/dbMeta/dbMetaEpics'
 import {
@@ -89,7 +89,6 @@ import {
 import {
   trackCommandUsageEpic,
   trackErrorFramesEpic,
-  trackPreviewEpic,
   trackReduxActionsEpic,
   udcStartupEpic
 } from './modules/udc/udcDuck'
@@ -149,6 +148,5 @@ export default combineEpics(
   trackReduxActionsEpic,
   initializeCypherEditorEpic,
   updateEditorSupportSchemaEpic,
-  fetchRemoteGuideEpic,
-  trackPreviewEpic
+  fetchRemoteGuideEpic
 )
