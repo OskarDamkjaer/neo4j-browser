@@ -20,48 +20,10 @@
 import { assign, reduce } from 'lodash-es'
 import Rx from 'rxjs/Rx'
 
-import {
-  USER_CAPABILITIES,
-  hasClientConfig,
-  setClientConfig,
-  updateUserCapability
-} from '../features/featuresDuck'
-import { getDbClusterRole } from '../features/versionedFeatures'
-import {
-  update,
-  updateServerInfo,
-  updateSettings,
-  CLEAR_META,
-  DB_META_DONE,
-  FORCE_FETCH,
-  SYSTEM_DB,
-  metaTypesQuery,
-  serverInfoQuery,
-  VERSION_FOR_CLUSTER_ROLE_IN_SHOW_DB,
-  isOnCluster,
-  updateCountAutomaticRefresh,
-  getCountAutomaticRefreshEnabled,
-  DB_META_FORCE_COUNT,
-  DB_META_COUNT_DONE,
-  metaCountQuery,
-  trialStatusQuery,
-  updateTrialStatus,
-  oldTrialStatusQuery,
-  updateTrialStatusOld,
-  isEnterprise,
-  SERVER_VERSION_READ,
-  supportsMultiDb
-} from './dbMetaDuck'
-import {
-  ClientSettings,
-  initialClientSettings,
-  Database,
-  findDatabaseByNameOrAlias,
-  getDatabases,
-  getSemanticVersion,
-  shouldRetainEditorHistory
-} from './dbMetaDuck'
+import { isInt, Record, ResultSummary } from 'neo4j-driver'
+import semver, { gte, SemVer } from 'semver'
 import bolt from 'services/bolt/bolt'
+import { isBoltConnectionErrorCode } from 'services/bolt/boltConnectionErrors'
 import { isConfigValFalsy, isConfigValTruthy } from 'services/bolt/boltHelpers'
 import {
   commandSources,
@@ -71,33 +33,68 @@ import {
   CONNECTED_STATE,
   CONNECTION_SUCCESS,
   DISCONNECTION_SUCCESS,
-  LOST_CONNECTION,
-  SILENT_DISCONNECT,
-  UPDATE_CONNECTION_STATE,
   getActiveConnectionData,
   getLastUseDb,
   getUseDb,
+  LOST_CONNECTION,
   onLostConnection,
   setAuthEnabled,
   setRetainCredentials,
+  SILENT_DISCONNECT,
+  UPDATE_CONNECTION_STATE,
   updateConnection,
   useDb
 } from 'shared/modules/connections/connectionsDuck'
 import { clearHistory } from 'shared/modules/history/historyDuck'
 import { backgroundTxMetadata } from 'shared/services/bolt/txMetadata'
 import {
+  getCurrentDatabase,
+  isSystemOrCompositeDb
+} from 'shared/utils/selectors'
+import { triggerCredentialsTimeout } from '../credentialsPolicy/credentialsPolicyDuck'
+import {
   getListFunctionQuery,
   getListProcedureQuery
 } from '../cypher/functionsAndProceduresHelper'
-import { isInt, Record, ResultSummary } from 'neo4j-driver'
-import semver, { gte, SemVer } from 'semver'
-import { triggerCredentialsTimeout } from '../credentialsPolicy/credentialsPolicyDuck'
 import {
-  isSystemOrCompositeDb,
-  getCurrentDatabase
-} from 'shared/utils/selectors'
-import { isBoltConnectionErrorCode } from 'services/bolt/boltConnectionErrors'
-import { trackPageLoad } from '../preview/previewDuck'
+  hasClientConfig,
+  setClientConfig,
+  updateUserCapability,
+  USER_CAPABILITIES
+} from '../features/featuresDuck'
+import { getDbClusterRole } from '../features/versionedFeatures'
+import {
+  CLEAR_META,
+  ClientSettings,
+  Database,
+  DB_META_COUNT_DONE,
+  DB_META_DONE,
+  DB_META_FORCE_COUNT,
+  findDatabaseByNameOrAlias,
+  FORCE_FETCH,
+  getCountAutomaticRefreshEnabled,
+  getDatabases,
+  getSemanticVersion,
+  initialClientSettings,
+  isEnterprise,
+  isOnCluster,
+  metaCountQuery,
+  metaTypesQuery,
+  oldTrialStatusQuery,
+  SERVER_VERSION_READ,
+  serverInfoQuery,
+  shouldRetainEditorHistory,
+  supportsMultiDb,
+  SYSTEM_DB,
+  trialStatusQuery,
+  update,
+  updateCountAutomaticRefresh,
+  updateServerInfo,
+  updateSettings,
+  updateTrialStatus,
+  updateTrialStatusOld,
+  VERSION_FOR_CLUSTER_ROLE_IN_SHOW_DB
+} from './dbMetaDuck'
 
 function handleConnectionError(store: any, e: any) {
   if (!e.code || isBoltConnectionErrorCode(e.code)) {
@@ -546,12 +543,6 @@ export const serverConfigEpic = (some$: any, store: any) =>
             // Trigger a credentials timeout since the settings have just been read from the server for the first time and might be different from the defaults.
             store.dispatch(triggerCredentialsTimeout())
           }
-
-          setTimeout(() => {
-            // Track page load after server config is done
-            // setTimeout ensures telemetry settings have been propagated to the App
-            store.dispatch(trackPageLoad())
-          })
 
           return Rx.Observable.of(null)
         })

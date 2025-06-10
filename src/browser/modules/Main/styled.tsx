@@ -79,6 +79,13 @@ export const DismissBanner = styled.span`
     font-size: 1.4rem;
   }
 `
+
+export const LegacyWarningBanner = styled(Banner)`
+  background-color: ${props => props.theme.warning};
+  display: flex;
+  justify-content: space-between;
+`
+
 export const UnderlineClickable = styled.span`
   &:hover {
     cursor: pointer;

@@ -17,8 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
+import ErrorBoundary from 'browser-components/ErrorBoundary'
+import { StyledLink } from 'browser-components/buttons'
+import {
+  CONNECTING_STATE,
+  DISCONNECTED_STATE,
+  PENDING_STATE
+} from 'shared/modules/connections/connectionsDuck'
+import { TrialStatus } from 'shared/modules/dbMeta/dbMetaDuck'
 import Editor from '../Editor/MainEditor'
 import Stream from '../Stream/Stream'
 import AutoExecButton from '../Stream/auto-exec-button'
@@ -26,19 +34,13 @@ import { useSlowConnectionState } from './main.hooks'
 import {
   DismissBanner,
   ErrorBanner,
+  LegacyWarningBanner,
   NotAuthedBanner,
   StyledMain,
   UdcConsentBanner,
   UnderlineClickable,
   WarningBanner
 } from './styled'
-import ErrorBoundary from 'browser-components/ErrorBoundary'
-import {
-  CONNECTING_STATE,
-  DISCONNECTED_STATE,
-  PENDING_STATE
-} from 'shared/modules/connections/connectionsDuck'
-import { TrialStatus } from 'shared/modules/dbMeta/dbMetaDuck'
 
 type MainProps = {
   connectionState: number
@@ -71,7 +73,11 @@ const Main = React.memo(function Main(props: MainProps) {
 
   useEffect(() => {
     showUdcConsentBanner && incrementConsentBannerShownCount()
-  }, [showUdcConsentBanner /* missing function from dep array but including it causes loop */])
+  }, [
+    showUdcConsentBanner /* missing function from dep array but including it causes loop */
+  ])
+
+  const [showLegacyWarning, setShowLegacyWarning] = useState(true)
 
   return (
     <StyledMain data-testid="main">
@@ -122,6 +128,24 @@ const Main = React.memo(function Main(props: MainProps) {
         <WarningBanner>
           Server is taking a long time to respond...
         </WarningBanner>
+      )}
+      {showLegacyWarning && (
+        <LegacyWarningBanner>
+          <span>
+            This is the legacy version of Neo4j Browser, which only receives
+            minimal maintenance and may be unsuited for newer versions of Neo4j.{' '}
+            <StyledLink
+              onClick={() => {
+                localStorage.setItem('prefersOldBrowser', 'false')
+                window.location.reload()
+              }}
+            >
+              Switch to the current Browser.
+            </StyledLink>
+          </span>
+
+          <DismissBanner onClick={() => setShowLegacyWarning(false)} />
+        </LegacyWarningBanner>
       )}
 
       {trialStatus.status === 'expired' && (

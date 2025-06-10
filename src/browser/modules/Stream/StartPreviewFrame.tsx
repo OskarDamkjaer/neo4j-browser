@@ -17,44 +17,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React, { Dispatch } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
-import { Action } from 'redux'
 import { GlobalState } from 'shared/globalState'
-import {
-  Connection,
-  getActiveConnectionData
-} from 'shared/modules/connections/connectionsDuck'
-import { trackNavigateToPreview } from 'shared/modules/preview/previewDuck'
+import { getActiveConnectionData } from 'shared/modules/connections/connectionsDuck'
 
 export const gotoNewBrowser = (): void => {
   localStorage.setItem('prefersOldBrowser', 'false')
   window.location.reload()
 }
 
-type PreviewFrameProps = {
-  connectionData: Connection | null
-  executeTrackNavigateToPreview: () => void
-}
-const PreviewFrame = ({ executeTrackNavigateToPreview }: PreviewFrameProps) => {
-  function trackAndNavigateToPreview() {
-    executeTrackNavigateToPreview()
-    gotoNewBrowser()
-  }
-
+const PreviewFrame = () => {
   return (
     <>
       <div className="teasers">
         <div className="teaser teaser-advertise teaser-3">
           <img src="./assets/images/clusters.svg" className="img-advertise" />
-          <h3>🚀 Switch back to the new Browser!</h3>
-          <p>Switch to the new Browser to access all the latest features.</p>
-          <button
-            onClick={trackAndNavigateToPreview}
-            className="btn btn-advertise"
-          >
-            {"Let's go"}
+          <h3>New Neo4j Browser version is available</h3>
+          <p>
+            Switch to the new Browser to access all the latest features and
+            improvements.
+          </p>
+          <button onClick={gotoNewBrowser} className="btn btn-advertise">
+            Take me there
           </button>
         </div>
 
@@ -104,16 +90,8 @@ const PreviewFrame = ({ executeTrackNavigateToPreview }: PreviewFrameProps) => {
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => {
-  return {
-    executeTrackNavigateToPreview: () => dispatch(trackNavigateToPreview())
-  }
-}
-
 const mapStateToProps = (state: GlobalState) => ({
   connectionData: getActiveConnectionData(state)
 })
 
-export default withBus(
-  connect(mapStateToProps, mapDispatchToProps)(PreviewFrame)
-)
+export default withBus(connect(mapStateToProps)(PreviewFrame))
