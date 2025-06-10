@@ -20,7 +20,14 @@
 
 async function init() {
   const prefersOldBrowser = localStorage.getItem('prefersOldBrowser')
-  if (prefersOldBrowser === 'true') {
+  const urlParams = new URLSearchParams(window.location.search)
+  const prefersOldBrowserUrlParam = urlParams.get('prefersOldBrowser')
+  localStorage.setItem(
+    'prefersOldBrowser',
+    prefersOldBrowserUrlParam ? 'true' : 'false'
+  )
+
+  if (prefersOldBrowser === 'true' || prefersOldBrowserUrlParam === 'true') {
     import('./bootstrap').then(bootstrap => bootstrap.bootstrapBrowser())
   }
 }
